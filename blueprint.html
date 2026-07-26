@@ -186,6 +186,44 @@
   .needs-box li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--mc);transform:rotate(45deg)}
   .needs-box code{font-family:var(--mono);font-size:11.5px;background:var(--surface);border:1px solid var(--line-strong);border-radius:5px;padding:1px 6px;color:var(--mc);white-space:nowrap}
 
+  /* ---------- ARCHITECTURE VIEW ---------- */
+  .arch{padding:26px 0 70px}
+  .arch-intro{max-width:70ch;font-size:14px;color:var(--ink-soft);margin:0 0 8px}
+  .arch-intro code{font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--line-strong);border-radius:5px;padding:1px 6px;color:var(--accent)}
+  .arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:20px;margin-top:22px}
+  .arch-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px 22px;border-top:3px solid var(--ac,var(--accent))}
+  .arch-card.wide{grid-column:1/-1}
+  .arch-card h3{font-family:var(--serif);font-size:18px;margin:0 0 3px;display:flex;gap:10px;align-items:center;letter-spacing:-.01em}
+  .arch-card .acsub{font-size:12.5px;color:var(--ink-soft);margin:0 0 12px}
+  .kv{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.45}
+  .kv b{flex:none;width:118px;color:var(--ac,var(--accent));font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+  .kv span{flex:1;color:var(--ink)}
+  .plist{list-style:none;margin:0;padding:0}
+  .plist li{position:relative;padding:7px 0 7px 20px;font-size:13px;border-top:1px solid var(--line);line-height:1.45}
+  .plist li::before{content:"▸";position:absolute;left:3px;top:7px;color:var(--ac,var(--accent));font-size:11px}
+  .subhead{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 4px}
+  .subhead:first-of-type{margin-top:2px}
+  .route-wrap{overflow-x:auto;margin-top:6px}
+  .rt-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:680px}
+  .rt-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);padding:8px 12px;border-bottom:1.5px solid var(--line-strong)}
+  .rt-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .rt-table td:first-child{white-space:nowrap;font-weight:600}
+  .rt-table code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--accent);display:inline-block;margin:1.5px 2px 1.5px 0}
+  .rt-base{font-family:var(--mono);font-size:11.5px;color:var(--gold);white-space:nowrap}
+  .ev-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+  .ev{font-family:var(--mono);font-size:11.8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 11px;overflow-x:auto;white-space:nowrap}
+  .ev .arr{color:var(--gold);font-weight:700}
+  .phase-list{list-style:none;margin:6px 0 0;padding:0;counter-reset:f}
+  .phase-list li{position:relative;padding:12px 0 12px 42px;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
+  .phase-list li::before{counter-increment:f;content:counter(f);position:absolute;left:0;top:12px;width:27px;height:27px;border-radius:9px;background:var(--accent-soft);color:var(--accent);font-family:var(--serif);font-weight:700;font-size:13px;display:grid;place-items:center}
+  .phase-list b{font-weight:700}
+  .phase-list .done-when{display:block;margin-top:3px;font-size:12px;color:var(--ink-soft)}
+  .phase-list .done-when::before{content:"✓ Pronto quando: ";color:var(--gold);font-weight:700}
+  .slo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
+  .slo{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .slo b{display:block;font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .slo span{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);font-weight:600}
+
   footer{border-top:1px solid var(--line);padding:30px 0 70px;color:var(--ink-faint);font-size:13px}
   footer .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
   footer b{color:var(--ink-soft)}
@@ -208,6 +246,7 @@
     <div class="tabs" role="tablist">
       <button class="tab" id="tab-dep" role="tab" aria-selected="true" aria-controls="view-dep">🔗 Fluxo de dependências</button>
       <button class="tab" id="tab-mod" role="tab" aria-selected="false" aria-controls="view-mod">🗂️ Módulos &amp; requisitos</button>
+      <button class="tab" id="tab-arch" role="tab" aria-selected="false" aria-controls="view-arch">🏗️ Arquitetura técnica</button>
     </div>
   </div>
 </header>
@@ -238,7 +277,193 @@
     <p class="section-label">Cada módulo e o que é necessário para construí-lo</p>
     <div class="modules" id="modules"></div>
   </section>
+
+  <!-- ===== ARCHITECTURE VIEW ===== -->
+  <section class="view arch" id="view-arch" role="tabpanel" aria-labelledby="tab-arch">
+    <p class="arch-intro">Levantamento técnico para construir um sistema de nível nacional — zero amadorismo. O fluxograma é a visualização; a fonte de verdade técnica vive em <code>architecture.json</code> no repositório, estruturada para guiar cada sessão de construção.</p>
+    <div class="arch-grid" id="archRoot"></div>
+  </section>
 </main>
+
+<script type="application/json" id="archData">{
+  "meta": {
+    "sistema": "LUMIA",
+    "versao_blueprint": "2.0",
+    "atualizado": "2026-07-26",
+    "ambicao": "Plataforma SaaS de gestão + metodologia MQS para o setor da beleza, projetada para escala nacional: 100 mil+ empresas, milhões de agendamentos por mês, dados residentes no Brasil.",
+    "principios": [
+      "Multi-tenant por design — isolamento de dados por empresa desde a primeira tabela",
+      "Security by design e LGPD by default — privacidade não é feature, é fundação",
+      "API-first — todo recurso nasce como contrato OpenAPI antes da tela",
+      "Event-driven onde há acoplamento — módulos conversam por eventos, não por chamadas diretas",
+      "Monólito modular DDD → microserviços por estrangulamento (extrai só o que a escala exigir)",
+      "Observabilidade desde o dia 1 — não se opera o que não se mede"
+    ]
+  },
+  "stack": {
+    "frontend": {
+      "web": "Next.js + React + TypeScript — SSR para performance, PWA para uso em balcão/tablet",
+      "mobile": "React Native (Expo) compartilhando design system e lógica de domínio",
+      "design_system": "Tokens próprios LUMIA, tema claro/escuro, acessibilidade WCAG 2.1 AA"
+    },
+    "backend": {
+      "core": "NestJS (Node + TypeScript) — monólito modular DDD: 1 bounded context por módulo do blueprint",
+      "ia": "Serviço Python (FastAPI) dedicado a RAG/ML + API Claude para o Consultor MQS",
+      "workers": "Filas com BullMQ/SQS — confirmações em massa, emissão fiscal, réguas de cobrança, ETL"
+    },
+    "infra": {
+      "cloud": "AWS sa-east-1 (São Paulo) — latência baixa e residência de dados no Brasil",
+      "orquestracao": "Kubernetes (EKS) com autoscaling horizontal e apps 100% stateless",
+      "iac": "Terraform — infraestrutura versionada, ambientes dev/staging/prod idênticos",
+      "borda": "CloudFront (CDN) + WAF gerenciado + AWS Shield anti-DDoS"
+    }
+  },
+  "banco_de_dados": {
+    "principal": "PostgreSQL (Aurora) — fonte de verdade transacional de todos os módulos",
+    "multi_tenancy": {
+      "estrategia": "tenant_id em todas as tabelas + Row-Level Security (RLS) nativa do Postgres",
+      "racional": "Isola cada empresa no próprio banco com custo operacional baixo; particionamento por tenant para contas grandes; migração para schema dedicado disponível como rota de escala (redes/franquias)."
+    },
+    "cache": "Redis — sessões, cache de leitura quente, rate limiting e locks distribuídos de agendamento (previne double-booking)",
+    "arquivos": "S3 com criptografia SSE-KMS — fotos, contratos, certificados digitais, exports; URLs pré-assinadas com expiração",
+    "vetorial": "pgvector — embeddings do Método MQS, playbooks e dados da empresa para o RAG do Consultor",
+    "analitico": "ClickHouse alimentado por CDC (Debezium → Kafka) — motor do módulo Resultados e do benchmark setorial anonimizado; separa carga analítica da transacional",
+    "backups": {
+      "pitr": "Point-in-time recovery de 35 dias",
+      "dr": "Réplica cross-region para disaster recovery",
+      "teste": "Restore testado mensalmente — backup não testado é backup que não existe"
+    }
+  },
+  "seguranca": {
+    "autenticacao": [
+      "OAuth2/OIDC como protocolo único de identidade",
+      "MFA (TOTP + fallback WhatsApp) obrigatório para perfis administrativos",
+      "JWT de vida curta (15 min) + refresh token com rotação e revogação",
+      "Bloqueio progressivo por tentativas e detecção de login anômalo (IP/dispositivo novo)"
+    ],
+    "autorizacao": [
+      "RBAC granular — permissão por módulo × ação (ver/criar/editar/excluir/aprovar)",
+      "Escopo por unidade/filial — gerente da filial A não enxerga a filial B",
+      "Princípio do menor privilégio como default de todo novo perfil"
+    ],
+    "criptografia": [
+      "TLS 1.3 em todo tráfego, HSTS ativo",
+      "AES-256 em repouso (banco, S3, backups)",
+      "Criptografia campo-a-campo para dados críticos: certificados digitais, documentos pessoais, chaves de integração",
+      "KMS com rotação automática de chaves"
+    ],
+    "aplicacao": [
+      "OWASP Top 10 e ASVS incorporados ao ciclo de desenvolvimento",
+      "Validação e sanitização de toda entrada (schema validation em todas as rotas)",
+      "Rate limiting por tenant, por usuário e por IP",
+      "CSP estrita, proteção CSRF/XSS/SQL injection, headers de segurança",
+      "Idempotency keys em toda operação financeira — retry nunca duplica cobrança"
+    ],
+    "segredos": "AWS Secrets Manager — zero credenciais em código, rotação automática, acesso auditado",
+    "auditoria": "Trilha imutável append-only de toda ação sensível: quem, o quê, quando, de onde e valor anterior",
+    "verificacao": [
+      "SAST + DAST + análise de dependências (supply chain) no CI — build quebra em vulnerabilidade alta",
+      "Pentest externo anual por empresa independente",
+      "Programa de bug bounty na fase de maturidade"
+    ],
+    "lgpd": [
+      "Consentimento versionado por finalidade, com prova de aceite",
+      "Direito ao esquecimento automatizado (anonimização preservando integridade contábil/fiscal)",
+      "Minimização: analítico e benchmark operam apenas com dados agregados e anonimizados",
+      "RIPD documentado, DPO nomeado, canal do titular",
+      "Residência de dados no Brasil (sa-east-1)"
+    ]
+  },
+  "api": {
+    "convencoes": [
+      "REST versionada em /api/v1 — versionamento por URL, deprecação com prazo",
+      "OpenAPI 3 como contrato-fonte: SDKs e documentação gerados, nunca escritos à mão",
+      "Paginação por cursor (estável sob escrita concorrente)",
+      "Erros no padrão RFC 7807 (problem+json) — máquina e humano entendem",
+      "Webhooks de saída assinados com HMAC-SHA256 + retry com backoff exponencial",
+      "API Gateway com autenticação, quotas e rate limit por plano de assinatura"
+    ],
+    "rotas": {
+      "meu_negocio": { "base": "/api/v1/business", "endpoints": ["GET|PUT /company", "CRUD /units", "CRUD /rooms|/chairs|/equipment", "CRUD /assets (patrimônio + depreciação)", "CRUD /strategy (missão, SWOT, OKRs, metas)", "CRUD /calendar", "POST /expansion/simulations"] },
+      "meus_clientes": { "base": "/api/v1/clients", "endpoints": ["CRUD /clients", "GET /clients/:id/history", "CRUD /clients/:id/consents (LGPD)", "CRUD /segments", "CRUD /loyalty (clube, cashback, gift cards, pontos)", "CRUD /campaigns + /automations", "GET /clients/:id/intelligence (LTV, risco, retorno)"] },
+      "minha_equipe": { "base": "/api/v1/team", "endpoints": ["CRUD /members (CLT, parceiro, prestador)", "CRUD /work-schedules (escalas, banco de horas)", "CRUD /commission-rules", "GET /performance (ocupação, produtividade, ranking)", "CRUD /documents (+ assinatura digital)", "CRUD /development (PDI, trilhas, avaliações)"] },
+      "minha_agenda": { "base": "/api/v1/schedule", "endpoints": ["CRUD /appointments", "GET /availability?professional&room&equipment (multi-recurso)", "POST /appointments/:id/check-in | /check-out", "CRUD /waitlist", "POST /appointments/:id/confirmations (WhatsApp)", "WS /realtime (atualização ao vivo)"] },
+      "meu_financeiro": { "base": "/api/v1/finance", "endpoints": ["CRUD /commands (comandas)", "CRUD /payables | /receivables", "GET /cashflow", "POST /payments (PIX, cartão, split) [idempotente]", "POST /invoices (NF-e, NFS-e)", "GET /dre", "POST /reconciliation (Open Finance/OFX)"] },
+      "meus_resultados": { "base": "/api/v1/analytics", "endpoints": ["GET /kpis?period&unit", "GET /dashboards/executive", "GET /reports + POST /reports/schedule", "GET /benchmark (setorial anonimizado)"] },
+      "ferramentas_mqs": { "base": "/api/v1/mqs", "endpoints": ["POST /diagnosis", "GET /compass/pricing | /commission | /chair-rental | /room-rental", "POST /simulators/:type", "CRUD /action-plans (matriz impacto × esforço)", "GET /playbooks | /pops | /templates"] },
+      "universidade_mqs": { "base": "/api/v1/university", "endpoints": ["GET /tracks + /tracks/:id/progress", "CRUD /courses + /missions", "GET /certificates", "GET /gamification/ranking"] },
+      "consultor_mqs": { "base": "/api/v1/advisor", "endpoints": ["GET /daily-briefing (Bom Dia)", "GET /alerts", "POST /ask (chat RAG com citação de fonte)", "GET /recommendations + /opportunities", "GET /action-plans/:id/tracking"] },
+      "configuracoes": { "base": "/api/v1/settings", "endpoints": ["CRUD /users + /roles + /permissions", "CRUD /integrations + /api-keys + /webhooks", "GET|PUT /billing (plano, assinatura)", "GET /audit-logs", "POST /lgpd/export | /lgpd/erase", "POST /import | /export"] }
+    },
+    "eventos_assincronos": [
+      "schedule.appointment.checked_out → finance.command.open",
+      "finance.payment.settled → clients.ltv.recalculate",
+      "finance.payment.settled → team.commission.accrue",
+      "schedule.appointment.no_show → advisor.alert + clients.risk.update",
+      "clients.client.inactive_30d → campaigns.winback.trigger",
+      "finance.invoice.rejected → advisor.alert (fiscal)",
+      "analytics.goal.at_risk → advisor.recommendation.create",
+      "settings.user.permission_changed → audit.log.append"
+    ]
+  },
+  "escalabilidade": {
+    "estrategia": [
+      "Monólito modular com fronteiras DDD rígidas — extração por estrangulamento quando a escala exigir",
+      "Primeiros candidatos a extração: serviço de IA, mensageria (WhatsApp/SMS), emissão fiscal",
+      "Aplicação 100% stateless — escala horizontal automática por CPU/latência",
+      "Read replicas para leituras pesadas (agenda, dashboards)",
+      "Filas absorvem picos: 50 mil confirmações de agendamento às 8h não derrubam nada",
+      "CDN para todo asset estático; cache Redis para leituras quentes multi-tenant"
+    ],
+    "slos": {
+      "disponibilidade": "99,9% no lançamento → 99,95% na maturidade",
+      "latencia_api": "p95 < 300 ms nas rotas críticas (agenda, comanda, pagamento)",
+      "realtime_agenda": "propagação de mudança entre dispositivos < 1 s",
+      "rpo": "5 minutos (perda máxima de dados em desastre)",
+      "rto": "1 hora (tempo máximo de recuperação)"
+    }
+  },
+  "observabilidade_devops": {
+    "ci_cd": [
+      "GitHub Actions: lint → testes → SAST → build → deploy com aprovação",
+      "Trunk-based development + feature flags (liberação gradual por tenant)",
+      "Migrações de banco versionadas, com rollback ensaiado",
+      "Deploy blue/green — zero downtime, rollback em 1 clique"
+    ],
+    "monitoramento": [
+      "OpenTelemetry (traces distribuídos) + Prometheus/Grafana (métricas) + logs estruturados centralizados",
+      "Sentry para erros de frontend e backend com release tracking",
+      "Alertas baseados em SLO (error budget), não em ruído",
+      "Status page pública — transparência em incidente"
+    ],
+    "testes": [
+      "Unitários e integração por bounded context (cobertura mínima acordada por módulo)",
+      "E2E dos fluxos-dinheiro: agendar → atender → cobrar → conciliar",
+      "Testes de carga (k6) simulando pico de salão: segunda-feira 9h",
+      "Testes de RLS multi-tenant: provar que tenant A nunca lê tenant B"
+    ]
+  },
+  "integracoes": {
+    "whatsapp": "WhatsApp Business Cloud API (Meta) — confirmações, campanhas, MFA; templates aprovados e opt-in LGPD",
+    "pagamentos": "PSP com split nativo (ex.: Pagar.me/Asaas) — repasse automático Lei Salão Parceiro; PIX com QR dinâmico e webhook de liquidação",
+    "fiscal": "Hub de emissão (ex.: Focus NFe/eNotas) — NF-e e NFS-e multi-município sem integrar prefeitura a prefeitura",
+    "open_finance": "Agregador (ex.: Pluggy/Belvo) para conciliação bancária automática",
+    "assinatura_digital": "Clicksign/D4Sign — contratos de parceria, advertências, termos",
+    "google_meta": "Google (agenda, reviews, SSO) e Meta (catálogo, leads) via OAuth",
+    "email_sms": "SES para e-mail transacional + provedor SMS como fallback de confirmação",
+    "ia": "API Claude (Anthropic) — Consultor MQS com RAG sobre dados do tenant + Método MQS, com guard-rails e citação de fonte"
+  },
+  "fases_de_construcao": [
+    { "fase": 1, "nome": "Fundação técnica", "entrega": "Infra (Terraform/EKS), CI/CD, autenticação, RBAC, multi-tenancy com RLS, auditoria — Configurações + Meu Negócio", "pronto_quando": "Uma empresa cria conta, configura unidades e estrutura física com isolamento de dados provado por teste" },
+    { "fase": 2, "nome": "Entidades", "entrega": "Meus Clientes (cadastro, LGPD, segmentos) + Minha Equipe (vínculos, escalas, comissão)", "pronto_quando": "Base de clientes e equipe operando com consentimento e contratos digitais" },
+    { "fase": 3, "nome": "Operação", "entrega": "Minha Agenda multi-recurso + confirmações WhatsApp + realtime", "pronto_quando": "Um dia inteiro de salão roda na agenda sem conflito de recursos" },
+    { "fase": 4, "nome": "Monetização", "entrega": "Meu Financeiro: comandas, PIX/cartão com split, NF-e/NFS-e, conciliação", "pronto_quando": "Fluxo dinheiro completo: check-out → comanda → pagamento → nota → conciliação" },
+    { "fase": 5, "nome": "Inteligência", "entrega": "Meus Resultados: CDC → ClickHouse, KPIs, painel executivo, DRE gerencial", "pronto_quando": "Dono vê lucratividade real por unidade/profissional em D-1" },
+    { "fase": 6, "nome": "Método", "entrega": "Ferramentas MQS (bússolas, simuladores, planos) + Universidade MQS (LMS)", "pronto_quando": "Bússolas geram recomendação a partir dos custos reais do tenant" },
+    { "fase": 7, "nome": "Consultor IA", "entrega": "Consultor MQS: RAG, Bom Dia, alertas, chat com citação de fonte", "pronto_quando": "Resumo diário acionável gerado para 100% dos tenants ativos" },
+    { "fase": 8, "nome": "Escala nacional", "entrega": "Hardening: pentest, DR cross-region, benchmark setorial, bug bounty, 99,95%", "pronto_quando": "Auditoria externa de segurança aprovada e DR ensaiado com sucesso" }
+  ]
+}</script>
 
 <footer>
   <div class="wrap">
@@ -556,15 +781,49 @@ MODULES.forEach((m,i)=>{
 function syncBody(det){const b=det.querySelector('.mod-body'),inner=det.querySelector('.mod-body-inner');b.style.maxHeight=det.open?inner.scrollHeight+40+'px':'0px';}
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>document.querySelectorAll('.mod[open]').forEach(syncBody),150)});
 
-/* ===== tabs ===== */
-const tD=document.getElementById('tab-dep'),tM=document.getElementById('tab-mod');
-const vD=document.getElementById('view-dep'),vM=document.getElementById('view-mod');
-function selTab(dep){
-  tD.setAttribute('aria-selected',dep);tM.setAttribute('aria-selected',!dep);
-  vD.classList.toggle('active',dep);vM.classList.toggle('active',!dep);
+/* ===== ARCHITECTURE RENDER ===== */
+const ARCH=JSON.parse(document.getElementById('archData').textContent);
+const AROOT=document.getElementById('archRoot');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const ul=arr=>`<ul class="plist">${arr.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+const kvs=obj=>Object.entries(obj).map(([k,v])=>`<div class="kv"><b>${esc(k.replace(/_/g,' '))}</b><span>${esc(typeof v==='string'?v:Object.values(v).join(' — '))}</span></div>`).join('');
+function card(color,icon,title,sub,body,wide){
+  return `<div class="arch-card${wide?' wide':''}" style="--ac:${color}"><h3>${icon} ${esc(title)}</h3><p class="acsub">${esc(sub)}</p>${body}</div>`;
 }
-tD.addEventListener('click',()=>selTab(true));
-tM.addEventListener('click',()=>selTab(false));
+const ROUTE_NAMES={meu_negocio:"🏠 Meu Negócio",meus_clientes:"👥 Meus Clientes",minha_equipe:"💇 Minha Equipe",minha_agenda:"📅 Minha Agenda",meu_financeiro:"💰 Meu Financeiro",meus_resultados:"📈 Meus Resultados",ferramentas_mqs:"🧭 Ferramentas MQS",universidade_mqs:"📚 Universidade MQS",consultor_mqs:"🤖 Consultor MQS",configuracoes:"⚙️ Configurações"};
+AROOT.innerHTML=[
+  card("#8b5cf6","🎯","Princípios de engenharia",ARCH.meta.ambicao,ul(ARCH.meta.principios),true),
+  card("#3b82f6","🧱","Stack",  "Escolhas de tecnologia com racional — um time, uma linguagem principal, extração quando a escala pedir.",
+    `<p class="subhead">Frontend</p>${kvs(ARCH.stack.frontend)}<p class="subhead">Backend</p>${kvs(ARCH.stack.backend)}<p class="subhead">Infraestrutura</p>${kvs(ARCH.stack.infra)}`),
+  card("#10b981","🗄️","Banco de dados","Transacional separado do analítico; multi-tenant com isolamento provado por teste.",
+    `${kvs({principal:ARCH.banco_de_dados.principal,estrategia:ARCH.banco_de_dados.multi_tenancy.estrategia,racional:ARCH.banco_de_dados.multi_tenancy.racional,cache:ARCH.banco_de_dados.cache,arquivos:ARCH.banco_de_dados.arquivos,vetorial:ARCH.banco_de_dados.vetorial,analitico:ARCH.banco_de_dados.analitico})}<p class="subhead">Backups &amp; DR</p>${kvs(ARCH.banco_de_dados.backups)}`),
+  card("#dc2626","🛡️","Segurança","Security by design — cada camada com controle próprio, verificada por auditoria externa.",
+    `<p class="subhead">Autenticação</p>${ul(ARCH.seguranca.autenticacao)}<p class="subhead">Autorização</p>${ul(ARCH.seguranca.autorizacao)}<p class="subhead">Criptografia</p>${ul(ARCH.seguranca.criptografia)}<p class="subhead">Aplicação</p>${ul(ARCH.seguranca.aplicacao)}<p class="subhead">Segredos &amp; auditoria</p>${kvs({segredos:ARCH.seguranca.segredos,auditoria:ARCH.seguranca.auditoria})}<p class="subhead">Verificação contínua</p>${ul(ARCH.seguranca.verificacao)}`),
+  card("#b8862f","⚖️","LGPD & conformidade","Privacidade como fundação: consentimento, esquecimento e dados no Brasil.",ul(ARCH.seguranca.lgpd)),
+  card("#7c3aed","🔀","API — convenções",  "API-first: o contrato nasce antes da tela.",ul(ARCH.api.convencoes)),
+  card("#7c3aed","🗺️","Mapa de rotas por módulo","Cada módulo do fluxograma vira um domínio de API versionado.",
+    `<div class="route-wrap"><table class="rt-table"><thead><tr><th>Módulo</th><th>Base</th><th>Endpoints principais</th></tr></thead><tbody>${Object.entries(ARCH.api.rotas).map(([k,r])=>`<tr><td>${ROUTE_NAMES[k]||k}</td><td class="rt-base">${esc(r.base)}</td><td>${r.endpoints.map(e=>`<code>${esc(e)}</code>`).join('')}</td></tr>`).join('')}</tbody></table></div>`,true),
+  card("#c2751a","⚡","Eventos assíncronos","Módulos conversam por eventos — desacoplados, auditáveis, reprocessáveis.",
+    `<div class="ev-list">${ARCH.api.eventos_assincronos.map(e=>`<div class="ev">${esc(e).replace('→','<span class="arr">→</span>')}</div>`).join('')}</div>`),
+  card("#f59e0b","📈","Escalabilidade & SLOs","Projetado para o pico de segunda-feira 9h de 100 mil salões.",
+    `${ul(ARCH.escalabilidade.estrategia)}<p class="subhead">Metas de serviço</p><div class="slo-grid">${Object.entries(ARCH.escalabilidade.slos).map(([k,v])=>`<div class="slo"><b>${esc(v.split('—')[0].split('(')[0].trim())}</b><span>${esc(k.replace(/_/g,' '))}</span></div>`).join('')}</div>`),
+  card("#06b6d4","🔭","Observabilidade & DevOps","Não se opera o que não se mede; não se lança o que não se testa.",
+    `<p class="subhead">CI/CD</p>${ul(ARCH.observabilidade_devops.ci_cd)}<p class="subhead">Monitoramento</p>${ul(ARCH.observabilidade_devops.monitoramento)}<p class="subhead">Testes</p>${ul(ARCH.observabilidade_devops.testes)}`),
+  card("#ec4899","🔌","Integrações externas","Parceiros especializados para o que não é o core — com abstração para trocar de fornecedor.",kvs(ARCH.integracoes)),
+  card("#14b8a6","🗓️","Fases de construção","O roadmap segue exatamente as camadas do fluxograma de dependências — cada fase com critério de pronto.",
+    `<ol class="phase-list">${ARCH.fases_de_construcao.map(f=>`<li><b>${esc(f.nome)}</b> — ${esc(f.entrega)}<span class="done-when">${esc(f.pronto_quando)}</span></li>`).join('')}</ol>`,true),
+].join('');
+
+/* ===== tabs ===== */
+const TABS=[['tab-dep','view-dep'],['tab-mod','view-mod'],['tab-arch','view-arch']];
+TABS.forEach(([t,v])=>{
+  document.getElementById(t).addEventListener('click',()=>{
+    TABS.forEach(([t2,v2])=>{
+      document.getElementById(t2).setAttribute('aria-selected',t2===t);
+      document.getElementById(v2).classList.toggle('active',v2===v);
+    });
+  });
+});
 
 /* ===== theme ===== */
 document.getElementById('theme').addEventListener('click',()=>{

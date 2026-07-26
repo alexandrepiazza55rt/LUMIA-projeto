@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "sistema": "LUMIA",
+    "versao_blueprint": "2.0",
+    "atualizado": "2026-07-26",
+    "ambicao": "Plataforma SaaS de gestão + metodologia MQS para o setor da beleza, projetada para escala nacional: 100 mil+ empresas, milhões de agendamentos por mês, dados residentes no Brasil.",
+    "principios": [
+      "Multi-tenant por design — isolamento de dados por empresa desde a primeira tabela",
+      "Security by design e LGPD by default — privacidade não é feature, é fundação",
+      "API-first — todo recurso nasce como contrato OpenAPI antes da tela",
+      "Event-driven onde há acoplamento — módulos conversam por eventos, não por chamadas diretas",
+      "Monólito modular DDD → microserviços por estrangulamento (extrai só o que a escala exigir)",
+      "Observabilidade desde o dia 1 — não se opera o que não se mede"
+    ]
+  },
+  "stack": {
+    "frontend": {
+      "web": "Next.js + React + TypeScript — SSR para performance, PWA para uso em balcão/tablet",
+      "mobile": "React Native (Expo) compartilhando design system e lógica de domínio",
+      "design_system": "Tokens próprios LUMIA, tema claro/escuro, acessibilidade WCAG 2.1 AA"
+    },
+    "backend": {
+      "core": "NestJS (Node + TypeScript) — monólito modular DDD: 1 bounded context por módulo do blueprint",
+      "ia": "Serviço Python (FastAPI) dedicado a RAG/ML + API Claude para o Consultor MQS",
+      "workers": "Filas com BullMQ/SQS — confirmações em massa, emissão fiscal, réguas de cobrança, ETL"
+    },
+    "infra": {
+      "cloud": "AWS sa-east-1 (São Paulo) — latência baixa e residência de dados no Brasil",
+      "orquestracao": "Kubernetes (EKS) com autoscaling horizontal e apps 100% stateless",
+      "iac": "Terraform — infraestrutura versionada, ambientes dev/staging/prod idênticos",
+      "borda": "CloudFront (CDN) + WAF gerenciado + AWS Shield anti-DDoS"
+    }
+  },
+  "banco_de_dados": {
+    "principal": "PostgreSQL (Aurora) — fonte de verdade transacional de todos os módulos",
+    "multi_tenancy": {
+      "estrategia": "tenant_id em todas as tabelas + Row-Level Security (RLS) nativa do Postgres",
+      "racional": "Isola cada empresa no próprio banco com custo operacional baixo; particionamento por tenant para contas grandes; migração para schema dedicado disponível como rota de escala (redes/franquias)."
+    },
+    "cache": "Redis — sessões, cache de leitura quente, rate limiting e locks distribuídos de agendamento (previne double-booking)",
+    "arquivos": "S3 com criptografia SSE-KMS — fotos, contratos, certificados digitais, exports; URLs pré-assinadas com expiração",
+    "vetorial": "pgvector — embeddings do Método MQS, playbooks e dados da empresa para o RAG do Consultor",
+    "analitico": "ClickHouse alimentado por CDC (Debezium → Kafka) — motor do módulo Resultados e do benchmark setorial anonimizado; separa carga analítica da transacional",
+    "backups": {
+      "pitr": "Point-in-time recovery de 35 dias",
+      "dr": "Réplica cross-region para disaster recovery",
+      "teste": "Restore testado mensalmente — backup não testado é backup que não existe"
+    }
+  },
+  "seguranca": {
+    "autenticacao": [
+      "OAuth2/OIDC como protocolo único de identidade",
+      "MFA (TOTP + fallback WhatsApp) obrigatório para perfis administrativos",
+      "JWT de vida curta (15 min) + refresh token com rotação e revogação",
+      "Bloqueio progressivo por tentativas e detecção de login anômalo (IP/dispositivo novo)"
+    ],
+    "autorizacao": [
+      "RBAC granular — permissão por módulo × ação (ver/criar/editar/excluir/aprovar)",
+      "Escopo por unidade/filial — gerente da filial A não enxerga a filial B",
+      "Princípio do menor privilégio como default de todo novo perfil"
+    ],
+    "criptografia": [
+      "TLS 1.3 em todo tráfego, HSTS ativo",
+      "AES-256 em repouso (banco, S3, backups)",
+      "Criptografia campo-a-campo para dados críticos: certificados digitais, documentos pessoais, chaves de integração",
+      "KMS com rotação automática de chaves"
+    ],
+    "aplicacao": [
+      "OWASP Top 10 e ASVS incorporados ao ciclo de desenvolvimento",
+      "Validação e sanitização de toda entrada (schema validation em todas as rotas)",
+      "Rate limiting por tenant, por usuário e por IP",
+      "CSP estrita, proteção CSRF/XSS/SQL injection, headers de segurança",
+      "Idempotency keys em toda operação financeira — retry nunca duplica cobrança"
+    ],
+    "segredos": "AWS Secrets Manager — zero credenciais em código, rotação automática, acesso auditado",
+    "auditoria": "Trilha imutável append-only de toda ação sensível: quem, o quê, quando, de onde e valor anterior",
+    "verificacao": [
+      "SAST + DAST + análise de dependências (supply chain) no CI — build quebra em vulnerabilidade alta",
+      "Pentest externo anual por empresa independente",
+      "Programa de bug bounty na fase de maturidade"
+    ],
+    "lgpd": [
+      "Consentimento versionado por finalidade, com prova de aceite",
+      "Direito ao esquecimento automatizado (anonimização preservando integridade contábil/fiscal)",
+      "Minimização: analítico e benchmark operam apenas com dados agregados e anonimizados",
+      "RIPD documentado, DPO nomeado, canal do titular",
+      "Residência de dados no Brasil (sa-east-1)"
+    ]
+  },
+  "api": {
+    "convencoes": [
+      "REST versionada em /api/v1 — versionamento por URL, deprecação com prazo",
+      "OpenAPI 3 como contrato-fonte: SDKs e documentação gerados, nunca escritos à mão",
+      "Paginação por cursor (estável sob escrita concorrente)",
+      "Erros no padrão RFC 7807 (problem+json) — máquina e humano entendem",
+      "Webhooks de saída assinados com HMAC-SHA256 + retry com backoff exponencial",
+      "API Gateway com autenticação, quotas e rate limit por plano de assinatura"
+    ],
+    "rotas": {
+      "meu_negocio": { "base": "/api/v1/business", "endpoints": ["GET|PUT /company", "CRUD /units", "CRUD /rooms|/chairs|/equipment", "CRUD /assets (patrimônio + depreciação)", "CRUD /strategy (missão, SWOT, OKRs, metas)", "CRUD /calendar", "POST /expansion/simulations"] },
+      "meus_clientes": { "base": "/api/v1/clients", "endpoints": ["CRUD /clients", "GET /clients/:id/history", "CRUD /clients/:id/consents (LGPD)", "CRUD /segments", "CRUD /loyalty (clube, cashback, gift cards, pontos)", "CRUD /campaigns + /automations", "GET /clients/:id/intelligence (LTV, risco, retorno)"] },
+      "minha_equipe": { "base": "/api/v1/team", "endpoints": ["CRUD /members (CLT, parceiro, prestador)", "CRUD /work-schedules (escalas, banco de horas)", "CRUD /commission-rules", "GET /performance (ocupação, produtividade, ranking)", "CRUD /documents (+ assinatura digital)", "CRUD /development (PDI, trilhas, avaliações)"] },
+      "minha_agenda": { "base": "/api/v1/schedule", "endpoints": ["CRUD /appointments", "GET /availability?professional&room&equipment (multi-recurso)", "POST /appointments/:id/check-in | /check-out", "CRUD /waitlist", "POST /appointments/:id/confirmations (WhatsApp)", "WS /realtime (atualização ao vivo)"] },
+      "meu_financeiro": { "base": "/api/v1/finance", "endpoints": ["CRUD /commands (comandas)", "CRUD /payables | /receivables", "GET /cashflow", "POST /payments (PIX, cartão, split) [idempotente]", "POST /invoices (NF-e, NFS-e)", "GET /dre", "POST /reconciliation (Open Finance/OFX)"] },
+      "meus_resultados": { "base": "/api/v1/analytics", "endpoints": ["GET /kpis?period&unit", "GET /dashboards/executive", "GET /reports + POST /reports/schedule", "GET /benchmark (setorial anonimizado)"] },
+      "ferramentas_mqs": { "base": "/api/v1/mqs", "endpoints": ["POST /diagnosis", "GET /compass/pricing | /commission | /chair-rental | /room-rental", "POST /simulators/:type", "CRUD /action-plans (matriz impacto × esforço)", "GET /playbooks | /pops | /templates"] },
+      "universidade_mqs": { "base": "/api/v1/university", "endpoints": ["GET /tracks + /tracks/:id/progress", "CRUD /courses + /missions", "GET /certificates", "GET /gamification/ranking"] },
+      "consultor_mqs": { "base": "/api/v1/advisor", "endpoints": ["GET /daily-briefing (Bom Dia)", "GET /alerts", "POST /ask (chat RAG com citação de fonte)", "GET /recommendations + /opportunities", "GET /action-plans/:id/tracking"] },
+      "configuracoes": { "base": "/api/v1/settings", "endpoints": ["CRUD /users + /roles + /permissions", "CRUD /integrations + /api-keys + /webhooks", "GET|PUT /billing (plano, assinatura)", "GET /audit-logs", "POST /lgpd/export | /lgpd/erase", "POST /import | /export"] }
+    },
+    "eventos_assincronos": [
+      "schedule.appointment.checked_out → finance.command.open",
+      "finance.payment.settled → clients.ltv.recalculate",
+      "finance.payment.settled → team.commission.accrue",
+      "schedule.appointment.no_show → advisor.alert + clients.risk.update",
+      "clients.client.inactive_30d → campaigns.winback.trigger",
+      "finance.invoice.rejected → advisor.alert (fiscal)",
+      "analytics.goal.at_risk → advisor.recommendation.create",
+      "settings.user.permission_changed → audit.log.append"
+    ]
+  },
+  "escalabilidade": {
+    "estrategia": [
+      "Monólito modular com fronteiras DDD rígidas — extração por estrangulamento quando a escala exigir",
+      "Primeiros candidatos a extração: serviço de IA, mensageria (WhatsApp/SMS), emissão fiscal",
+      "Aplicação 100% stateless — escala horizontal automática por CPU/latência",
+      "Read replicas para leituras pesadas (agenda, dashboards)",
+      "Filas absorvem picos: 50 mil confirmações de agendamento às 8h não derrubam nada",
+      "CDN para todo asset estático; cache Redis para leituras quentes multi-tenant"
+    ],
+    "slos": {
+      "disponibilidade": "99,9% no lançamento → 99,95% na maturidade",
+      "latencia_api": "p95 < 300 ms nas rotas críticas (agenda, comanda, pagamento)",
+      "realtime_agenda": "propagação de mudança entre dispositivos < 1 s",
+      "rpo": "5 minutos (perda máxima de dados em desastre)",
+      "rto": "1 hora (tempo máximo de recuperação)"
+    }
+  },
+  "observabilidade_devops": {
+    "ci_cd": [
+      "GitHub Actions: lint → testes → SAST → build → deploy com aprovação",
+      "Trunk-based development + feature flags (liberação gradual por tenant)",
+      "Migrações de banco versionadas, com rollback ensaiado",
+      "Deploy blue/green — zero downtime, rollback em 1 clique"
+    ],
+    "monitoramento": [
+      "OpenTelemetry (traces distribuídos) + Prometheus/Grafana (métricas) + logs estruturados centralizados",
+      "Sentry para erros de frontend e backend com release tracking",
+      "Alertas baseados em SLO (error budget), não em ruído",
+      "Status page pública — transparência em incidente"
+    ],
+    "testes": [
+      "Unitários e integração por bounded context (cobertura mínima acordada por módulo)",
+      "E2E dos fluxos-dinheiro: agendar → atender → cobrar → conciliar",
+      "Testes de carga (k6) simulando pico de salão: segunda-feira 9h",
+      "Testes de RLS multi-tenant: provar que tenant A nunca lê tenant B"
+    ]
+  },
+  "integracoes": {
+    "whatsapp": "WhatsApp Business Cloud API (Meta) — confirmações, campanhas, MFA; templates aprovados e opt-in LGPD",
+    "pagamentos": "PSP com split nativo (ex.: Pagar.me/Asaas) — repasse automático Lei Salão Parceiro; PIX com QR dinâmico e webhook de liquidação",
+    "fiscal": "Hub de emissão (ex.: Focus NFe/eNotas) — NF-e e NFS-e multi-município sem integrar prefeitura a prefeitura",
+    "open_finance": "Agregador (ex.: Pluggy/Belvo) para conciliação bancária automática",
+    "assinatura_digital": "Clicksign/D4Sign — contratos de parceria, advertências, termos",
+    "google_meta": "Google (agenda, reviews, SSO) e Meta (catálogo, leads) via OAuth",
+    "email_sms": "SES para e-mail transacional + provedor SMS como fallback de confirmação",
+    "ia": "API Claude (Anthropic) — Consultor MQS com RAG sobre dados do tenant + Método MQS, com guard-rails e citação de fonte"
+  },
+  "fases_de_construcao": [
+    { "fase": 1, "nome": "Fundação técnica", "entrega": "Infra (Terraform/EKS), CI/CD, autenticação, RBAC, multi-tenancy com RLS, auditoria — Configurações + Meu Negócio", "pronto_quando": "Uma empresa cria conta, configura unidades e estrutura física com isolamento de dados provado por teste" },
+    { "fase": 2, "nome": "Entidades", "entrega": "Meus Clientes (cadastro, LGPD, segmentos) + Minha Equipe (vínculos, escalas, comissão)", "pronto_quando": "Base de clientes e equipe operando com consentimento e contratos digitais" },
+    { "fase": 3, "nome": "Operação", "entrega": "Minha Agenda multi-recurso + confirmações WhatsApp + realtime", "pronto_quando": "Um dia inteiro de salão roda na agenda sem conflito de recursos" },
+    { "fase": 4, "nome": "Monetização", "entrega": "Meu Financeiro: comandas, PIX/cartão com split, NF-e/NFS-e, conciliação", "pronto_quando": "Fluxo dinheiro completo: check-out → comanda → pagamento → nota → conciliação" },
+    { "fase": 5, "nome": "Inteligência", "entrega": "Meus Resultados: CDC → ClickHouse, KPIs, painel executivo, DRE gerencial", "pronto_quando": "Dono vê lucratividade real por unidade/profissional em D-1" },
+    { "fase": 6, "nome": "Método", "entrega": "Ferramentas MQS (bússolas, simuladores, planos) + Universidade MQS (LMS)", "pronto_quando": "Bússolas geram recomendação a partir dos custos reais do tenant" },
+    { "fase": 7, "nome": "Consultor IA", "entrega": "Consultor MQS: RAG, Bom Dia, alertas, chat com citação de fonte", "pronto_quando": "Resumo diário acionável gerado para 100% dos tenants ativos" },
+    { "fase": 8, "nome": "Escala nacional", "entrega": "Hardening: pentest, DR cross-region, benchmark setorial, bug bounty, 99,95%", "pronto_quando": "Auditoria externa de segurança aprovada e DR ensaiado com sucesso" }
+  ]
+}
