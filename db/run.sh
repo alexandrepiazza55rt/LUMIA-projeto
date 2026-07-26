@@ -52,7 +52,7 @@ fi
 
 # As suítes SQL terminam em ROLLBACK: podem rodar quantas vezes for preciso.
 total=0
-for suite in test_fundacao test_agenda; do
+for suite in test_fundacao test_agenda test_balcao; do
   echo ""
   echo "→ $suite"
   saida="$("${PSQL[@]}" -f "$RAIZ/tests/$suite.sql" 2>&1)"

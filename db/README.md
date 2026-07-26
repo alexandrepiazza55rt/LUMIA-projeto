@@ -1,9 +1,9 @@
 # Modelo de dados — Fundação
 
 Schema das decisões que travam todo o resto do sistema: a **hierarquia de
-estabelecimentos**, o **Meu Catálogo** e a **Minha Agenda**. Escrito para
-PostgreSQL 16+ e validado contra um banco real — **78 asserções**, incluindo um
-teste de concorrência com 30 sessões simultâneas.
+estabelecimentos**, o **Meu Catálogo**, a **Minha Agenda** e o **Meu Balcão**
+(caixa e comanda). Escrito para PostgreSQL 16+ e validado contra um banco real —
+**137 asserções**, incluindo um teste de concorrência com 30 sessões simultâneas.
 
 ```bash
 ./db/run.sh                # migrations + seed + testes
@@ -21,9 +21,12 @@ teste de concorrência com 30 sessões simultâneas.
 | `migrations/0005_preco_deterministico.sql` | `EXCLUDE` que impede empate ambíguo de prioridade de tabela |
 | `migrations/0006_corrige_profundidade_subarvore.sql` | Correção de erro de 1 na profundidade ao mover subárvore |
 | `migrations/0007_agenda.sql` | Profissional, cliente, recurso agendável, agendamento, **reserva com EXCLUDE**, bloqueio, lista de espera |
+| `migrations/0008_caixa.sql` | Terminal, sessão de caixa, **livro append-only**, conferência cega, divergência, papéis operador/gestor |
+| `migrations/0009_comanda.sql` | Comanda, **cadeia de custódia**, itens multi-executor, pagamento idempotente, junção/divisão |
 | `seed_demo.sql` | Rede com 2 estabelecimentos em **fusos diferentes** (SP e Manaus), coloração com pausa química, custo com 2 vigências |
 | `tests/test_fundacao.sql` | 40 asserções de hierarquia e catálogo |
-| `tests/test_agenda.sql` | 37 asserções de agenda; termina em `ROLLBACK`, é idempotente |
+| `tests/test_agenda.sql` | 37 asserções de agenda |
+| `tests/test_balcao.sql` | 59 asserções de caixa e comanda; termina em `ROLLBACK`, é idempotente |
 | `tests/test_concorrencia.sh` | 30 sessões paralelas disputando o mesmo horário |
 
 As migrations 0005 e 0006 existem porque a suíte de testes encontrou os dois
@@ -172,8 +175,87 @@ O mesmo instante UTC cai em **dias comerciais diferentes**:
 
 Sem isso, o fechamento de caixa da virada vaza para o dia seguinte.
 
+## O balcão: o ponto mais delicado
+
+É onde dinheiro real encontra responsabilidade pessoal. Três decisões, cada uma
+vinda de uma restrição concreta.
+
+### 1. O livro do caixa é imutável de verdade
+
+`movimento_caixa` é append-only, e não por convenção: um trigger recusa `UPDATE`
+e `DELETE`. Corrigir é lançar `ESTORNO` ou `AJUSTE` apontando para o original. O
+saldo **nunca** é uma coluna — é sempre derivado da soma do livro, então não
+existe número que alguém possa "acertar".
+
+Sangria exige motivo escrito e autorizador (constraints, não validação de tela) e
+não deixa a gaveta negativa. Retirada não registrada é a origem mais comum de
+quebra de caixa.
+
+### 2. A conferência cega é imposta pelo banco
+
+O operador declara o que contou sem ver o que o sistema esperava. Isso não é
+campo escondido na interface — é **GRANT em nível de coluna**:
+
+```sql
+GRANT SELECT (tenant_id, id, sessao_caixa_id, meio_pagamento, valor_declarado,
+              recontagens, declarado_em, declarado_por, criado_em)
+  ON lumia.conferencia_caixa TO lumia_caixa_operador;
+```
+
+Sem `valor_esperado` nem `divergencia` na lista, o papel do operador
+literalmente não consegue lê-los. O teste prova:
+
+```
+operador NAO consegue ler valor_esperado  → permission denied
+operador NAO consegue ler a divergencia   → permission denied
+operador LE o que ele mesmo declarou      → ok
+```
+
+Uma constraint separa quem conta de quem apura: `apurada_por <> conferida_por`.
+Sem essa segregação, a conferência cega perderia o sentido.
+
+### 3. Divergência não vira desconto automático
+
+O art. 462 da CLT protege a integridade salarial, e a jurisprudência sobre
+desconto de quebra de caixa é dividida — há decisões nos dois sentidos, com o
+TST tratando de forma diferente quando existe gratificação de quebra de caixa
+paga ao empregado.
+
+Por isso o sistema **registra e para**: valor, justificativa e decisão nomeada
+de quem decidiu. Nenhum débito é gerado contra o operador. O teste verifica
+literalmente que nenhum lançamento de ajuste apareceu depois da apuração. A
+consequência financeira é ato humano documentado, nunca efeito colateral de
+software.
+
+## A comanda: responsabilidade sem ambiguidade
+
+`comanda_custodia` guarda quem respondia pela comanda **em cada instante**, com
+o mesmo mecanismo da agenda — períodos com `EXCLUDE` contra sobreposição, mais
+um trigger que impede buraco entre um elo e o seguinte. Resultado: a comanda
+nunca fica sem dono, nem por um microssegundo, e "de quem era a comanda às 15h40
+de terça?" é uma consulta, não uma investigação.
+
+Passar a comanda adiante exige **motivo tipado** (troca de turno, cliente mudou
+de profissional, encaminhamento para o caixa…), e motivo `OUTRO` exige
+justificativa escrita. Só quem detém a comanda pode passá-la. Ambos os lados
+ficam nomeados: quem entregou, quem recebeu, quem autorizou.
+
+Uma comanda tem **vários executores**: a recepção abre, a cabeleireira executa um
+item, a manicure parceira executa outro, o caixa recebe. Cada papel fica
+registrado no lugar certo — e o item de parceira carrega
+`titular_receita = PROFISSIONAL_PARCEIRO`, porque a Lei 13.352/2016 manda o salão
+centralizar o recebimento mas discriminar a parte do parceiro na nota.
+
+O preço praticado é congelado no item junto com o preço de tabela do mesmo
+instante, de modo que a auditoria de margem explica cada centavo de desconto sem
+depender da tabela de hoje. Desconto sem motivo e sem autorizador é recusado.
+
+Pagamento tem **chave de idempotência** única por tenant: o botão clicado duas
+vezes, ou o retry após timeout, resulta em um pagamento — não em cobrança
+dobrada.
+
 ## Próximas migrations
 
-`0008` diante: balcão (comanda com itens polimórficos, multi-executor e sessão
-de caixa), estoque (livro append-only com custo médio), fiscal (regime
-versionado e memória de cálculo imutável).
+`0010` diante: estoque (livro append-only com custo médio ponderado e baixa
+disparada pelo check-out), fiscal (regime versionado, memória de cálculo
+imutável, numeração sem lacuna).
