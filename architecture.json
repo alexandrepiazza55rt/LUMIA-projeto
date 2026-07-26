@@ -1,7 +1,7 @@
 {
   "meta": {
     "sistema": "LUMIA",
-    "versao_blueprint": "2.0",
+    "versao_blueprint": "3.0",
     "atualizado": "2026-07-26",
     "ambicao": "Plataforma SaaS de gestão + metodologia MQS para o setor da beleza, projetada para escala nacional: 100 mil+ empresas, milhões de agendamentos por mês, dados residentes no Brasil.",
     "principios": [
@@ -11,7 +11,8 @@
       "Event-driven onde há acoplamento — módulos conversam por eventos, não por chamadas diretas",
       "Monólito modular DDD → microserviços por estrangulamento (extrai só o que a escala exigir)",
       "Observabilidade desde o dia 1 — não se opera o que não se mede"
-    ]
+    ],
+    "nota_de_revisao": "Revisado apos a analise de lacunas da fundacao (ver gaps.json): 10 modulos novos e 36 reforcos incorporados. As fases foram reordenadas para respeitar a dependencia do catalogo."
   },
   "stack": {
     "frontend": {
@@ -97,16 +98,225 @@
       "API Gateway com autenticação, quotas e rate limit por plano de assinatura"
     ],
     "rotas": {
-      "meu_negocio": { "base": "/api/v1/business", "endpoints": ["GET|PUT /company", "CRUD /units", "CRUD /rooms|/chairs|/equipment", "CRUD /assets (patrimônio + depreciação)", "CRUD /strategy (missão, SWOT, OKRs, metas)", "CRUD /calendar", "POST /expansion/simulations"] },
-      "meus_clientes": { "base": "/api/v1/clients", "endpoints": ["CRUD /clients", "GET /clients/:id/history", "CRUD /clients/:id/consents (LGPD)", "CRUD /segments", "CRUD /loyalty (clube, cashback, gift cards, pontos)", "CRUD /campaigns + /automations", "GET /clients/:id/intelligence (LTV, risco, retorno)"] },
-      "minha_equipe": { "base": "/api/v1/team", "endpoints": ["CRUD /members (CLT, parceiro, prestador)", "CRUD /work-schedules (escalas, banco de horas)", "CRUD /commission-rules", "GET /performance (ocupação, produtividade, ranking)", "CRUD /documents (+ assinatura digital)", "CRUD /development (PDI, trilhas, avaliações)"] },
-      "minha_agenda": { "base": "/api/v1/schedule", "endpoints": ["CRUD /appointments", "GET /availability?professional&room&equipment (multi-recurso)", "POST /appointments/:id/check-in | /check-out", "CRUD /waitlist", "POST /appointments/:id/confirmations (WhatsApp)", "WS /realtime (atualização ao vivo)"] },
-      "meu_financeiro": { "base": "/api/v1/finance", "endpoints": ["CRUD /commands (comandas)", "CRUD /payables | /receivables", "GET /cashflow", "POST /payments (PIX, cartão, split) [idempotente]", "POST /invoices (NF-e, NFS-e)", "GET /dre", "POST /reconciliation (Open Finance/OFX)"] },
-      "meus_resultados": { "base": "/api/v1/analytics", "endpoints": ["GET /kpis?period&unit", "GET /dashboards/executive", "GET /reports + POST /reports/schedule", "GET /benchmark (setorial anonimizado)"] },
-      "ferramentas_mqs": { "base": "/api/v1/mqs", "endpoints": ["POST /diagnosis", "GET /compass/pricing | /commission | /chair-rental | /room-rental", "POST /simulators/:type", "CRUD /action-plans (matriz impacto × esforço)", "GET /playbooks | /pops | /templates"] },
-      "universidade_mqs": { "base": "/api/v1/university", "endpoints": ["GET /tracks + /tracks/:id/progress", "CRUD /courses + /missions", "GET /certificates", "GET /gamification/ranking"] },
-      "consultor_mqs": { "base": "/api/v1/advisor", "endpoints": ["GET /daily-briefing (Bom Dia)", "GET /alerts", "POST /ask (chat RAG com citação de fonte)", "GET /recommendations + /opportunities", "GET /action-plans/:id/tracking"] },
-      "configuracoes": { "base": "/api/v1/settings", "endpoints": ["CRUD /users + /roles + /permissions", "CRUD /integrations + /api-keys + /webhooks", "GET|PUT /billing (plano, assinatura)", "GET /audit-logs", "POST /lgpd/export | /lgpd/erase", "POST /import | /export"] }
+      "meu_negocio": {
+        "base": "/api/v1/business",
+        "endpoints": [
+          "GET|PUT /company",
+          "CRUD /units",
+          "CRUD /rooms|/chairs|/equipment",
+          "CRUD /assets (patrimônio + depreciação)",
+          "CRUD /strategy (missão, SWOT, OKRs, metas)",
+          "CRUD /calendar",
+          "POST /expansion/simulations"
+        ]
+      },
+      "meus_clientes": {
+        "base": "/api/v1/clients",
+        "endpoints": [
+          "CRUD /clients",
+          "GET /clients/:id/history",
+          "CRUD /clients/:id/consents (LGPD)",
+          "CRUD /segments",
+          "CRUD /loyalty (clube, cashback, gift cards, pontos)",
+          "CRUD /campaigns + /automations",
+          "GET /clients/:id/intelligence (LTV, risco, retorno)"
+        ]
+      },
+      "minha_equipe": {
+        "base": "/api/v1/team",
+        "endpoints": [
+          "CRUD /members (CLT, parceiro, prestador)",
+          "CRUD /work-schedules (escalas, banco de horas)",
+          "CRUD /commission-rules",
+          "GET /performance (ocupação, produtividade, ranking)",
+          "CRUD /documents (+ assinatura digital)",
+          "CRUD /development (PDI, trilhas, avaliações)"
+        ]
+      },
+      "minha_agenda": {
+        "base": "/api/v1/schedule",
+        "endpoints": [
+          "CRUD /appointments",
+          "GET /availability?professional&room&equipment (multi-recurso)",
+          "POST /appointments/:id/check-in | /check-out",
+          "CRUD /waitlist",
+          "POST /appointments/:id/confirmations (WhatsApp)",
+          "WS /realtime (atualização ao vivo)"
+        ]
+      },
+      "meu_financeiro": {
+        "base": "/api/v1/finance",
+        "endpoints": [
+          "CRUD /commands (comandas)",
+          "CRUD /payables | /receivables",
+          "GET /cashflow",
+          "POST /payments (PIX, cartão, split) [idempotente]",
+          "POST /invoices (NF-e, NFS-e)",
+          "GET /dre",
+          "POST /reconciliation (Open Finance/OFX)"
+        ]
+      },
+      "meus_resultados": {
+        "base": "/api/v1/analytics",
+        "endpoints": [
+          "GET /kpis?period&unit",
+          "GET /dashboards/executive",
+          "GET /reports + POST /reports/schedule",
+          "GET /benchmark (setorial anonimizado)"
+        ]
+      },
+      "ferramentas_mqs": {
+        "base": "/api/v1/mqs",
+        "endpoints": [
+          "POST /diagnosis",
+          "GET /compass/pricing | /commission | /chair-rental | /room-rental",
+          "POST /simulators/:type",
+          "CRUD /action-plans (matriz impacto × esforço)",
+          "GET /playbooks | /pops | /templates"
+        ]
+      },
+      "universidade_mqs": {
+        "base": "/api/v1/university",
+        "endpoints": [
+          "GET /tracks + /tracks/:id/progress",
+          "CRUD /courses + /missions",
+          "GET /certificates",
+          "GET /gamification/ranking"
+        ]
+      },
+      "consultor_mqs": {
+        "base": "/api/v1/advisor",
+        "endpoints": [
+          "GET /daily-briefing (Bom Dia)",
+          "GET /alerts",
+          "POST /ask (chat RAG com citação de fonte)",
+          "GET /recommendations + /opportunities",
+          "GET /action-plans/:id/tracking"
+        ]
+      },
+      "configuracoes": {
+        "base": "/api/v1/settings",
+        "endpoints": [
+          "CRUD /users + /roles + /permissions",
+          "CRUD /integrations + /api-keys + /webhooks",
+          "GET|PUT /billing (plano, assinatura)",
+          "GET /audit-logs",
+          "POST /lgpd/export | /lgpd/erase",
+          "POST /import | /export"
+        ]
+      },
+      "meu_catalogo": {
+        "base": "/api/v1/catalog",
+        "endpoints": [
+          "CRUD /services (duracao ativa, processamento, setup, recursos exigidos, habilidade)",
+          "CRUD /products (revenda | insumo | misto, GTIN, NCM/CEST, lote)",
+          "CRUD /service-recipes (ficha tecnica / BOM)",
+          "CRUD /price-tables?vigencia (preco por unidade, nivel, horario, canal)",
+          "CRUD /packages | /combos",
+          "CRUD /commission-rules?vigencia"
+        ]
+      },
+      "meu_estoque": {
+        "base": "/api/v1/inventory",
+        "endpoints": [
+          "GET /balances?unit&location",
+          "POST /movements [idempotente] (compra, venda, consumo, transferencia, perda, ajuste)",
+          "GET /movements (livro append-only)",
+          "CRUD /counts (inventario ciclico)",
+          "GET /costing (custo medio ponderado)",
+          "CRUD /suppliers + /purchase-orders"
+        ]
+      },
+      "meu_balcao": {
+        "base": "/api/v1/counter",
+        "endpoints": [
+          "POST /commands (abre comanda)",
+          "CRUD /commands/:id/items (servico | produto, multi-executor, titularidade da receita)",
+          "POST /commands/:id/close [idempotente]",
+          "CRUD /cash-sessions (abertura, sangria, fechamento, conferencia)",
+          "POST /commands/:id/payments (split, multiplas formas)",
+          "POST /commands/:id/reversals (estorno como lancamento novo)"
+        ]
+      },
+      "meu_fiscal": {
+        "base": "/api/v1/tax",
+        "endpoints": [
+          "GET|PUT /regime?vigencia (Simples/Presumido/Real, anexo, Fator R)",
+          "POST /documents (NFS-e, NFC-e, NF-e) [idempotente]",
+          "GET /documents/:id/calculation-memory (memoria de calculo imutavel)",
+          "POST /documents/:id/cancel",
+          "GET /series (numeracao sequencial sem lacuna por estabelecimento)",
+          "POST /contingency",
+          "GET /obligations (apuracao, retencoes, transicao IBS/CBS)"
+        ]
+      },
+      "meu_prontuario": {
+        "base": "/api/v1/records",
+        "endpoints": [
+          "CRUD /anamnesis (ficha, contraindicacoes)",
+          "CRUD /consent-forms (termo por procedimento)",
+          "CRUD /evolutions (evolucao clinica)",
+          "CRUD /photos (antes/depois, acesso restrito e logado)",
+          "GET /clients/:id/clinical-timeline",
+          "GET /technical-responsible"
+        ]
+      },
+      "minhas_conversas": {
+        "base": "/api/v1/conversations",
+        "endpoints": [
+          "GET /inbox (omnichannel unificado)",
+          "POST /messages [idempotente]",
+          "CRUD /templates (HSM aprovados)",
+          "GET|PUT /opt-in (consentimento por finalidade)",
+          "GET /usage-cost (governanca de custo por tenant)",
+          "POST /webhooks/inbound"
+        ]
+      },
+      "central_de_privacidade": {
+        "base": "/api/v1/privacy",
+        "endpoints": [
+          "CRUD /consents?finalidade&versao",
+          "POST /subject-requests (acesso, correcao, portabilidade, esquecimento)",
+          "POST /anonymize (preservando integridade contabil)",
+          "GET /access-logs (dado sensivel)",
+          "GET /retention-policies",
+          "POST /incidents (registro e comunicacao)"
+        ]
+      },
+      "minha_vitrine": {
+        "base": "/api/v1/storefront",
+        "endpoints": [
+          "GET /public/:slug (pagina publica)",
+          "GET /public/availability",
+          "POST /public/bookings (agendamento online + sinal)",
+          "CRUD /policies (no-show, deposito, cancelamento)",
+          "GET /reviews",
+          "POST /client-portal/auth (area do cliente)"
+        ]
+      },
+      "meu_marketing": {
+        "base": "/api/v1/marketing",
+        "endpoints": [
+          "CRUD /campaigns",
+          "CRUD /leads + /funnels",
+          "GET /attribution (origem e CAC)",
+          "CRUD /referral-program",
+          "CRUD /automations",
+          "GET /performance"
+        ]
+      },
+      "plataforma_lumia": {
+        "base": "/api/v1/platform",
+        "endpoints": [
+          "CRUD /tenants (ciclo de vida: trial, ativo, suspenso, encerrado)",
+          "GET|PUT /entitlements (limites por plano)",
+          "GET /usage-metering (unidades, usuarios, mensagens, IA)",
+          "POST /impersonation (acesso assistido com consentimento e auditoria)",
+          "CRUD /feature-flags?tenant",
+          "GET /health-score + /churn-signals",
+          "POST /migrations/import (base de concorrente)"
+        ]
+      }
     },
     "eventos_assincronos": [
       "schedule.appointment.checked_out → finance.command.open",
@@ -167,13 +377,182 @@
     "ia": "API Claude (Anthropic) — Consultor MQS com RAG sobre dados do tenant + Método MQS, com guard-rails e citação de fonte"
   },
   "fases_de_construcao": [
-    { "fase": 1, "nome": "Fundação técnica", "entrega": "Infra (Terraform/EKS), CI/CD, autenticação, RBAC, multi-tenancy com RLS, auditoria — Configurações + Meu Negócio", "pronto_quando": "Uma empresa cria conta, configura unidades e estrutura física com isolamento de dados provado por teste" },
-    { "fase": 2, "nome": "Entidades", "entrega": "Meus Clientes (cadastro, LGPD, segmentos) + Minha Equipe (vínculos, escalas, comissão)", "pronto_quando": "Base de clientes e equipe operando com consentimento e contratos digitais" },
-    { "fase": 3, "nome": "Operação", "entrega": "Minha Agenda multi-recurso + confirmações WhatsApp + realtime", "pronto_quando": "Um dia inteiro de salão roda na agenda sem conflito de recursos" },
-    { "fase": 4, "nome": "Monetização", "entrega": "Meu Financeiro: comandas, PIX/cartão com split, NF-e/NFS-e, conciliação", "pronto_quando": "Fluxo dinheiro completo: check-out → comanda → pagamento → nota → conciliação" },
-    { "fase": 5, "nome": "Inteligência", "entrega": "Meus Resultados: CDC → ClickHouse, KPIs, painel executivo, DRE gerencial", "pronto_quando": "Dono vê lucratividade real por unidade/profissional em D-1" },
-    { "fase": 6, "nome": "Método", "entrega": "Ferramentas MQS (bússolas, simuladores, planos) + Universidade MQS (LMS)", "pronto_quando": "Bússolas geram recomendação a partir dos custos reais do tenant" },
-    { "fase": 7, "nome": "Consultor IA", "entrega": "Consultor MQS: RAG, Bom Dia, alertas, chat com citação de fonte", "pronto_quando": "Resumo diário acionável gerado para 100% dos tenants ativos" },
-    { "fase": 8, "nome": "Escala nacional", "entrega": "Hardening: pentest, DR cross-region, benchmark setorial, bug bounty, 99,95%", "pronto_quando": "Auditoria externa de segurança aprovada e DR ensaiado com sucesso" }
-  ]
+    {
+      "fase": 1,
+      "nome": "Fundacao tecnica e tenancy",
+      "entrega": "Infra (Terraform/EKS), CI/CD, OAuth2+MFA, RBAC em 4 dimensoes, hierarquia grupo->CNPJ->estabelecimento->unidade com RLS, auditoria imutavel, convencoes de DDL verificadas no CI — Configuracoes + Plataforma LUMIA* + Meu Negocio",
+      "pronto_quando": "Teste automatizado prova que o tenant A nunca le o tenant B, e a hierarquia de estabelecimento suporta rede e franquia sem alteracao de schema"
+    },
+    {
+      "fase": 2,
+      "nome": "Catalogo (o no raiz)",
+      "entrega": "Meu Catalogo*: servicos com duracao/recursos/habilidade, produtos com natureza declarada, ficha tecnica, e tabelas de preco e comissao com vigencia",
+      "pronto_quando": "Nenhum outro modulo precisa de texto livre para descrever o que foi vendido; preco e comissao tem data de vigencia desde o primeiro registro"
+    },
+    {
+      "fase": 3,
+      "nome": "Entidades e privacidade",
+      "entrega": "Meus Clientes (dedup, menores, titularidade da carteira) + Minha Equipe (qualificacao fiscal, parceria) + Meu Prontuario* + Central de Privacidade*",
+      "pronto_quando": "Dado sensivel de saude vive em classe separada com log de acesso, e o esquecimento anonimiza sem quebrar integridade contabil"
+    },
+    {
+      "fase": 4,
+      "nome": "Operacao",
+      "entrega": "Minha Agenda multi-recurso com garantia no banco + Minhas Conversas* (confirmacao omnichannel com opt-in) + Meu Estoque*",
+      "pronto_quando": "Um dia de salao roda sem conflito de recurso, e o double-booking e impedido por constraint de banco e nao por lock em Redis"
+    },
+    {
+      "fase": 5,
+      "nome": "Balcao e dinheiro",
+      "entrega": "Meu Balcao* (comanda polimorfica, multi-executor, sessao de caixa) + Meu Financeiro (ledger append-only, competencia, fechamento) + Meu Fiscal*",
+      "pronto_quando": "Fluxo completo check-out -> comanda -> pagamento -> documento fiscal -> conciliacao, com estorno como lancamento novo e periodo travavel"
+    },
+    {
+      "fase": 6,
+      "nome": "Crescimento",
+      "entrega": "Minha Vitrine* (agendamento online, sinal, politica de no-show) + Meu Marketing* (leads, atribuicao, indicacao)",
+      "pronto_quando": "Cliente final agenda sozinho, paga sinal e a origem do agendamento e atribuida"
+    },
+    {
+      "fase": 7,
+      "nome": "Inteligencia",
+      "entrega": "Meus Resultados: CDC -> ClickHouse, camada semantica com procedencia, KPIs versionados, DRE gerencial",
+      "pronto_quando": "Todo indicador exibido informa de onde veio e em que competencia — numero sem procedencia nao vira conselho"
+    },
+    {
+      "fase": 8,
+      "nome": "Metodo",
+      "entrega": "Ferramentas MQS (bussolas com governanca de calculo) + Universidade MQS",
+      "pronto_quando": "As Bussolas recomendam preco e comissao a partir do custo real do tenant, com memoria de calculo auditavel"
+    },
+    {
+      "fase": 9,
+      "nome": "Consultor IA",
+      "entrega": "Consultor MQS: RAG com fronteira por tenant, Bom Dia, alertas, chat com citacao de fonte e trilha de auditoria da IA como ator",
+      "pronto_quando": "Toda recomendacao cita a fonte e o dado que a originou, e a acao da IA e rastreavel"
+    },
+    {
+      "fase": 10,
+      "nome": "Escala nacional",
+      "entrega": "Hardening: pentest, DR cross-region, benchmark setorial anonimizado, bug bounty, 99,95%, redundancia de fornecedor critico",
+      "pronto_quando": "Auditoria externa aprovada, DR ensaiado e nenhum fornecedor externo e insubstituivel"
+    }
+  ],
+  "decisoes_de_fundacao": {
+    "origem": "Analise de lacunas — 6 lentes independentes com revisao adversarial. Detalhe completo em gaps.json.",
+    "itens": [
+      {
+        "ordem": 1,
+        "area": "Modelo de dados",
+        "titulo": "Fronteira de tenancy: grupo → CNPJ → estabelecimento → unidade, e célula como domínio de falha",
+        "decisao": "Adote a árvore organizacional (grupo econômico → pessoa jurídica/CNPJ → estabelecimento → unidade operacional) com parent_id e caminho materializado desde a primeira migration, e estabelecimento_id NOT NULL em toda linha transacional. Franqueado é tenant próprio (controlador distinto); filial é estabelecimento do mesmo tenant. Isolamento permanece em política única de RLS por tenant_id — visibilidade por estabelecimento é RBAC e chave de particionamento, não segunda política. Registre célula/shard no tenant e proíba, por teste no CI, FK, sequência ou job que atravesse tenant ou célula.",
+        "se_errar": "Migrar RLS, permissões, particionamento e todas as queries de apuração com risco de vazamento entre tenants durante a janela — o pior incidente possível para um SaaS. Fundir ou separar tenants de uma rede de 500 unidades depois é reescrever tenant_id em todas as tabelas, resolver colisão de numeração fiscal e obter base legal retroativa para compartilhar cliente entre CNPJs. E sem célula, o primeiro incidente sistêmico é um evento de 100% da base num sábado de Dia das Mães."
+      },
+      {
+        "ordem": 2,
+        "area": "Modelo de dados",
+        "titulo": "Catálogo antes de agenda e de comanda",
+        "decisao": "Construa Meu Catálogo (serviço, produto, ficha técnica, tabela de preço com vigência, duração por etapa, recurso exigido, atributos fiscais) antes da fase 3. Nenhuma tela pode gravar \"descrição do atendimento\" em texto livre nem preço solto: item de agenda e item de comanda referenciam servico_id ou produto_id obrigatoriamente, e a natureza do produto (revenda, insumo de cabine, uso misto) é declarada na origem.",
+        "se_errar": "Sem chave estrangeira o histórico não se reamarra: é deduplicar milhares de serviços digitados livremente por tenant, remodelar agendamentos e itens de comanda, recalcular comissão e reprocessar todo o analítico — quebrando CDC e ClickHouse e invalidando qualquer indicador histórico já mostrado ao cliente. E sem separar revenda de insumo, DRE, CMV e os dois regimes de nota nascem errados."
+      },
+      {
+        "ordem": 3,
+        "area": "Fiscal",
+        "titulo": "Titularidade da receita por item de comanda",
+        "decisao": "Todo item de comanda carrega titularidade da receita (salão, profissional-parceiro, locador, gorjeta de terceiro) com o percentual contratual vigente. Receita bruta do salão é a soma das cotas do salão: repasse não é despesa e a cota-parte do parceiro não entra no RBT12. A comanda emite documento ao consumidor pelo valor total com segregação, e a gorjeta entra como passivo de rateio, nunca como receita.",
+        "se_errar": "É o retrabalho mais caro do projeto: reprocessar faturamento, retificar ou reemitir notas já autorizadas, reapurar PGDAS-D, recalcular Fator R e anexo, e possivelmente reenquadrar o regime. Nota errada gera passivo fiscal do cliente, e tratar parceiro como comissionado no cadastro cria prova documental de vínculo empregatício contra ele."
+      },
+      {
+        "ordem": 4,
+        "area": "Modelo de dados",
+        "titulo": "Dinheiro é livro append-only com valor apurado congelado",
+        "decisao": "Proíba coluna de saldo mutável e UPDATE/DELETE em lançamento contabilizado, com trigger no banco. Caixa, recebíveis, pagáveis, comissão, cashback, pontos, gift card e sessões de pacote são razão de lançamentos; saldo é projeção reconstruível. Todo item de comanda persiste o valor apurado: preço praticado, desconto, base e valor de comissão, custo de insumo, alíquotas e os ids das versões de regra usadas. Dinheiro em inteiro de centavos ou NUMERIC(14,2), taxas em NUMERIC(14,6), política única de arredondamento e alocação determinística do centavo residual — persistida, nunca recomputada.",
+        "se_errar": "Relatório que recalcula muda sozinho quando a fórmula é corrigida: comissão já paga, nota já emitida e conciliação já fechada divergem sem explicação possível ao suporte. Migrar de saldo mutável para razão obriga a inventar histórico (\"saldo de abertura sem rastro\") e o extrato do cliente começa em branco; e divergência de um centavo por comanda em escala nacional nunca concilia com o extrato do PSP e vira disputa sobre dinheiro de terceiro."
+      },
+      {
+        "ordem": 5,
+        "area": "Modelo de dados",
+        "titulo": "Vigência em preço, comissão, custo e alíquota",
+        "decisao": "Adote SCD-2 (valid_from/valid_to) em preço, regra de comissão, custo de produto e parâmetro legal; nada de UPDATE em percentual ou valor. A operação lê a versão vigente na data do fato; a auditoria lê a versão que valia naquela data. Bitemporalidade plena (quando foi cadastrado) só nas tabelas fiscais e de apuração — no resto, a trilha append-only responde.",
+        "se_errar": "O reajuste de julho reescreve o relatório de março: comissão recalculada retroativamente gera passivo trabalhista e o ticket médio histórico muda sem motivo aparente. A informação da vigência foi destruída pelo UPDATE — não existe backfill possível, apenas arbitragem manual mês a mês e negociação de diferenças com cada profissional."
+      },
+      {
+        "ordem": 6,
+        "area": "LGPD",
+        "titulo": "Duas classes de dado, chave por titular e fronteira do RAG",
+        "decisao": "Marque no schema a classe de cada coluna e de cada arquivo, com dado sensível de saúde e biométrico em tabelas e buckets dedicados, cifrados com chave por titular sob CMK por tenant (key_ref em todo blob e coluna sensível). Eliminação passa a ser destruir a chave, preservando o fato contábil pseudonimizado. A base legal padrão do sensível é consentimento específico e destacado, com enquadramento configurável por tenant e tipo de procedimento, e consentimento de imagem separado. Defina por default que campo livre, foto clínica e anamnese NÃO entram em CDC, ClickHouse, pgvector nem prompt, com isolamento de índice por tenant e proibição de uso cruzado.",
+        "se_errar": "Reindexar toda a base vetorial, recifrar milhões de imagens, expurgar o warehouse e recoletar consentimento presencialmente de milhões de titulares — e consentimento inválido não é sanável retroativamente. Um único chunk de outro tenant recuperado pelo Consultor entrega dado de saúde e segredo comercial ao concorrente: incidente comunicável e possível fim comercial do produto de IA."
+      },
+      {
+        "ordem": 7,
+        "area": "Fiscal",
+        "titulo": "Dinheiro recebido antes da execução é passivo, não faturamento",
+        "decisao": "Pacote, assinatura, gift card, sinal e cashback nascem como obrigação com o cliente: o caixa entra, a receita só é reconhecida na execução, com item de comanda do tipo baixa de saldo (zero de caixa, valor cheio de receita). Defina explicitamente se a comissão de pacote é paga na venda ou no uso, trate expiração como saldo devido até prova de cláusula válida, e reconheça o fato gerador tributário no recebimento quando a lei exigir.",
+        "se_errar": "Dezembro vira mês recorde, o dono distribui bônus e comissiona a venda inteira; nos meses seguintes executa serviço sem receita e o caixa quebra — com a LUMIA como culpada visível. Corrigir depois é reclassificar cada venda histórica, reprocessar DRE de todos os meses, recalcular comissão paga e refazer ticket médio e faturamento já apresentados ao cliente e ao benchmark setorial."
+      },
+      {
+        "ordem": 8,
+        "area": "Modelo de dados",
+        "titulo": "Disponibilidade multi-recurso garantida pelo banco, não por lock em Redis",
+        "decisao": "Substitua as FKs de profissional, sala e equipamento por resource + resource_reservation, com N intervalos por agendamento (ocupa → libera na pausa química → reocupa, com a cadeira presa nas três fases). Garanta ausência de sobreposição com EXCLUDE USING gist e btree_gist na tabela de reservas; como o PostgreSQL não aceita EXCLUDE em tabela particionada, particione reservas por hash(tenant_id) para que tenant e recurso caiam sempre na mesma partição. Redis é hold visual de UX, nunca fonte de verdade, e toda taxa de ocupação passa a ser calculada sobre reservas.",
+        "se_errar": "Agenda de bloco contínuo perde cerca de 30% da capacidade real do salão — exatamente o argumento comercial do produto — e é inutilizável para cabeleireiro. Trocar o motor com agendas em produção é risco de double-booking em massa, e criar a constraint depois falha até alguém resolver manualmente milhares de sobreposições históricas em 100 mil bases, unidade por unidade."
+      },
+      {
+        "ordem": 9,
+        "area": "Fiscal",
+        "titulo": "Regime versionado, memória de cálculo imutável e emissão desacoplada",
+        "decisao": "Nenhuma alíquota em código: repositório central de tabelas legais com vigência e consulta por (parâmetro, data). Regime do tenant versionado, com Fator R apurado por competência. O motor calcula por item e persiste snapshot imutável (regime, base, alíquotas, CST, cClassTrib, ISS/PIS/COFINS/ICMS e IBS/CBS simultâneos, versão da tabela e do motor) — relatório nunca recalcula. Emissão é assíncrona e idempotente por fato gerador, com máquina de estados, numeração por estabelecimento + modelo + série e guarda imutável de XML/DPS e protocolo por 5 anos. Custódia do certificado de DF-e delegada ao hub; cofre próprio só para eSocial, EFD-Reinf e AEJ. Fechamento de comanda jamais bloqueia em I/O de autorizador.",
+        "se_errar": "Imposto calculado em tempo de leitura reescreve o passado e a conciliação com o Fisco nunca fecha; a auditoria fica indefensável. Nota duplicada exige cancelamento fora do prazo legal e lacuna de numeração exige inutilização formal — multiplicado por milhares de tenants, é passivo jurídico com custo de assessoria contábil por cliente. E emissão síncrona faz a queda de uma SEFAZ derrubar o caixa de milhares de salões ao mesmo tempo."
+      },
+      {
+        "ordem": 10,
+        "area": "Seguranca",
+        "titulo": "Três sujeitos de identidade e proibição de chave global de pessoa",
+        "decisao": "Separe explicitamente: (a) usuário — pessoa com login global e N vínculos (tenant x nó x papel x vigência), com troca de contexto e token de escopo, para colaborador, contador e franqueador; (b) titular — nenhuma chave global de pessoa entre tenants: sem unique global em CPF ou telefone, deduplicação por HMAC com chave por tenant e projeção do profissional por tenant, para que o salão A nunca descubra que ele atende no salão B; (c) cliente final — identidade verificada por OTP, vínculo N:N com tenants, escopo restrito ao próprio dado e superfície anônima com rate limit.",
+        "se_errar": "Se a autorização assumir que todo usuário é funcionário, portal e app do cliente exigem reengenharia do núcleo de auth em produção — migração de sessões, tokens e políticas RLS simultâneas, com janela de risco de vazamento. Se existir chave global de pessoa, o produto cria por construção um perfil comportamental nacional sem base legal e correlaciona concorrentes diretos; e o vínculo do profissional revelado ao salão errado o faz ser demitido, com a LUMIA como fonte da revelação."
+      },
+      {
+        "ordem": 11,
+        "area": "Seguranca",
+        "titulo": "Autorização em quatro dimensões, filtro por registro e operador real",
+        "decisao": "Estenda o RBAC para módulo x ação x escopo (subárvore organizacional, não \"filial A\") x classe de dado, com mascaramento por default no serializer server-side e break-glass com finalidade declarada obrigatória. O filtro em nível de registro é imposto no data access layer, não endpoint por endpoint. Entitlement de plano fica separado de permissão de papel. E toda escrita e toda leitura de dado sensível estampa operador real e dispositivo, com troca rápida por PIN e bloqueio por inatividade — o tablet do balcão é compartilhado por todos.",
+        "se_errar": "Recepcionista e estagiário com acesso a prontuário e foto de corpo; profissional exporta a base e monta salão na esquina. Implantar filtro por registro depois é auditar e reescrever centenas de endpoints e relatórios com regressão silenciosa de permissão, além de migrar perfis customizados de 100 mil tenants com janela zero. Sem operador real, meses de comanda, desconto e acesso a prontuário ficam atribuídos ao dono e toda a trilha perde valor probatório em conflito trabalhista, fraude e incidente."
+      },
+      {
+        "ordem": 12,
+        "area": "Modelo de dados",
+        "titulo": "Convenções de DDL do dia 1, verificadas no CI",
+        "decisao": "Feche agora, por template de migration com teste automatizado: UUIDv7 ou ULID como PK gerada no cliente, mais numeração humana sequencial por estabelecimento; (tenant_id, id) em PK e FK e tenant_id como primeira coluna de todo índice; source_system + external_id único por tenant em toda entidade importável; soft delete padronizado com tombstone e updated_at indexado; occurred_at em timestamptz UTC mais business_date em todo fato; timezone IANA por unidade e hora-de-parede + fuso para regras recorrentes; moeda no valor monetário e país na chave do motor de regras; finalidade do fato (real, treinamento, demonstração, homologação) com default e filtro em toda projeção.",
+        "se_errar": "Cada item omitido é migração de tabela quente depois: trocar PK é conversão de tipo em centenas de tabelas com bilhões de linhas e quebra de integrações já entregues; sem external_id a importação duplica a base e não pode ser repetida; sem tombstone a agenda do celular mostra atendimento fantasma; sem business_date o fechamento de caixa da virada vaza para o dia seguinte; sem marcação de finalidade, a comanda de treino da recepcionista nova entra no DRE, no benchmark e na média que alimenta a Bússola — para sempre."
+      },
+      {
+        "ordem": 13,
+        "area": "Integracao",
+        "titulo": "Outbox transacional, envelope versionado e estorno como lançamento novo",
+        "decisao": "Toda publicação de evento passa por tabela outbox escrita na mesma transação do fato, com envelope obrigatório (event_id, event_type, schema_version, tenant_id, aggregate_id, occurred_at, actor, correlation_id, causation_id), partição por tenant + agregado e inbox com dedupe por event_id em cada consumidor. O fluxo dinheiro (check-out → comanda → pagamento → split → nota → comissão → conciliação) é saga com estado persistido por transação; estorno, reembolso parcial e chargeback são lançamentos novos, jamais UPDATE no fato. Nenhuma chamada a terceiro no caminho crítico do caixa.",
+        "se_errar": "Falha silenciosa: cliente atendido sem comanda, faturamento sumido, comissão não provisionada — descoberto semanas depois pela reclamação do dono, e sem event_id não há como saber o que se perdeu. Sem saga e sem estorno modelado, alguém edita a comanda com UPDATE e a nota autorizada deixa de corresponder ao registro; converter o fluxo dinheiro para outbox depois é a refatoração mais arriscada possível, exatamente sobre dinheiro em movimento."
+      },
+      {
+        "ordem": 14,
+        "area": "Integracao",
+        "titulo": "Nenhum fornecedor externo pode ser único e insubstituível",
+        "decisao": "Decida agora número e WABA por tenant (embedded signup como Tech Provider) em vez de número compartilhado, e aceite N contas de adquirente e N chaves PIX por tenant — pagamento capturado fora da plataforma é caso normal, não exceção degradada. Modele instrumento de pagamento agnóstico de fornecedor, com mandato de recorrência separado do token, e exija cláusula de portabilidade e escrow (token de cartão, XMLs, templates aprovados, consentimentos de Open Finance) em todo contrato assinado agora. Razão de mensagens e de uso com custo unitário por tenant desde o primeiro envio, mais circuit breaker e kill switch por integração. A LUMIA é orquestradora: nenhum saldo de terceiro no modelo de dados.",
+        "se_errar": "Migrar 100 mil tenants de número compartilhado para número próprio é reonboarding individual na Meta, com perda de histórico e interrupção das réguas — projeto de anos; e um tenant disparando marketing sem opt-in bloqueia o número e derruba a confirmação de agendamento de toda a base. Sem portabilidade de token, trocar de PSP perde o cartão de todos os assinantes de todos os tenants simultaneamente, o que é indistinguível de churn total da receita recorrente. Sem razão de uso, a margem evapora em silêncio e não há como cobrar o período já consumido."
+      },
+      {
+        "ordem": 15,
+        "area": "Escala",
+        "titulo": "Ciclo de vida, entitlement e medição do tenant antes do primeiro cliente pagante",
+        "decisao": "Crie o estado canônico do tenant (trial, ativo, em atraso, restrito, suspenso, cancelamento agendado, encerrado, excluído) com signup self-service e provisionamento assíncrono, tratando \"restrito\" como conceito de autorização de escrita: lê, exporta e vê a agenda, mas não escreve. Plano é dado versionado com entitlements, nunca enum no código, e existe UM ponto de decisão de entitlement chamado por todos os módulos. Ledger de uso por tenant desde o primeiro dia. Titularidade legal da conta separada do usuário administrador, com segundo administrador obrigatório e estado de congelamento por disputa societária.",
+        "se_errar": "Cada guard, worker, rota e policy precisa ser reescrito para entender trial e suspensão, com backfill de estado sem histórico de transição. MRR não se reconstrói do estado atual da tabela de assinaturas (perde-se upgrade, downgrade, desconto e data), e uso não medido não se mede no passado: descobre-se com 20 mil assinantes que 2% consomem 60% do custo variável, já com contrato vigente e churn induzido na correção. Sem titularidade, o suporte se torna árbitro de conflito societário e o fluxo de recuperação improvisado é o caminho mais curto para a tomada de conta de um salão inteiro."
+      },
+      {
+        "ordem": 16,
+        "area": "Produto",
+        "titulo": "Procedência e confiança de todo número que vira conselho",
+        "decisao": "Cada parâmetro e cada indicador carrega origem (declarado pelo usuário, medido pelo sistema, estimado por IA, padrão setorial), confiança, data de referência e completude. Todo valor calculado persiste versão do motor, versão da regra e digest das entradas, indexados para busca reversa. Bússola e Consultor bloqueiam ou rotulam explicitamente a saída quando a base é insuficiente, e existe entidade de remediação com escopo, dry-run, diff, lançamento de ajuste e notificação ao tenant.",
+        "se_errar": "Uma Bússola que precifica sobre custo inexistente faz o salão vender no prejuízo com a marca LUMIA no relatório — dano de reputação e exposição civil, não bug de tela. Sem procedência, medição e chute ficam indistinguíveis na mesma série histórica e o benchmark nacional nasce contaminado. Sem linhagem reversa, corrigir um erro de alíquota ou de regra que atingiu dezenas de milhares de empresas é varredura cega de bilhões de linhas sobre lançamentos imutáveis e períodos travados."
+      }
+    ]
+  }
 }
