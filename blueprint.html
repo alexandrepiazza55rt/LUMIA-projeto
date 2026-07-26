@@ -303,6 +303,21 @@
   footer b{color:var(--ink-soft)}
 </style>
 
+<noscript>
+  <div style="max-width:52rem;margin:2rem auto;padding:1.5rem;border:2px solid #b8862f;border-radius:12px;font-family:system-ui,sans-serif;line-height:1.6">
+    <h1 style="margin:0 0 .5rem;font-size:1.4rem">LUMIA — Blueprint da fundação</h1>
+    <p>Esta página monta o conteúdo por JavaScript. Para ler tudo sem executar scripts,
+       use o <a href="dossie.html"><strong>dossiê completo em HTML estático</strong></a>,
+       que contém os 21 módulos, o mapa de dependências, as 16 decisões irreversíveis,
+       a arquitetura técnica e o modelo de dados.</p>
+    <p>Dados estruturados: <a href="gaps.json">gaps.json</a> ·
+       <a href="architecture.json">architecture.json</a> ·
+       <a href="dependencias.json">dependencias.json</a> ·
+       <a href="schema-inventario.json">schema-inventario.json</a> ·
+       <a href="llms.txt">llms.txt</a></p>
+  </div>
+</noscript>
+
 <div class="topbar"><div class="wrap">
   <div class="brand"><span class="dot"></span>LUMIA <small>Fundação</small></div>
   <button class="icon-btn" id="theme" title="Alternar tema" aria-label="Alternar tema">◐</button>
@@ -313,6 +328,10 @@
   <h1 class="title">O que sustenta o número, não só <em>a tela</em>.</h1>
   <p class="lede">Auditamos a estrutura de 10 módulos sob <b>seis lentes independentes</b> — operação de beleza, fiscal brasileiro, LGPD, arquitetura, escala SaaS e benchmark competitivo — cada achado passando por revisão adversarial. O resultado: <b>10 módulos novos</b> que faltavam e <b>36 reforços</b> nos existentes. Tudo marcado com <span class="newmark">*</span> é novo; o resto é a base que você já tinha.</p>
   <div class="stats" id="stats"></div>
+  <p style="margin:14px 0 0;font-size:13px;color:var(--ink-soft)">
+    📄 <a href="dossie.html" style="color:var(--gold);font-weight:600">Dossiê completo em texto</a>
+    — mesma informação sem JavaScript, para leitura por IA, impressão ou envio a terceiros.
+  </p>
   <div class="tabs" role="tablist">
     <button class="tab" id="t-diag" role="tab" aria-selected="true" aria-controls="v-diag">⚠️ Diagnóstico &amp; decisões</button>
     <button class="tab" id="t-dep" role="tab" aria-selected="false" aria-controls="v-dep">🔗 Fluxo de dependências</button>
@@ -1017,7 +1036,7 @@
 }</script>
 
 <footer><div class="wrap">
-  <span>© LUMIA · Análise de fundação — documento vivo. Fonte técnica: <code>gaps.json</code> e <code>architecture.json</code>.</span>
+  <span>© LUMIA · Análise de fundação — documento vivo. <a href="dossie.html" style="color:var(--gold)">Dossiê em texto</a> · <a href="llms.txt" style="color:var(--gold)">llms.txt</a> · fontes: <code>gaps.json</code>, <code>architecture.json</code>, <code>dependencias.json</code>.</span>
   <span><b>Próximo:</b> modelo de dados do catálogo e da hierarquia de estabelecimento.</span>
 </div></footer>
 
