@@ -244,6 +244,57 @@
   .slo b{display:block;font-size:14.5px;font-variant-numeric:tabular-nums}
   .slo span{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);font-weight:700}
 
+  /* ---------- MODELO DE DADOS ---------- */
+  .db{padding:24px 0 70px}
+  .db-hero{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:var(--r);box-shadow:var(--shadow);padding:22px clamp(18px,3vw,26px)}
+  .db-hero h2{font-family:var(--serif);font-size:clamp(19px,2.5vw,25px);margin:0 0 9px;letter-spacing:-.01em}
+  .db-hero p{font-size:14.5px;color:var(--ink);margin:0;max-width:78ch;line-height:1.6}
+  .db-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .db-stats .s{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:9px;padding:8px 13px;font-size:12px;color:var(--ink-soft)}
+  .db-stats .s b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .db-run{margin:15px 0 0!important;font-size:12.5px;color:var(--ink-soft)}
+  .db-run code{font-family:var(--mono);font-size:12px;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:5px;padding:2px 7px;color:var(--accent)}
+  .er-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:10px;min-width:0;overflow:hidden}
+  .er-wrap{overflow-x:auto;min-width:0}
+  svg.er{display:block;height:auto}
+  .er .ent{fill:var(--surface);stroke:var(--ec,var(--line-strong));stroke-width:1.4}
+  .er .ent.raiz{stroke-width:2.6}
+  .er .hdr{fill:var(--ec)}
+  .er .en{fill:#fff;font-family:var(--mono);font-size:11px;font-weight:700}
+  .er .ec{fill:var(--ink-soft);font-family:var(--mono);font-size:9.5px}
+  .er .ek{fill:var(--gold);font-family:var(--mono);font-size:9.5px;font-weight:700}
+  .er .rel{fill:none;stroke:var(--line-strong);stroke-width:1.4}
+  .er .rel.spec{stroke-dasharray:5 4}
+  .er .rl{fill:var(--ink-faint);font-family:var(--sans);font-size:9.5px;font-weight:600}
+  .er .card{fill:var(--ink-faint);font-family:var(--mono);font-size:9px;font-weight:700}
+  .proof{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px clamp(16px,3vw,24px)}
+  .proof-int{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;max-width:76ch}
+  .proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+  .pf{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .pf.hi{border-color:var(--gold);background:color-mix(in srgb,var(--gold-soft) 55%,var(--surface-2))}
+  .pf-q{display:block;font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  .pf-v{display:block;font-family:var(--serif);font-size:27px;font-variant-numeric:tabular-nums;margin:5px 0 3px;letter-spacing:-.02em}
+  .pf.hi .pf-v{color:var(--gold)}
+  .pf-n{display:block;font-size:11.5px;color:var(--ink-faint);line-height:1.4}
+  .proof-note{font-size:12.5px;color:var(--ink-soft);margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);max-width:80ch;line-height:1.55}
+  .proof-note code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;color:var(--p0)}
+  .guard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:13px}
+  .gd{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:15px 17px;border-left:3px solid var(--gc)}
+  .gd h4{font-size:13.5px;margin:0 0 5px;font-weight:700;letter-spacing:-.01em}
+  .gd p{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.5}
+  .gd .mech{display:inline-block;font-family:var(--mono);font-size:10.5px;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:5px;padding:2px 6px;color:var(--gc);margin-top:8px}
+  .tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+  .tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);padding:11px 13px;border-bottom:1.5px solid var(--line-strong);white-space:nowrap}
+  .tbl td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl tbody tr:last-child td{border-bottom:0}
+  .tbl td.nm{font-family:var(--mono);font-size:11.5px;white-space:nowrap;font-weight:600}
+  .tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl .grp{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:5px;white-space:nowrap}
+  .tbl .yes{color:var(--gold);font-weight:700}
+  .tbl .no{color:var(--ink-faint)}
+  .tbl .doc{color:var(--ink-soft);font-size:11.5px;line-height:1.45;min-width:240px}
+
   footer{border-top:1px solid var(--line);padding:28px 0 66px;color:var(--ink-faint);font-size:12.5px}
   footer .wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
   footer b{color:var(--ink-soft)}
@@ -264,6 +315,7 @@
     <button class="tab" id="t-dep" role="tab" aria-selected="false" aria-controls="v-dep">🔗 Fluxo de dependências</button>
     <button class="tab" id="t-mod" role="tab" aria-selected="false" aria-controls="v-mod">🗂️ Os 20 módulos</button>
     <button class="tab" id="t-arch" role="tab" aria-selected="false" aria-controls="v-arch">🏗️ Arquitetura técnica</button>
+    <button class="tab" id="t-db" role="tab" aria-selected="false" aria-controls="v-db">🗄️ Modelo de dados</button>
   </div>
 </div></header>
 
@@ -305,7 +357,44 @@
     <p class="arch-intro">Especificação técnica para escala nacional, já revisada com as conclusões desta análise. Fonte de verdade em <code>architecture.json</code> (v3.0) — as rotas dos 10 módulos novos e as fases reordenadas pela dependência do catálogo estão incluídas.</p>
     <div class="arch-grid" id="archRoot"></div>
   </section>
+
+  <section class="view db" id="v-db" role="tabpanel" aria-labelledby="t-db">
+    <div class="db-hero">
+      <h2>Fundação implementada</h2>
+      <p>As duas decisões que travam todo o resto — <b>hierarquia de estabelecimentos</b> e <b>Meu Catálogo</b> — estão modeladas em PostgreSQL e <b>validadas contra um banco real</b>. Não é diagrama: são migrations que rodam.</p>
+      <div class="db-stats" id="dbStats"></div>
+      <p class="db-run">Rodar: <code>./db/run.sh</code> — migrations, seed e a suíte completa.</p>
+    </div>
+
+    <p class="sec-h">A hierarquia: grupo → CNPJ → estabelecimento → unidade</p>
+    <div class="er-card"><div class="er-wrap"><svg id="erHier" class="er" role="img" aria-label="Diagrama de entidades da hierarquia organizacional"></svg></div></div>
+
+    <p class="sec-h">O catálogo: serviço é o nó raiz</p>
+    <div class="er-card"><div class="er-wrap"><svg id="erServico" class="er" role="img" aria-label="Diagrama de entidades de serviço"></svg></div></div>
+
+    <p class="sec-h">Produto, ficha técnica e preço</p>
+    <div class="er-card"><div class="er-wrap"><svg id="erProduto" class="er" role="img" aria-label="Diagrama de entidades de produto, ficha tecnica e preco"></svg></div></div>
+
+    <p class="sec-h">O teste que importa</p>
+    <div class="proof">
+      <p class="proof-int">A vigência existe para que o reajuste de julho não reescreva o relatório de março. Isto é a saída real da suíte:</p>
+      <div class="proof-grid">
+        <div class="pf"><span class="pf-q">Custo direto em <b>março</b></span><b class="pf-v">R$ 8,40</b><span class="pf-n">tinta a R$ 80/L · 60 ml + 90 ml de OX</span></div>
+        <div class="pf"><span class="pf-q">Custo direto em <b>agosto</b></span><b class="pf-v">R$ 9,60</b><span class="pf-n">tinta a R$ 100/L · reajuste em 01/jul</span></div>
+        <div class="pf hi"><span class="pf-q">Consultar <b>março</b> depois do reajuste</span><b class="pf-v">R$ 8,40</b><span class="pf-n">a margem histórica não mudou</span></div>
+      </div>
+      <p class="proof-note">Com <code>UPDATE</code> de valor em vez de versão, a comissão de março seria recalculada retroativamente — passivo trabalhista — e não haveria backfill possível, porque a informação da vigência teria sido destruída.</p>
+    </div>
+
+    <p class="sec-h">O que o schema torna impossível</p>
+    <div class="guard-grid" id="guards"></div>
+
+    <p class="sec-h">Inventário — extraído do banco, não escrito à mão</p>
+    <div class="tbl-wrap"><table class="tbl" id="tblTabelas"></table></div>
+  </section>
 </main>
+
+<script type="application/json" id="dbData">{"tabelas":[{"nome":"categoria_catalogo","cols":11,"rls":true,"checks":0,"excl":0,"fks":2,"doc":"","grupo":"Serviços"},{"nome":"celula","cols":7,"rls":false,"checks":0,"excl":0,"fks":0,"doc":"Célula = domínio de falha. Sem célula, o primeiro incidente sistêmico é um evento de 100% da base num sábado de Dia das Mães. Nenhuma FK, sequência ou job pode atravessar célula — verificado por teste no CI.","grupo":"Plataforma"},{"nome":"composicao_servico","cols":8,"rls":true,"checks":2,"excl":0,"fks":2,"doc":"","grupo":"Serviços"},{"nome":"custo_uso_recurso","cols":8,"rls":true,"checks":2,"excl":1,"fks":1,"doc":"Depilação a laser custa por disparo; luz pulsada por hora de lâmpada; microagulhamento por ponteira. Sem isto o custo do procedimento de aparelho aparece como zero e a Bússola de Preços recomenda preço abaixo do custo.","grupo":"Ficha técnica"},{"nome":"estabelecimento","cols":14,"rls":true,"checks":1,"excl":0,"fks":2,"doc":"Sujeito passivo fiscal. TODA linha transacional do sistema carrega estabelecimento_id NOT NULL: é ele que define alíquota, município de incidência, série de numeração fiscal e fuso do fato.","grupo":"Hierarquia"},{"nome":"ficha_tecnica","cols":9,"rls":true,"checks":1,"excl":1,"fks":2,"doc":"","grupo":"Ficha técnica"},{"nome":"ficha_tecnica_item","cols":7,"rls":true,"checks":1,"excl":0,"fks":3,"doc":"Doses padrão. O consumo REAL lançado no atendimento vive no módulo Meu Estoque (movimentação) — a comparação padrão × real é o que revela desperdício de cabine.","grupo":"Ficha técnica"},{"nome":"habilidade","cols":5,"rls":true,"checks":0,"excl":0,"fks":1,"doc":"","grupo":"Serviços"},{"nome":"motivo_desconto","cols":6,"rls":true,"checks":0,"excl":0,"fks":1,"doc":"","grupo":"Preços"},{"nome":"no_org","cols":15,"rls":true,"checks":2,"excl":0,"fks":2,"doc":"Árvore organizacional do tenant. Um nó por grupo, CNPJ, estabelecimento e unidade operacional. Enxertar um nível aqui depois de existir volume transacional significaria reescrever RLS, permissões, particionamento e toda query de apuração — por isso a árvore nasce completa na primeira migration.","grupo":"Hierarquia"},{"nome":"pessoa_juridica","cols":9,"rls":true,"checks":0,"excl":0,"fks":1,"doc":"Atributos do nó de tipo PESSOA_JURIDICA. O regime tributário NÃO vive aqui: é versionado por vigência no módulo Meu Fiscal (migration 0004).","grupo":"Hierarquia"},{"nome":"produto","cols":26,"rls":true,"checks":4,"excl":0,"fks":5,"doc":"","grupo":"Produtos"},{"nome":"produto_atributo_fiscal","cols":16,"rls":true,"checks":3,"excl":1,"fks":4,"doc":"","grupo":"Produtos"},{"nome":"produto_custo_versao","cols":12,"rls":true,"checks":3,"excl":1,"fks":2,"doc":"SCD-2 do custo (decisão irreversível nº 5). O reajuste de julho NÃO pode reescrever o relatório de março: a operação lê a versão vigente na data do fato. Um UPDATE de valor destruiria a informação da vigência sem backfill possível.","grupo":"Produtos"},{"nome":"servico","cols":28,"rls":true,"checks":4,"excl":0,"fks":3,"doc":"O nó raiz do sistema. Agenda agenda um serviço; comanda lança um serviço; comissão incide sobre um serviço; DRE apura margem por serviço; a Bússola de Preços precifica um serviço. Sem FK para cá, o histórico não se reamarra.","grupo":"Serviços"},{"nome":"servico_atributo_fiscal","cols":12,"rls":true,"checks":1,"excl":1,"fks":2,"doc":"Parâmetro legal também tem vigência (decisão nº 5): alíquota e classificação mudam por lei. A memória de cálculo IMUTÁVEL de cada documento emitido vive no Meu Fiscal — aqui está apenas o parâmetro corrente por vigência.","grupo":"Serviços"},{"nome":"servico_habilidade_exigida","cols":5,"rls":true,"checks":1,"excl":0,"fks":2,"doc":"","grupo":"Serviços"},{"nome":"servico_recurso_exigido","cols":7,"rls":true,"checks":2,"excl":0,"fks":2,"doc":"Alimenta a resolução de conflito multi-recurso da agenda: profissional × sala × cadeira × equipamento ao mesmo tempo. A garantia de não-sobreposição fica no banco (migration da agenda), não em lock de Redis.","grupo":"Serviços"},{"nome":"servico_variante","cols":11,"rls":true,"checks":1,"excl":0,"fks":1,"doc":"","grupo":"Serviços"},{"nome":"tabela_preco","cols":11,"rls":true,"checks":1,"excl":1,"fks":2,"doc":"","grupo":"Preços"},{"nome":"tabela_preco_item","cols":16,"rls":true,"checks":7,"excl":1,"fks":4,"doc":"Preço NÃO é atributo do serviço: é uma linha com vigência. O preço praticado na comanda é congelado no item da comanda (migration do Balcão); aqui vive o preço de tabela, que a auditoria consulta para explicar o desconto.","grupo":"Preços"},{"nome":"tenant","cols":14,"rls":false,"checks":2,"excl":0,"fks":2,"doc":"Fronteira de isolamento e de controladoria LGPD. Um franqueado é um tenant próprio: CNPJ, numeração fiscal e base de clientes próprios. O vínculo com o franqueador é referência entre tenants, com escopo de visibilidade acordado por classe de dado — jamais acesso direto à linha.","grupo":"Plataforma"},{"nome":"unidade_medida","cols":5,"rls":false,"checks":2,"excl":0,"fks":0,"doc":"Normalização de unidades (convenção da taxonomia canônica). Sem tabela de conversão, \"frasco de 1 L\" e \"dose de 30 ml\" não fecham e o CMV mente.","grupo":"Referência"},{"nome":"unidade_operacional","cols":8,"rls":true,"checks":1,"excl":0,"fks":2,"doc":"Recurso físico agendável: sala, cabine, cadeira, maca, equipamento. É o que o catálogo referencia em \"recursos exigidos\" e o que a agenda reserva.","grupo":"Hierarquia"}],"resumo":{"tabelas":24,"colunas":270,"com_rls":21,"checks":41,"excludes":7,"fks":48,"asercoes":40,"migrations":6}}</script>
 
 <script type="application/json" id="archData">{
   "meta": {
@@ -1213,8 +1302,159 @@ AR.innerHTML=[
    `<ol class="fl">${A.fases_de_construcao.map(f=>`<li><b>${esc(f.nome)}</b> — ${esc(f.entrega)}<span class="dw">${esc(f.pronto_quando)}</span></li>`).join('')}</ol>`,true),
 ].join('');
 
+/* ---- modelo de dados ---- */
+const DB=JSON.parse(document.getElementById('dbData').textContent);
+const R=DB.resumo;
+document.getElementById('dbStats').innerHTML=[
+  ['tabelas',R.tabelas],['colunas',R.colunas],['com RLS',R.com_rls+'/'+R.tabelas],
+  ['constraints CHECK',R.checks],['EXCLUDE de vigência',R.excludes],
+  ['chaves estrangeiras',R.fks],['migrations',R.migrations],['asserções passando',R.asercoes],
+].map(([k,v])=>`<span class="s"><b>${v}</b>${esc(k)}</span>`).join('');
+
+const GUARDS=[
+  ['#dc2626','Um tenant ler outro','Política única de RLS por <code>tenant_id</code>, habilitada <b>e forçada</b> — vale até para o owner da tabela. Sem contexto de tenant, zero linhas: falha fechada.','RLS FORCE'],
+  ['#c2410c','Referência cruzada entre tenants','PK e FK compostas <code>(tenant_id, id)</code>: o banco recusa apontar para linha de outro tenant. Deixa de depender de lembrar do WHERE.','FK composta'],
+  ['#0369a1','Duas versões de preço válidas ao mesmo tempo','<code>EXCLUDE USING gist</code> sobre a vigência. Nenhuma condição de corrida na aplicação consegue furar.','EXCLUDE'],
+  ['#7c3aed','Resolução de preço ambígua','Duas tabelas ativas com a mesma prioridade e escopo não podem ter vigências sobrepostas — encontrado pelo próprio teste e corrigido na migration 0005.','0005'],
+  ['#14b8a6','Item de comanda sem serviço nem produto','<code>CHECK</code> XOR: exatamente um dos dois. É o que impede "descrição do atendimento" em texto livre.','CHECK XOR'],
+  ['#d4820a','Hierarquia inválida','Trigger recusa aninhamento fora da ordem GRUPO &gt; PJ &gt; ESTABELECIMENTO &gt; UNIDADE.','trigger'],
+  ['#059669','Reimportar duplicando a base','<code>sistema_origem + id_externo</code> único por tenant: a migração de um concorrente é repetível.','UNIQUE parcial'],
+  ['#6366f1','Atendimento fantasma no celular','Soft delete com tombstone e <code>atualizado_em</code> indexado: o pull incremental entrega a remoção.','tombstone'],
+  ['#0891b2','Fuso errado no fechamento de caixa','Fuso IANA obrigatório por estabelecimento, validado contra <code>pg_timezone_names</code> — SP e Manaus convivem.','domínio + trigger'],
+  ['#db2777','Validade sem lote','<code>CHECK</code> recusa a combinação: rastrear validade sem lote é impossível na prática. Pegou um erro no próprio seed.','CHECK'],
+];
+document.getElementById('guards').innerHTML=GUARDS.map(([c,t,d,m])=>
+  `<div class="gd" style="--gc:${c}"><h4>${esc(t)}</h4><p>${d}</p><span class="mech">${esc(m)}</span></div>`).join('');
+
+/* ---- diagramas ER em SVG (funcionam no GitHub Pages e no Artifact) ---- */
+const EW=214, EHDR=21, ELIN=13, EPAD=7;
+function altura(e){return EHDR + EPAD + (e.cols||[]).length*ELIN + EPAD}
+function desenharER(svgId, spec){
+  const svg=document.getElementById(svgId); if(!svg)return;
+  const el2=(t,a)=>{const x=document.createElementNS(NS,t);for(const k in a)x.setAttribute(k,a[k]);return x};
+  const E={}; spec.entidades.forEach(e=>{E[e.id]=e; e.w=e.w||EW; e.h=altura(e)});
+  const W2=spec.largura, H2=spec.altura;
+  svg.setAttribute('viewBox',`0 0 ${W2} ${H2}`);
+  svg.style.minWidth=Math.min(W2,960)+'px';
+  svg.innerHTML='';
+  const defs=el2('defs');
+  const m=el2('marker',{id:svgId+'-a',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'});
+  m.appendChild(el2('path',{d:'M0 0 L10 5 L0 10 z',fill:'var(--line-strong)'}));
+  defs.appendChild(m); svg.appendChild(defs);
+
+  // relações primeiro (ficam atrás das caixas)
+  (spec.relacoes||[]).forEach(r=>{
+    const a=E[r.de], b=E[r.para]; if(!a||!b)return;
+    let x1,y1,x2,y2;
+    if(r.lado==='baixo'){ x1=a.x+a.w/2; y1=a.y+a.h; x2=b.x+b.w/2; y2=b.y; }
+    else if(b.x >= a.x+a.w){ x1=a.x+a.w; y1=a.y+a.h/2; x2=b.x; y2=b.y+b.h/2; }
+    else if(a.x >= b.x+b.w){ x1=a.x; y1=a.y+a.h/2; x2=b.x+b.w; y2=b.y+b.h/2; }
+    else { x1=a.x+a.w/2; y1=a.y+a.h; x2=b.x+b.w/2; y2=b.y; }
+    const mx=(x1+x2)/2;
+    const d = (r.lado==='baixo' || Math.abs(x2-x1)<4)
+      ? `M${x1} ${y1} C ${x1} ${(y1+y2)/2}, ${x2} ${(y1+y2)/2}, ${x2} ${y2}`
+      : `M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+    svg.appendChild(el2('path',{class:'rel'+(r.tipo==='spec'?' spec':''),d,'marker-end':`url(#${svgId}-a)`}));
+    if(r.rotulo){
+      const t=el2('text',{class:'rl',x:(x1+x2)/2,y:(y1+y2)/2-4,'text-anchor':'middle'});
+      t.textContent=r.rotulo; svg.appendChild(t);
+    }
+    if(r.card){
+      const c=el2('text',{class:'card',x:(x1+x2)/2,y:(y1+y2)/2+9,'text-anchor':'middle'});
+      c.textContent=r.card; svg.appendChild(c);
+    }
+  });
+
+  spec.entidades.forEach(e=>{
+    const g=el2('g'); g.style.setProperty('--ec', e.cor||'#8b7aa8');
+    g.appendChild(el2('rect',{class:'ent'+(e.raiz?' raiz':''),x:e.x,y:e.y,width:e.w,height:e.h,rx:8}));
+    const clip=el2('clipPath',{id:svgId+'-c-'+e.id});
+    clip.appendChild(el2('rect',{x:e.x,y:e.y,width:e.w,height:EHDR,rx:8}));
+    g.appendChild(clip);
+    g.appendChild(el2('rect',{class:'hdr',x:e.x,y:e.y,width:e.w,height:EHDR,rx:8,'clip-path':`url(#${svgId}-c-${e.id})`}));
+    const nt=el2('text',{class:'en',x:e.x+8,y:e.y+14.5}); nt.textContent=e.titulo; g.appendChild(nt);
+    (e.cols||[]).forEach((c,i)=>{
+      const chave=c.startsWith('*');
+      const t=el2('text',{class:chave?'ek':'ec',x:e.x+8,y:e.y+EHDR+EPAD+9+i*ELIN});
+      t.textContent=chave?c.slice(1):c; g.appendChild(t);
+    });
+    svg.appendChild(g);
+  });
+}
+
+const CH='#8b5cf6', CE='#3b82f6', CS='#a855f7', CP='#0d9488', CF='#d4820a', CX='#64748b';
+
+desenharER('erHier',{largura:1000,altura:430,entidades:[
+  {id:'cel',titulo:'celula',cor:CX,x:20,y:26,cols:['*id','codigo','regiao_aws','aceita_novos']},
+  {id:'ten',titulo:'tenant',cor:CX,x:20,y:170,cols:['*id','celula_id →','franqueador_id →','status','finalidade','fuso_padrao']},
+  {id:'no',titulo:'no_org',cor:CH,raiz:1,x:330,y:150,cols:['*tenant_id, id','tipo','pai_id →','caminho (ltree)','profundidade','removido_em']},
+  {id:'pj',titulo:'pessoa_juridica',cor:CH,x:670,y:26,cols:['*tenant_id, no_org_id','cnpj','razao_social']},
+  {id:'est',titulo:'estabelecimento',cor:CH,x:670,y:150,cols:['*tenant_id, no_org_id','pessoa_juridica_id →','numero','municipio_ibge, uf','fuso (IANA)','inscricao_municipal']},
+  {id:'uni',titulo:'unidade_operacional',cor:CH,x:670,y:312,cols:['*tenant_id, no_org_id','estabelecimento_id →','tipo','capacidade','agendavel']},
+],relacoes:[
+  {de:'cel',para:'ten',lado:'baixo',card:'1..N'},
+  {de:'ten',para:'no',rotulo:'contém a árvore',card:'1..N'},
+  {de:'no',para:'pj',tipo:'spec',rotulo:'especialização',card:'1..1'},
+  {de:'no',para:'est',tipo:'spec',rotulo:'especialização',card:'1..1'},
+  {de:'no',para:'uni',tipo:'spec',rotulo:'especialização',card:'1..1'},
+  {de:'pj',para:'est',lado:'baixo',card:'1..N'},
+  {de:'est',para:'uni',lado:'baixo',card:'1..N'},
+]});
+
+desenharER('erServico',{largura:1000,altura:530,entidades:[
+  {id:'cat',titulo:'categoria_catalogo',cor:CS,x:20,y:40,cols:['*tenant_id, id','pai_id →','caminho (ltree)','nome']},
+  {id:'srv',titulo:'servico',cor:CS,raiz:1,x:330,y:150,cols:['*tenant_id, id','categoria_id →','numero, nome','duracao_ativa_min','duracao_processamento_min','duracao_finalizacao_min','exige_anamnese','publicavel_online']},
+  {id:'var',titulo:'servico_variante',cor:CS,x:670,y:26,cols:['*tenant_id, id','servico_id →','nome (curto/médio/longo)','delta_duracao_ativa_min','fator_consumo']},
+  {id:'rec',titulo:'servico_recurso_exigido',cor:CE,x:670,y:170,cols:['*tenant_id, id','servico_id →','tipo_unidade','etapa_ocupacao']},
+  {id:'hab',titulo:'servico_habilidade_exigida',cor:CE,x:670,y:288,cols:['*tenant_id, id','habilidade_id →','nivel_minimo']},
+  {id:'comp',titulo:'composicao_servico',cor:CS,x:330,y:400,cols:['*tenant_id, id','servico_pai_id →','servico_filho_id →','tipo (combo/pacote/addon)']},
+  {id:'saf',titulo:'servico_atributo_fiscal',cor:CF,x:20,y:330,cols:['*tenant_id, id','estabelecimento_id →','item_lc116','aliquota_iss','vigencia']},
+],relacoes:[
+  {de:'cat',para:'srv',rotulo:'classifica',card:'1..N'},
+  {de:'srv',para:'var',card:'1..N'},
+  {de:'srv',para:'rec',card:'1..N'},
+  {de:'srv',para:'hab',card:'1..N'},
+  {de:'srv',para:'comp',lado:'baixo',card:'1..N'},
+  {de:'srv',para:'saf',rotulo:'por município',card:'1..N'},
+]});
+
+desenharER('erProduto',{largura:1000,altura:560,entidades:[
+  {id:'um',titulo:'unidade_medida',cor:CX,x:20,y:34,cols:['*codigo','grandeza','fator_para_base']},
+  {id:'prod',titulo:'produto',cor:CP,raiz:1,x:20,y:180,cols:['*tenant_id, id','natureza (revenda/insumo)','sku, gtin','unidade_compra →','unidade_consumo →','fator_conversao','controla_lote']},
+  {id:'pcv',titulo:'produto_custo_versao',cor:CP,x:340,y:34,cols:['*tenant_id, id','produto_id →','custo_unitario_compra','vigencia (SCD-2)','⊘ EXCLUDE sobreposição']},
+  {id:'paf',titulo:'produto_atributo_fiscal',cor:CF,x:340,y:180,cols:['*tenant_id, id','ncm, cest','csosn, cst','icms_st, mva','vigencia']},
+  {id:'ft',titulo:'ficha_tecnica',cor:CF,x:340,y:330,cols:['*tenant_id, id','servico_id →','variante_id →','vigencia']},
+  {id:'fti',titulo:'ficha_tecnica_item',cor:CF,x:340,y:452,cols:['*tenant_id, id','produto_id →','quantidade (dose)','unidade_codigo →']},
+  {id:'tp',titulo:'tabela_preco',cor:CS,x:690,y:250,cols:['*tenant_id, id','estabelecimento_id →','canal','prioridade','vigencia']},
+  {id:'tpi',titulo:'tabela_preco_item',cor:CS,x:690,y:400,cols:['*tenant_id, id','servico_id ⊕ produto_id','preco','nivel_profissional','faixa horária','base_comissao','vigencia']},
+],relacoes:[
+  {de:'um',para:'prod',lado:'baixo',rotulo:'compra × consumo',card:'1..N'},
+  {de:'prod',para:'pcv',rotulo:'custo por vigência',card:'1..N'},
+  {de:'prod',para:'paf',card:'1..N'},
+  {de:'prod',para:'fti',rotulo:'consumido em',card:'1..N'},
+  {de:'ft',para:'fti',lado:'baixo',card:'1..N'},
+  {de:'tp',para:'tpi',lado:'baixo',card:'1..N'},
+  {de:'prod',para:'tpi',rotulo:'preço',card:'1..N'},
+]});
+
+const ordemGrupo=['Plataforma','Hierarquia','Serviços','Produtos','Ficha técnica','Preços','Referência','Outros'];
+const tabs=DB.tabelas.slice().sort((a,b)=>
+  (ordemGrupo.indexOf(a.grupo)-ordemGrupo.indexOf(b.grupo)) || a.nome.localeCompare(b.nome));
+document.getElementById('tblTabelas').innerHTML=
+  `<thead><tr><th>Grupo</th><th>Tabela</th><th style="text-align:right">Col.</th><th>RLS</th>
+     <th style="text-align:right">CHECK</th><th style="text-align:right">EXCL</th><th style="text-align:right">FK</th><th>Papel</th></tr></thead>
+   <tbody>${tabs.map(t=>`<tr>
+     <td><span class="grp">${esc(t.grupo)}</span></td>
+     <td class="nm">${esc(t.nome)}</td>
+     <td class="n">${t.cols}</td>
+     <td class="${t.rls?'yes':'no'}">${t.rls?'sim':'—'}</td>
+     <td class="n">${t.checks||'—'}</td>
+     <td class="n">${t.excl||'—'}</td>
+     <td class="n">${t.fks||'—'}</td>
+     <td class="doc">${esc(t.doc.split('.')[0]||'')}</td></tr>`).join('')}</tbody>`;
+
 /* ---- tabs ---- */
-const T=[['t-diag','v-diag'],['t-dep','v-dep'],['t-mod','v-mod'],['t-arch','v-arch']];
+const T=[['t-diag','v-diag'],['t-dep','v-dep'],['t-mod','v-mod'],['t-arch','v-arch'],['t-db','v-db']];
 T.forEach(([t,v])=>document.getElementById(t).addEventListener('click',()=>{
   T.forEach(([t2,v2])=>{document.getElementById(t2).setAttribute('aria-selected',t2===t);
     document.getElementById(v2).classList.toggle('active',v2===v)})}));
