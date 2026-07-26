@@ -107,6 +107,9 @@
   .graph-hint{font-size:12px;color:var(--ink-faint);text-align:center;padding:6px 0 8px}
   .edge{fill:none;stroke:var(--line-strong);stroke-width:1.5;transition:stroke .2s,opacity .2s,stroke-width .2s}
   .edge.back{stroke-dasharray:6 5}
+  .edge.verif{stroke-width:2.4;stroke:color-mix(in srgb,var(--gold) 62%, var(--line-strong))}
+  .fkb{fill:var(--gold);font-family:var(--mono);font-size:8.5px;font-weight:700}
+  .fkbg{fill:var(--surface);stroke:color-mix(in srgb,var(--gold) 45%,transparent);stroke-width:.8}
   .edge.dim{opacity:.09}
   .edge.feed{stroke:var(--feed);stroke-width:2.6;opacity:1}
   .edge.dep{stroke:var(--dep);stroke-width:2.6;opacity:1}
@@ -332,7 +335,8 @@
       <span class="lg"><span class="sw" style="--c:var(--dep)"></span><b>Depende de</b></span>
       <span class="lg"><span class="sw" style="--c:var(--ink-faint);border-top-style:dashed"></span><b>Retroalimentação</b></span>
       <span class="lg"><span class="box-base"></span><b>Base</b> (10 originais)</span>
-      <span class="lg"><span class="box-new"></span><b><span class="newmark">*</span> Novo</b> (10 desta análise)</span>
+      <span class="lg"><span class="box-new"></span><b><span class="newmark">*</span> Novo</b> (desta análise)</span>
+      <span class="lg"><span class="sw" style="--c:var(--gold)"></span><b>n FK</b> = dependência já <b>verificada no schema</b></span>
     </div>
     <div class="dep-grid">
       <div class="graph-card">
@@ -1085,50 +1089,85 @@ const BASE=[
    {nome:'Preferências',itens:['Preferências','Idiomas','Notificações']},
    {nome:'Segurança & Dados',itens:['Auditoria','Logs','Segurança','Backup','Importação','Exportação','LGPD']}]},
 ];
-const NEWCOL={'meu-catalogo':'#a855f7','meu-estoque':'#0d9488','meu-balcao':'#059669','meu-fiscal':'#65a30d','meu-prontuario':'#db2777','minhas-conversas':'#0891b2','central-de-privacidade':'#dc2626','minha-vitrine':'#e11d48','meu-marketing':'#f43f5e','plataforma-lumia':'#475569'};
+const NEWCOL={'meu-catalogo':'#a855f7','meu-estoque':'#0d9488','meu-caixa':'#b8862f','minhas-comandas':'#059669','meu-fiscal':'#65a30d','meu-prontuario':'#db2777','minhas-conversas':'#0891b2','central-de-privacidade':'#dc2626','minha-vitrine':'#e11d48','meu-marketing':'#f43f5e','plataforma-lumia':'#475569'};
 
 /* ---- merge ---- */
 const M={};
 BASE.forEach(m=>{M[m.id]={...m,novo:false,prioridade:null,reforcos:[]}});
 D.novos.forEach(n=>{const id=slug(n.titulo);M[id]={id,titulo:n.titulo,icone:n.icone,camada:n.camada,cor:NEWCOL[id]||'#7c3aed',frase:n.frase,pergunta:n.pergunta,grupos:n.grupos.map(g=>({...g,novo:true})),novo:true,prioridade:n.prioridade,por_que:n.por_que,depende_de:n.depende_de.map(slug),alimenta:n.alimenta.map(slug),reforcos:[]}});
+
+/* Meu Balcão virou dois módulos assim que o schema foi implementado: caixa e
+   comanda têm dependências distintas o bastante para não caberem num nó só. */
+(function dividirBalcao(){
+  const b=M['meu-balcao']; if(!b)return;
+  const gruposCaixa=['Sessão de Caixa','Recebimento no Balcão','Alçadas e Antifraude','Operação de Balcão'];
+  M['meu-caixa']={...b,id:'meu-caixa',titulo:'Meu Caixa',icone:'💵',camada:'Caixa',cor:'#b8862f',
+    frase:'Dinheiro com dono, hora e motivo.',pergunta:'Quanto entrou, por onde e sob responsabilidade de quem?',
+    por_que:'Livro append-only, conferência cega imposta por GRANT de coluna e divergência que nunca vira desconto automático.',
+    grupos:b.grupos.filter(g=>gruposCaixa.includes(g.nome))};
+  M['minhas-comandas']={...b,id:'minhas-comandas',titulo:'Minhas Comandas',icone:'🧾',camada:'Comanda',cor:'#059669',
+    frase:'Toda comanda tem dono, sempre.',pergunta:'Quem abriu, quem executou e por quais mãos passou?',
+    por_que:'Cadeia de custódia sem buraco nem sobreposição, transferência com motivo obrigatório e valor congelado no item.',
+    grupos:b.grupos.filter(g=>!gruposCaixa.includes(g.nome))};
+  delete M['meu-balcao'];
+})();
 D.reforcos.forEach(r=>{const id=slug(r.modulo);if(M[id])M[id].reforcos.push(r)});
 
 /* ---- edges ---- */
 const E=[
- ['meu-negocio','meu-catalogo','Unidades, estabelecimentos e estrutura definem onde e como o serviço é executado'],
+ // ── Fundação e catálogo ──────────────────────────────────────────────────
+ ['meu-negocio','meu-catalogo','Unidades e estrutura definem onde e como o serviço é executado',6],
  ['meu-negocio','meus-clientes','A empresa e suas unidades são o contexto do cadastro'],
  ['meu-negocio','minha-equipe','Cargos, organograma e estabelecimento de vínculo'],
- ['meu-catalogo','meu-estoque','Produto e ficha técnica definem o que entra e sai do estoque'],
+ ['meu-catalogo','minha-equipe','Habilidades do catálogo qualificam quem pode executar',1],
+ // ── Recursos e canais ────────────────────────────────────────────────────
+ ['meu-catalogo','meu-estoque','Produto e ficha técnica definem o que entra e sai'],
  ['meu-catalogo','meu-prontuario','O procedimento define se exige anamnese e termo'],
  ['meu-catalogo','minha-vitrine','Só se publica e vende o que está no catálogo'],
  ['meu-catalogo','meu-marketing','A campanha promove serviço e produto do catálogo'],
- ['meu-catalogo','minha-agenda','O agendamento agenda um serviço: duração, recursos e habilidade exigida'],
  ['meus-clientes','meu-prontuario','O prontuário é do cliente — histórico clínico e evolução'],
  ['meus-clientes','minha-vitrine','Identidade e login do cliente no autoatendimento'],
  ['meus-clientes','meu-marketing','Segmentos e consentimento definem quem pode ser abordado'],
- ['meus-clientes','minha-agenda','O cliente é quem ocupa o horário'],
- ['minha-equipe','minha-agenda','Escalas, habilidades e disponibilidade real do executor'],
+ // ── Agenda ───────────────────────────────────────────────────────────────
+ ['meu-negocio','minha-agenda','Estabelecimento, fuso e unidades operacionais reserváveis',5],
+ ['meu-catalogo','minha-agenda','O agendamento agenda um serviço: duração por etapa e recurso exigido',3],
+ ['meus-clientes','minha-agenda','O cliente é quem ocupa o horário',2],
+ ['minha-equipe','minha-agenda','O profissional é recurso reservável no estabelecimento',2],
  ['minha-vitrine','minha-agenda','Agendamento online cria o compromisso e cobra o sinal'],
  ['meu-marketing','minha-agenda','Campanha e lead viram agendamento com origem atribuída'],
  ['meu-prontuario','minha-agenda','Anamnese pendente bloqueia a execução do procedimento'],
- ['minha-agenda','meu-balcao','O check-out abre a comanda no balcão'],
- ['meu-estoque','meu-balcao','Saldo disponível autoriza a venda e o consumo'],
- ['meu-balcao','meu-estoque','O consumo real do atendimento baixa o estoque','back'],
- ['meu-balcao','meu-financeiro','Comanda fechada gera recebível e movimenta o caixa'],
- ['meu-balcao','meu-fiscal','Cada item gera obrigação fiscal por titularidade da receita'],
- ['minha-equipe','meu-financeiro','Regras de comissão, repasse de parceiro e locação'],
+ // ── Caixa ────────────────────────────────────────────────────────────────
+ ['meu-negocio','meu-caixa','O terminal pertence a um estabelecimento; a sessão herda o fuso',2],
+ ['minha-equipe','meu-caixa','Quem abre, quem confere, quem apura e quem autoriza sangria',8],
+ // ── Comanda ──────────────────────────────────────────────────────────────
+ ['meu-negocio','minhas-comandas','A comanda é de um estabelecimento e usa a data comercial dele',1],
+ ['meu-catalogo','minhas-comandas','Item referencia serviço ou produto e congela o preço de tabela',4],
+ ['meus-clientes','minhas-comandas','A comanda é de um cliente',1],
+ ['minha-equipe','minhas-comandas','Quem abriu, quem executou cada item e toda a cadeia de custódia',15],
+ ['minha-agenda','minhas-comandas','O check-out abre a comanda a partir do agendamento',2],
+ ['meu-caixa','minhas-comandas','Pagamento pertence a uma sessão de caixa aberta',2],
+ ['meu-estoque','minhas-comandas','Saldo disponível autoriza a venda e o consumo'],
+ ['minhas-comandas','meu-estoque','O consumo real do atendimento baixa o estoque','back'],
+ // ── Monetização ──────────────────────────────────────────────────────────
+ ['minhas-comandas','meu-financeiro','Comanda paga gera recebível e alimenta o fluxo de caixa'],
+ ['meu-caixa','meu-financeiro','Sangria, suprimento e fechamento do turno'],
+ ['minhas-comandas','meu-fiscal','Cada item gera obrigação fiscal por titularidade da receita'],
+ ['minha-equipe','meu-financeiro','Comissão, repasse de parceiro e locação'],
  ['meus-clientes','meu-financeiro','Pacotes, assinaturas, sinal e inadimplência'],
  ['meu-financeiro','meu-fiscal','Liquidação e regime definem apuração e retenção'],
  ['meu-financeiro','meus-clientes','Histórico transacional gera LTV, ticket e risco de perda','back'],
+ // ── Inteligência ─────────────────────────────────────────────────────────
  ['meu-negocio','meus-resultados','Capacidade instalada é o denominador dos indicadores'],
  ['meus-clientes','meus-resultados','Base, frequência e recompra'],
  ['minha-equipe','meus-resultados','Produtividade, ocupação e performance'],
  ['minha-agenda','meus-resultados','Ocupação da agenda e volume executado'],
  ['meu-estoque','meus-resultados','CMV e giro de produto'],
- ['meu-balcao','meus-resultados','Ticket, mix de itens e conversão de venda'],
+ ['minhas-comandas','meus-resultados','Ticket, mix de itens e produção por executor'],
+ ['meu-caixa','meus-resultados','Divergência de caixa e comportamento por turno'],
  ['meu-financeiro','meus-resultados','DRE, margem e fluxo de caixa'],
  ['meu-fiscal','meus-resultados','Carga tributária efetiva por serviço e regime'],
  ['meu-marketing','meus-resultados','Custo de aquisição, origem e retorno de campanha'],
+ // ── Método e consultoria ─────────────────────────────────────────────────
  ['meu-catalogo','ferramentas-mqs','A Bússola de Preços precifica um serviço com custo e tempo reais'],
  ['meu-financeiro','ferramentas-mqs','Custos reais alimentam bússolas e simuladores'],
  ['minha-equipe','ferramentas-mqs','Comissão e locação para as bússolas correspondentes'],
@@ -1148,7 +1187,8 @@ const LAYERS=[
  {nome:'Entidades',ids:['meus-clientes','minha-equipe']},
  {nome:'Recursos & Canais',ids:['minha-vitrine','meu-prontuario','meu-estoque','meu-marketing']},
  {nome:'Operação',ids:['minha-agenda']},
- {nome:'Balcão',ids:['meu-balcao']},
+ {nome:'Caixa',ids:['meu-caixa']},
+ {nome:'Comanda',ids:['minhas-comandas']},
  {nome:'Monetização',ids:['meu-financeiro','meu-fiscal']},
  {nome:'Inteligência',ids:['meus-resultados']},
  {nome:'Método',ids:['ferramentas-mqs','universidade-mqs']},
@@ -1191,10 +1231,41 @@ LAYERS.forEach(L=>{
   }
 });
 
-const edgeEls=[];
+const edgeEls=[]; const selosPendentes=[];
 E.forEach(e=>{const d=path(e[0],e[1]);if(!d)return;
-  const p=el('path',{class:'edge'+(e[3]==='back'?' back':''),d,'marker-end':'url(#a0)'});
-  p.dataset.f=e[0];p.dataset.t=e[1];G.appendChild(p);edgeEls.push(p);});
+  const verificada = typeof e[3]==='number';
+  const p=el('path',{class:'edge'+(e[3]==='back'?' back':'')+(verificada?' verif':''),d,'marker-end':'url(#a0)'});
+  p.dataset.f=e[0];p.dataset.t=e[1];G.appendChild(p);edgeEls.push(p);
+  if(verificada) selosPendentes.push({p, n:e[3]});
+});
+
+/* Selo de "n FK" posicionado SOBRE a curva real, não no ponto médio geométrico:
+   arestas que pulam camadas teriam o meio caindo em cima de um nó do caminho.
+   Procura a primeira fração da curva livre de colisão. */
+const caixasNos = Object.keys(POS).map(k=>POS[k]);
+const selosPostos = [];
+function colide(x,y,w,h){
+  const bateNo = caixasNos.some(N => x+w/2 > N.x-3 && x-w/2 < N.x+N.w+3
+                                  && y+h/2 > N.y-3 && y-h/2 < N.y+N.h+3);
+  if(bateNo) return true;
+  // e também não pode encostar em selo já colocado
+  return selosPostos.some(S => Math.abs(S.x-x) < (S.w+w)/2 + 3
+                            && Math.abs(S.y-y) < (S.h+h)/2 + 3);
+}
+selosPendentes.forEach(({p,n})=>{
+  const total = p.getTotalLength();
+  const w = n > 9 ? 26 : 21, h = 12;
+  let pt = null;
+  for(const fr of [0.5, 0.38, 0.62, 0.28, 0.72, 0.2, 0.8]){
+    const c = p.getPointAtLength(total*fr);
+    if(!colide(c.x, c.y, w, h)){ pt = c; break; }
+  }
+  if(!pt) return;  // curva inteiramente ocupada: melhor nenhum selo que um ilegível
+  selosPostos.push({x:pt.x, y:pt.y, w, h});
+  G.appendChild(el('rect',{class:'fkbg',x:pt.x-w/2,y:pt.y-h/2,width:w,height:h,rx:4}));
+  const t=el('text',{class:'fkb',x:pt.x,y:pt.y+3.2,'text-anchor':'middle'});
+  t.textContent=n+' FK'; G.appendChild(t);
+});
 
 const nodeEls={};
 Object.keys(POS).forEach(id=>{
@@ -1240,8 +1311,10 @@ function soft(hex){const c=hex.replace('#','');const r=parseInt(c.slice(0,2),16)
   const dk=matchMedia('(prefers-color-scheme:dark)').matches||document.documentElement.dataset.theme==='dark';
   return `rgba(${r},${g2},${b},${dk?.22:.12})`;}
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-function ref(id,why){const m=M[id];if(!m)return'';
-  return `<div class="ditem"><span class="di">${m.icone}</span><span><b>${esc(m.titulo)}${m.novo?' <span class="newmark">*</span>':''}</b><span>${esc(why)}</span></span></div>`;}
+function ref(id,why,fks){const m=M[id];if(!m)return'';
+  const selo = typeof fks==='number'
+    ? ` <span style="font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:4px;padding:1px 5px;white-space:nowrap">${fks} FK</span>` : '';
+  return `<div class="ditem"><span class="di">${m.icone}</span><span><b>${esc(m.titulo)}${m.novo?' <span class="newmark">*</span>':''}${selo}</b><span>${esc(why)}</span></span></div>`;}
 function pPanel(id,ups,downs){
   const m=M[id];panel.style.setProperty('--pc',m.cor);panel.style.setProperty('--pc-soft',soft(m.cor));
   let n,f;
@@ -1249,8 +1322,8 @@ function pPanel(id,ups,downs){
     n=`<p class="dnone">Camada de plataforma — não depende de módulos de negócio.</p>`;
     f=`<div class="ditem"><span class="di">∞</span><span><b>Todos os módulos</b><span>Serviço transversal: sustenta a plataforma inteira e não aparece como seta para não poluir o grafo.</span></span></div>`;
   }else{
-    n=ups.length?ups.map(e=>ref(e[0],e[2])).join(''):`<p class="dnone">Não depende de outros módulos de negócio.</p>`;
-    f=downs.length?downs.map(e=>ref(e[1],e[2])).join(''):`<p class="dnone">Camada final — entrega direto ao usuário.</p>`;
+    n=ups.length?ups.map(e=>ref(e[0],e[2],typeof e[3]==='number'?e[3]:null)).join(''):`<p class="dnone">Não depende de outros módulos de negócio.</p>`;
+    f=downs.length?downs.map(e=>ref(e[1],e[2],typeof e[3]==='number'?e[3]:null)).join(''):`<p class="dnone">Camada final — entrega direto ao usuário.</p>`;
   }
   panel.innerHTML=`<div class="ph"><span class="pico">${m.icone}</span><h3>${esc(m.titulo)}</h3>${m.novo?'<span class="newmark" style="font-size:22px">*</span>':''}${m.prioridade?`<span class="pri ${m.prioridade}">${m.prioridade}</span>`:''}</div>
     <span class="ltag">${esc(m.camada)}${m.novo?' · novo':' · base'}</span>
@@ -1280,6 +1353,7 @@ document.getElementById('stats').innerHTML=[
  `<span class="stat"><b>${refItens}</b> capacidades novas</span>`,
  `<span class="stat"><b>${D.decisoes.length}</b> decisões irreversíveis</span>`,
  `<span class="stat"><b>${D.contagem.consolidados}</b> achados verificados</span>`,
+ `<span class="stat"><b>${E.filter(e=>typeof e[3]==='number').length}</b> dependências comprovadas por FK</span>`,
 ].join('');
 
 /* ---- diagnostic ---- */
