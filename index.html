@@ -1,0 +1,545 @@
+<title>LUMIA · Blueprint — Fundação do Negócio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#faf7fd; --surface:#ffffff; --surface-2:#f4eefb;
+    --ink:#241b30; --ink-soft:#5b5068; --ink-faint:#8a7f97;
+    --line:#e8dff2; --line-strong:#d8cbe8;
+    --accent:#7c3aed; --accent-soft:#ede4fb;
+    --gold:#b8862f; --gold-soft:#f6edd8;
+    --shadow:0 1px 2px rgba(40,20,60,.05), 0 8px 24px -12px rgba(60,30,90,.18);
+    --shadow-lg:0 24px 60px -24px rgba(60,25,100,.35);
+    --serif:Georgia,'Times New Roman',ui-serif,serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono',Menlo,'Cascadia Code',monospace;
+    --r:16px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#100a18; --surface:#191122; --surface-2:#20162e;
+      --ink:#f2ecf8; --ink-soft:#b9adca; --ink-faint:#877a9a;
+      --line:#2c2140; --line-strong:#3a2c52;
+      --accent:#b78cf5; --accent-soft:#271a3c;
+      --gold:#e2b662; --gold-soft:#2a2113;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 30px -14px rgba(0,0,0,.7);
+      --shadow-lg:0 30px 70px -30px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#faf7fd; --surface:#ffffff; --surface-2:#f4eefb;
+    --ink:#241b30; --ink-soft:#5b5068; --ink-faint:#8a7f97;
+    --line:#e8dff2; --line-strong:#d8cbe8;
+    --accent:#7c3aed; --accent-soft:#ede4fb; --gold:#b8862f; --gold-soft:#f6edd8;
+    --shadow:0 1px 2px rgba(40,20,60,.05), 0 8px 24px -12px rgba(60,30,90,.18);
+    --shadow-lg:0 24px 60px -24px rgba(60,25,100,.35);
+  }
+  :root[data-theme="dark"]{
+    --bg:#100a18; --surface:#191122; --surface-2:#20162e;
+    --ink:#f2ecf8; --ink-soft:#b9adca; --ink-faint:#877a9a;
+    --line:#2c2140; --line-strong:#3a2c52;
+    --accent:#b78cf5; --accent-soft:#271a3c; --gold:#e2b662; --gold-soft:#2a2113;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 30px -14px rgba(0,0,0,.7);
+    --shadow-lg:0 30px 70px -30px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+
+  /* ---- top bar ---- */
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:color-mix(in srgb,var(--bg) 82%, transparent);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:16px;height:60px}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.14em;
+    display:flex;align-items:center;gap:10px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #fff, var(--accent));
+    box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%,transparent)}
+  .brand small{font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:.18em;
+    color:var(--ink-faint);text-transform:uppercase}
+  .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .search{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:999px;padding:6px 12px;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .search input{border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;width:150px;outline:none}
+  .search svg{opacity:.55;flex:none}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--ink-soft);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow);font-size:16px}
+  .icon-btn:hover{color:var(--ink);border-color:var(--accent)}
+  .icon-btn:focus-visible,.search:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---- hero ---- */
+  .hero{padding:clamp(40px,7vw,88px) 0 clamp(24px,4vw,44px)}
+  .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600;
+    display:inline-flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:30px;height:1px;background:var(--gold)}
+  h1.title{font-family:var(--serif);font-weight:700;line-height:1.02;letter-spacing:-.02em;
+    font-size:clamp(38px,7vw,74px);margin:18px 0 0;text-wrap:balance;max-width:14ch}
+  h1.title em{font-style:italic;color:var(--accent)}
+  .lede{margin:22px 0 0;max-width:56ch;font-size:clamp(16px,1.6vw,19px);color:var(--ink-soft)}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .chip b{color:var(--ink);font-weight:600}
+  .chip .pip{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .chip .pip.gold{background:var(--gold)}
+
+  /* ---- flow overview ---- */
+  .section-label{font-family:var(--serif);font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 16px;font-weight:600;display:flex;align-items:center;gap:12px}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .flow{padding:clamp(20px,3vw,32px) 0}
+  .flow-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(130px,1fr);gap:10px;
+    overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
+  .flow-node{scroll-snap-align:start;text-align:left;cursor:pointer;position:relative;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 14px 16px;
+    box-shadow:var(--shadow);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+    border-top:3px solid var(--mc,var(--accent))}
+  .flow-node:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--mc,var(--accent))}
+  .flow-node .fn-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .flow-node .fn-num{font-family:var(--serif);font-size:12px;font-weight:700;color:var(--mc);
+    background:var(--mc-soft);width:24px;height:24px;border-radius:7px;display:grid;place-items:center}
+  .flow-node .fn-ico{font-size:19px}
+  .flow-node .fn-name{font-weight:600;font-size:13.5px;line-height:1.25;letter-spacing:-.01em}
+  .flow-node .fn-count{font-size:11px;color:var(--ink-faint);margin-top:5px;font-variant-numeric:tabular-nums}
+  .flow-hint{font-size:12px;color:var(--ink-faint);margin-top:14px;display:flex;align-items:center;gap:8px}
+
+  /* ---- module cards ---- */
+  .modules{padding:clamp(20px,4vw,40px) 0 80px;display:flex;flex-direction:column;gap:20px}
+  .mod{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+    overflow:hidden;scroll-margin-top:76px;position:relative}
+  .mod::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mc,var(--accent))}
+  .mod-head{display:flex;align-items:flex-start;gap:16px;padding:22px clamp(18px,3vw,28px);cursor:pointer;
+    width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit}
+  .mod-head:hover{background:var(--surface-2)}
+  .mod-head:focus-visible{outline:2px solid var(--mc,var(--accent));outline-offset:-2px}
+  .mod-ico{font-size:30px;line-height:1;flex:none;filter:saturate(1.05)}
+  .mod-num{font-family:var(--serif);font-weight:700;font-size:13px;color:var(--mc);background:var(--mc-soft);
+    border-radius:8px;padding:4px 9px;flex:none;letter-spacing:.02em}
+  .mod-h-main{flex:1;min-width:0}
+  .mod-h-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .mod-h-title h2{font-family:var(--serif);font-size:clamp(19px,2.4vw,25px);margin:0;letter-spacing:-.01em;font-weight:700}
+  .mod-tag{font-size:14px;color:var(--ink-soft);margin:5px 0 0;font-style:italic}
+  .mod-q{font-size:12.5px;color:var(--mc);margin:9px 0 0;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+  .mod-q::before{content:"?";width:16px;height:16px;border-radius:50%;background:var(--mc-soft);color:var(--mc);
+    display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--serif)}
+  .mod-status{flex:none;align-self:center;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .status-pill{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+  .status-pill.found{background:var(--gold-soft);color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
+  .status-pill.map{background:var(--mc-soft);color:var(--mc)}
+  .chev{width:26px;height:26px;color:var(--ink-faint);transition:transform .25s ease;flex:none}
+  .mod[open] .chev{transform:rotate(180deg)}
+
+  .mod-body{border-top:1px solid var(--line);padding:0 clamp(18px,3vw,28px);
+    max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+  .mod-body-inner{padding:22px 0 26px}
+  .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+  .group{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px 17px}
+  .group h3{margin:0 0 11px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+    font-weight:700;display:flex;align-items:center;gap:8px}
+  .group h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--mc);flex:none}
+  .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tag{font-size:12.5px;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;
+    padding:5px 10px;color:var(--ink);line-height:1.3}
+
+  .needs{margin-top:22px;border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;
+    background:color-mix(in srgb,var(--mc-soft) 55%, var(--surface))}
+  .needs h3{margin:0 0 4px;font-size:13px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+  .needs h3 .wr{font-size:16px}
+  .needs .sub{font-size:12px;color:var(--ink-soft);margin:0 0 14px}
+  .needs ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 22px}
+  .needs li{position:relative;padding-left:22px;font-size:13.5px;color:var(--ink);line-height:1.45}
+  .needs li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;
+    background:var(--mc);transform:rotate(45deg)}
+  .needs li b{font-weight:600}
+  .needs code{font-family:var(--mono);font-size:11.5px;background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:5px;padding:1px 6px;color:var(--mc);white-space:nowrap}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:34px 0 70px;color:var(--ink-faint);font-size:13px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+  footer b{color:var(--ink-soft)}
+
+  .empty{display:none;text-align:center;padding:60px 0;color:var(--ink-faint)}
+  .empty.show{display:block}
+
+  @media (max-width:640px){
+    .search input{width:96px}
+    .mod-status{flex-direction:row;align-items:center}
+    .mod-head{gap:12px;padding:18px}
+    .mod-ico{font-size:24px}
+  }
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>LUMIA <small>Blueprint</small></div>
+    <div class="topbar-actions">
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Buscar módulo ou item…" aria-label="Buscar">
+      </label>
+      <button class="icon-btn" id="expandAll" title="Expandir / recolher tudo" aria-label="Expandir tudo">⇕</button>
+      <button class="icon-btn" id="theme" title="Alternar tema" aria-label="Alternar tema">◐</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Sessão 1 · A Fundação</span>
+    <h1 class="title">O mapa vivo do seu <em>negócio</em>, módulo por módulo.</h1>
+    <p class="lede">Este é o blueprint da plataforma LUMIA. Começamos pela <b>fundação</b> — Meu Negócio — e a cada sessão incrementamos um módulo. Clique em qualquer bloco para abrir seus componentes e ver <b>o que é necessário</b> para construir aquela etapa: dados, integrações e requisitos.</p>
+    <div class="meta-row">
+      <span class="chip"><span class="pip"></span><b>10</b>&nbsp;módulos</span>
+      <span class="chip"><span class="pip"></span><b id="itemCount">—</b>&nbsp;componentes mapeados</span>
+      <span class="chip"><span class="pip gold"></span>Metodologia&nbsp;<b>MQS</b></span>
+      <span class="chip">Atualizado em&nbsp;<b>26 jul 2026</b></span>
+    </div>
+  </div>
+</header>
+
+<section class="flow wrap" aria-label="Fluxo dos módulos">
+  <p class="section-label">O caminho — do alicerce à inteligência</p>
+  <div class="flow-track" id="flowTrack"></div>
+  <p class="flow-hint">↔ Arraste para percorrer · clique em um estágio para ir direto ao módulo</p>
+</section>
+
+<main class="modules wrap" id="modules"></main>
+<div class="empty wrap" id="empty">Nenhum módulo ou item corresponde à sua busca.</div>
+
+<footer>
+  <div class="wrap">
+    <span>© LUMIA · Blueprint da plataforma — documento vivo, versão de fundação.</span>
+    <span><b>Próxima sessão:</b> aprofundar o módulo em foco e detalhar o modelo de dados.</span>
+  </div>
+</footer>
+
+<script>
+const MODULES = [
+  {
+    icon:"🏠", title:"Meu Negócio", color:"#8b5cf6",
+    tag:"A base da sua empresa.", q:"Como está estruturada a minha empresa?",
+    status:"found",
+    groups:[
+      {name:"Minha Empresa", items:["Dados cadastrais","Razão Social","Nome Fantasia","CNPJ","CNAEs","Inscrição Estadual","Inscrição Municipal","Certificados Digitais","Logomarca","Identidade Visual","Horários de Funcionamento","Unidades","Filiais"]},
+      {name:"Estrutura Física", items:["Ambientes","Salas","Cabines","Cadeiras","Macas","Equipamentos","Mobiliário","Patrimônio","Depreciação","Fotos dos ambientes","Capacidade de atendimento"]},
+      {name:"Planejamento Estratégico", items:["Missão","Visão","Valores","SWOT","Objetivos","Plano Estratégico","OKRs","Metas anuais","Metas trimestrais","Metas mensais"]},
+      {name:"Organização", items:["Organograma","Cargos","Responsabilidades","Regimento Interno","Manual da Empresa","Normas","Políticas","Cultura Organizacional"]},
+      {name:"Calendário Empresarial", items:["Datas comemorativas","Campanhas","Eventos","Reuniões","Auditorias","Treinamentos","Ações comerciais"]},
+      {name:"Expansão", items:["Novas unidades","Franquias","Simulação de expansão","ROI de expansão","Plano de crescimento"]},
+    ],
+    needs:[
+      "Arquitetura <b>multi-tenant / multi-unidade</b> desde o início — cada filial é um nó com dados isolados mas consolidáveis.",
+      "Validação automática de <b>CNPJ</b> e preenchimento de razão social/CNAEs via <code>BrasilAPI</code> ou ReceitaWS.",
+      "Cofre seguro para <b>Certificados Digitais A1/A3</b> (criptografia em repouso) — base para emissão fiscal depois.",
+      "Modelo de <b>patrimônio</b> com cálculo de depreciação (linear/acelerada) e vida útil por categoria.",
+      "<b>Upload e otimização de imagens</b> (logomarca, fotos de ambientes) com CDN.",
+      "Base de <b>capacidade de atendimento</b> por ambiente/cadeira — alimenta a Agenda e os Resultados.",
+    ],
+  },
+  {
+    icon:"👥", title:"Meus Clientes", color:"#ec4899",
+    tag:"Toda a gestão do relacionamento.", q:"Quem são meus clientes e como me relaciono com eles?",
+    status:"map",
+    groups:[
+      {name:"Cadastro Completo", items:["Dados pessoais","Foto","Redes sociais","Preferências","Observações","Consentimentos LGPD","Anexos"]},
+      {name:"Histórico", items:["Serviços","Produtos","Fotos","Evolução","Avaliações","Frequência","Ticket médio"]},
+      {name:"Relacionamento (CRM)", items:["Funis","Etiquetas","Segmentações","Clientes VIP","Clientes Inativos","Clientes em Débito","Embaixadores","Novos Clientes"]},
+      {name:"Fidelização", items:["Clube","Cashback","Gift Card","Pontos","Assinaturas","Pacotes","Combos"]},
+      {name:"Comunicação", items:["WhatsApp","SMS","E-mail","Aniversários","Pós-atendimento","Retorno Programado","Pesquisa de satisfação","Automações"]},
+      {name:"Inteligência do Cliente", items:["Probabilidade de retorno","Risco de perda","Potencial de compra","Lifetime Value","Perfil de consumo","Origem do cliente"]},
+    ],
+    needs:[
+      "Módulo de <b>consentimento LGPD</b> com base legal, versão do termo e trilha de auditoria (direito ao esquecimento).",
+      "Motor de <b>segmentação</b> dinâmico (VIP, inativo, débito) recalculado por regras + eventos.",
+      "Integração de <b>comunicação</b>: WhatsApp Business API, provedor de SMS e SMTP transacional.",
+      "Cálculo de <b>LTV, churn e ticket médio</b> — requer histórico transacional (depende do Financeiro).",
+      "<b>Fotos de evolução</b> com armazenamento privado e consentimento de imagem.",
+      "Motor de <b>automações</b> (gatilho → condição → ação) para aniversário, pós-atendimento e retorno.",
+    ],
+  },
+  {
+    icon:"💇", title:"Minha Equipe", color:"#14b8a6",
+    tag:"Desenvolver pessoas para gerar resultados.", q:"Quem executa e como desenvolvo minha equipe?",
+    status:"map",
+    groups:[
+      {name:"Cadastro", items:["Profissionais","Parceiros","CLT","Prestadores","Estagiários"]},
+      {name:"Jornada", items:["Escalas","Horários","Banco de horas","Férias","Ausências"]},
+      {name:"Desenvolvimento", items:["Competências","Cursos","Certificações","Trilha de aprendizagem","Avaliações","PDI"]},
+      {name:"Performance", items:["Metas","Comissão","Bonificações","Ranking","Ticket Médio","Produtividade","Taxa de ocupação","Conversão de vendas"]},
+      {name:"Liderança", items:["Feedbacks","Reuniões 1:1","Plano de Carreira","Reconhecimentos","Clima Organizacional"]},
+      {name:"Documentação", items:["Contratos","Lei Salão Parceiro","Advertências","Documentos pessoais","Assinaturas digitais"]},
+    ],
+    needs:[
+      "Suporte aos vínculos <b>CLT, prestador e parceiro</b> — cada um com regras fiscais e de comissão distintas.",
+      "Conformidade com a <b>Lei do Salão Parceiro (13.352/2016)</b>: contrato de parceria e repasses separados.",
+      "Motor de <b>escalas e banco de horas</b> integrado à Agenda (disponibilidade real do profissional).",
+      "Regras de <b>comissionamento</b> flexíveis (por serviço, produto, meta, faixa) — insumo do Financeiro.",
+      "<b>Assinatura digital</b> de contratos e advertências (ICP-Brasil ou provedor de e-signature).",
+      "Cálculo de <b>taxa de ocupação e produtividade</b> a partir da capacidade × agenda executada.",
+    ],
+  },
+  {
+    icon:"📅", title:"Minha Agenda", color:"#3b82f6",
+    tag:"Toda a operação acontecendo em tempo real.", q:"O que está acontecendo agora e o que vem a seguir?",
+    status:"map",
+    groups:[
+      {name:"Agenda Geral", items:["Dia","Semana","Mês","Timeline"]},
+      {name:"Agendamentos", items:["Clientes","Profissionais","Salas","Equipamentos"]},
+      {name:"Fluxo de Atendimento", items:["Lista de Espera Inteligente","Confirmações Automáticas","Cancelamentos","Remarcações","Check-in","Check-out"]},
+      {name:"Agenda Comercial", items:["Reuniões","Cursos","Eventos","Datas comemorativas"]},
+      {name:"Experiência do Cliente", items:["Confirmação","Avaliação","Pesquisa","Próximo retorno"]},
+    ],
+    needs:[
+      "Motor de agendamento com <b>resolução de conflito multi-recurso</b>: profissional × sala × cadeira × equipamento ao mesmo tempo.",
+      "<b>Confirmação automática</b> via WhatsApp com resposta que atualiza o status (confirmado/cancelado).",
+      "<b>Lista de espera inteligente</b> que reocupa horários vagos por prioridade e preferência.",
+      "Fluxo de <b>check-in / check-out</b> que abre comanda no Financeiro automaticamente.",
+      "Visões <b>dia/semana/mês/timeline</b> em tempo real (WebSocket) para atualização entre dispositivos.",
+      "Regras de <b>cancelamento e remarcação</b> com política de antecedência e taxa opcional.",
+    ],
+  },
+  {
+    icon:"💰", title:"Meu Financeiro", color:"#10b981",
+    tag:"Onde faturamento se transforma em lucro.", q:"Estou realmente tendo lucro?",
+    status:"map",
+    groups:[
+      {name:"Operação de Caixa", items:["Caixa","Comandas","Contas a Pagar","Contas a Receber","Fluxo de Caixa","Conciliação Bancária","Centro de Custos"]},
+      {name:"Pagamentos", items:["PIX","Cartões","Split de Pagamentos","Cobranças","Inadimplência"]},
+      {name:"Fiscal", items:["NF-e","NFS-e"]},
+      {name:"Gestão", items:["DRE","Capital de Giro","Projeções Financeiras"]},
+    ],
+    needs:[
+      "Integração <b>PIX</b> via PSP ou API do Banco Central (cobrança com QR dinâmico + webhook de liquidação).",
+      "<b>Gateway de pagamento</b> com <b>split</b> — essencial para repasse de parceiros e aluguel de cadeira.",
+      "Emissão fiscal <b>NF-e (produtos)</b> e <b>NFS-e (serviços)</b> integrada à SEFAZ e prefeituras (multi-município).",
+      "<b>Conciliação bancária</b> via Open Finance / extratos (OFX) para bater recebíveis automaticamente.",
+      "Geração de <b>DRE</b> e fluxo de caixa a partir do centro de custos — base do módulo Resultados.",
+      "Gestão de <b>inadimplência</b> com régua de cobrança automatizada (integra Comunicação).",
+    ],
+  },
+  {
+    icon:"📈", title:"Meus Resultados", color:"#f59e0b",
+    tag:"Transformando dados em decisões.", q:"O que os números estão me dizendo?",
+    status:"map",
+    groups:[
+      {name:"Visão Executiva", items:["Painel Executivo","Beauty Plan","KPIs","Indicadores","DRE Gerencial"]},
+      {name:"Financeiro & Crescimento", items:["Lucratividade","Rentabilidade","Crescimento","ROI","Ticket Médio","Performance Financeira"]},
+      {name:"Operação", items:["Produtividade","Performance da Equipe","Clientes","Agenda","Marketing","Estoque"]},
+      {name:"Análise", items:["Relatórios","Benchmark","Comparativos"]},
+    ],
+    needs:[
+      "Camada de <b>BI / data warehouse</b> que consolida dados de todos os módulos (ETL agendado ou eventos).",
+      "Biblioteca de <b>KPIs</b> com fórmulas versionadas e definição única (ticket médio, ocupação, ROI).",
+      "<b>Painel executivo</b> responsivo com drill-down e comparativos por período/unidade/profissional.",
+      "Motor de <b>benchmark</b> — comparar a empresa com médias do setor (dado anonimizado agregado).",
+      "Exportação de <b>relatórios</b> (PDF/Excel) e agendamento de envio automático.",
+    ],
+  },
+  {
+    icon:"🧭", title:"Ferramentas MQS", color:"#d4820a",
+    tag:"A metodologia aplicada ao dia a dia.", q:"Como aplico o método na prática?", mqs:true,
+    status:"map",
+    groups:[
+      {name:"Diagnóstico & Mapas", items:["Diagnóstico MQS","Beauty Plan","Mapa da Lucratividade","SWOT Inteligente"]},
+      {name:"Bússolas", items:["Bússola de Preços","Bússola da Comissão","Bússola do Aluguel de Cadeiras","Bússola do Aluguel de Salas"]},
+      {name:"Simuladores", items:["Comissão","Lucro","Precificação","Contratação","Expansão"]},
+      {name:"Ação", items:["Plano de Ação","Matriz de Prioridades","Calendário Comercial","Plano Comercial"]},
+      {name:"Biblioteca Operacional", items:["Checklists","POPs","Templates","Contratos","Modelos"]},
+      {name:"Playbooks", items:["Contratação","Desligamento","Inventário","Campanhas","Reuniões","Feedback","Expansão","Implantação","Auditorias"]},
+    ],
+    needs:[
+      "<b>Motor de cálculo da metodologia MQS</b> — regras de precificação, comissão e aluguel como fórmulas configuráveis.",
+      "<b>Simuladores</b> que consomem dados reais da empresa (custos, ocupação) e projetam cenários lado a lado.",
+      "Engine de <b>Plano de Ação</b> com matriz de prioridades (impacto × esforço) e acompanhamento de execução.",
+      "Repositório versionado de <b>POPs, checklists, templates e playbooks</b> — o ativo de conhecimento MQS.",
+      "As <b>Bússolas</b> precisam do Financeiro (custos) e da Equipe (comissão) já alimentados para gerar recomendação.",
+    ],
+  },
+  {
+    icon:"📚", title:"Universidade MQS", color:"#6366f1",
+    tag:"Aprender enquanto administra.", q:"Como evoluo enquanto gerencio?", mqs:true,
+    status:"map",
+    groups:[
+      {name:"Minha Jornada", items:["Trilhas","Cursos","Missões","Exercícios","Certificados"]},
+      {name:"Conteúdo", items:["Biblioteca","Podcast","Webinars","Eventos"]},
+      {name:"Comunidade & Suporte", items:["Comunidade","Mentorias","Central de Ajuda","Implantação Guiada"]},
+      {name:"Engajamento", items:["Avaliações","Gamificação","Ranking","Evolução"]},
+    ],
+    needs:[
+      "Um <b>LMS</b> leve: trilhas, progresso, pré-requisitos e emissão de <b>certificados</b>.",
+      "<b>Hospedagem de vídeo</b> (streaming adaptativo) para cursos, webinars e podcast.",
+      "Camada de <b>gamificação</b> (missões, pontos, ranking) reaproveitável no módulo Equipe.",
+      "<b>Implantação guiada</b> (onboarding por etapas) conectada ao progresso real de configuração da plataforma.",
+      "Integração com o <b>Consultor MQS</b> — recomendar a aula certa no momento certo.",
+    ],
+  },
+  {
+    icon:"🤖", title:"Consultor MQS", color:"#06b6d4",
+    tag:"Seu consultor empresarial disponível todos os dias.", q:"O que eu deveria fazer hoje?", mqs:true,
+    status:"map",
+    groups:[
+      {name:"Rotina Diária", items:["Bom Dia","Resumo diário","Alertas Inteligentes"]},
+      {name:"Análise", items:["Diagnóstico Automático","Comparativos","Oportunidades"]},
+      {name:"Direção", items:["Recomendações","Simulações","Planejamento","Metas","Plano de Ação","Acompanhamento"]},
+      {name:"Consultoria IA", items:["Consultoria IA","Mentor MQS","Pergunte ao Consultor"]},
+    ],
+    needs:[
+      "Motor de <b>IA (LLM)</b> com <b>RAG</b> sobre: Método MQS, dados da empresa, histórico, indicadores, Universidade e Playbooks.",
+      "Base de <b>alertas inteligentes</b> por regras + detecção de anomalia (queda de ticket, agenda ociosa, inadimplência).",
+      "Geração do <b>“Bom Dia”</b> — resumo diário automatizado com as 3 prioridades do dia.",
+      "<b>Guard-rails</b>: a IA responde ancorada nos dados reais e no método, com citação da fonte.",
+      "Depende de <b>todos os módulos alimentados</b> — é a camada de inteligência que fecha o ciclo.",
+    ],
+  },
+  {
+    icon:"⚙️", title:"Configurações", color:"#64748b",
+    tag:"Tudo que faz o sistema funcionar.", q:"Como o sistema é administrado e mantido seguro?",
+    status:"map",
+    groups:[
+      {name:"Acesso", items:["Usuários","Perfis","Permissões"]},
+      {name:"Integrações", items:["WhatsApp","Google","Meta","Pagamentos","APIs","Chaves de Integração","Webhooks","API"]},
+      {name:"Assinatura", items:["Assinatura","Planos","Cobrança","Notificações"]},
+      {name:"Preferências", items:["Preferências","Idiomas","Notificações"]},
+      {name:"Segurança & Dados", items:["Auditoria","Logs","Segurança","Backup","Importação","Exportação","LGPD"]},
+    ],
+    needs:[
+      "<b>RBAC</b> — perfis e permissões granulares por módulo/ação (fora do fluxo de rotina, boa prática SaaS).",
+      "Central de <b>integrações OAuth</b> (WhatsApp, Google, Meta, pagamentos) com gestão de chaves e webhooks.",
+      "Motor de <b>billing / assinatura</b>: planos, cobrança recorrente e controle de acesso por plano.",
+      "<b>Trilha de auditoria e logs</b> imutáveis + rotina de <b>backup</b> e importação/exportação de dados.",
+      "Painel <b>LGPD</b>: exportar/apagar dados do titular e registrar consentimentos de forma centralizada.",
+    ],
+  },
+];
+
+const modulesEl = document.getElementById('modules');
+const flowEl = document.getElementById('flowTrack');
+let totalItems = 0;
+
+MODULES.forEach((m,i)=>{
+  const num = String(i+1).padStart(2,'0');
+  const count = m.groups.reduce((a,g)=>a+g.items.length,0);
+  totalItems += count;
+  const soft = hexSoft(m.color);
+  const styleVars = `--mc:${m.color};--mc-soft:${soft}`;
+
+  // flow node
+  const node = document.createElement('button');
+  node.className='flow-node';
+  node.style.cssText=styleVars;
+  node.innerHTML = `<div class="fn-top"><span class="fn-num">${num}</span><span class="fn-ico">${m.icon}</span></div>
+    <div class="fn-name">${m.title}</div><div class="fn-count">${count} itens · ${m.groups.length} grupos</div>`;
+  node.addEventListener('click',()=>{
+    const d=document.getElementById('mod-'+i); d.open=true; syncBody(d);
+    d.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  flowEl.appendChild(node);
+
+  // module card
+  const det = document.createElement('details');
+  det.className='mod'; det.id='mod-'+i; det.style.cssText=styleVars;
+  const groupsHtml = m.groups.map(g=>`
+    <div class="group"><h3>${g.name}</h3>
+      <div class="tags">${g.items.map(it=>`<span class="tag">${it}</span>`).join('')}</div>
+    </div>`).join('');
+  const needsHtml = m.needs.map(n=>`<li>${n}</li>`).join('');
+  const statusLabel = m.status==='found' ? 'Fundação · foco' : 'Mapeado';
+  det.innerHTML = `
+    <summary class="mod-head">
+      <span class="mod-num">${num}</span>
+      <span class="mod-ico">${m.icon}</span>
+      <span class="mod-h-main">
+        <span class="mod-h-title"><h2>${m.title}</h2></span>
+        <p class="mod-tag">“${m.tag}”</p>
+        <span class="mod-q">${m.q}</span>
+      </span>
+      <span class="mod-status">
+        <span class="status-pill ${m.status}">${statusLabel}</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+      </span>
+    </summary>
+    <div class="mod-body"><div class="mod-body-inner">
+      <div class="groups">${groupsHtml}</div>
+      <div class="needs">
+        <h3><span class="wr">🔧</span> O que é necessário para construir</h3>
+        <p class="sub">Requisitos, dados e integrações que esta etapa exige — resultado da pesquisa por módulo.</p>
+        <ul>${needsHtml}</ul>
+      </div>
+    </div></div>`;
+  modulesEl.appendChild(det);
+
+  // native <details> summary click handled; animate max-height
+  det.addEventListener('toggle',()=>syncBody(det));
+});
+
+document.getElementById('itemCount').textContent = totalItems;
+
+function syncBody(det){
+  const body = det.querySelector('.mod-body');
+  const inner = det.querySelector('.mod-body-inner');
+  if(det.open){ body.style.maxHeight = inner.scrollHeight + 40 + 'px'; }
+  else { body.style.maxHeight = '0px'; }
+}
+// keep heights correct on resize
+let rz; window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{
+  document.querySelectorAll('.mod[open]').forEach(syncBody);
+},150);});
+
+function hexSoft(hex){
+  const c=hex.replace('#','');
+  const r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
+  const dark = matchMedia('(prefers-color-scheme:dark)').matches || document.documentElement.dataset.theme==='dark';
+  return dark ? `rgba(${r},${g},${b},.18)` : `rgba(${r},${g},${b},.12)`;
+}
+
+/* expand / collapse all */
+let allOpen=false;
+document.getElementById('expandAll').addEventListener('click',()=>{
+  allOpen=!allOpen;
+  document.querySelectorAll('.mod').forEach(d=>{d.open=allOpen;syncBody(d);});
+});
+
+/* theme toggle */
+const themeBtn=document.getElementById('theme');
+themeBtn.addEventListener('click',()=>{
+  const root=document.documentElement;
+  const isDark = root.dataset.theme==='dark' || (!root.dataset.theme && matchMedia('(prefers-color-scheme:dark)').matches);
+  root.dataset.theme = isDark ? 'light' : 'dark';
+  // recolor soft backgrounds for new theme
+  MODULES.forEach((m,i)=>{document.getElementById('mod-'+i).style.setProperty('--mc-soft',hexSoft(m.color));});
+  document.querySelectorAll('.flow-node').forEach((n,i)=>n.style.setProperty('--mc-soft',hexSoft(MODULES[i].color)));
+  document.querySelectorAll('.mod[open]').forEach(syncBody);
+});
+
+/* search */
+const q=document.getElementById('q'), emptyEl=document.getElementById('empty');
+q.addEventListener('input',()=>{
+  const term=q.value.trim().toLowerCase();
+  let anyShown=false;
+  MODULES.forEach((m,i)=>{
+    const det=document.getElementById('mod-'+i);
+    const hay=(m.title+' '+m.tag+' '+m.q+' '+m.groups.map(g=>g.name+' '+g.items.join(' ')).join(' ')).toLowerCase();
+    const hit = !term || hay.includes(term);
+    det.style.display = hit ? '' : 'none';
+    if(hit){
+      anyShown=true;
+      if(term){det.open=true;syncBody(det);
+        det.querySelectorAll('.tag').forEach(t=>{
+          t.style.outline = t.textContent.toLowerCase().includes(term)?'2px solid var(--mc)':'';
+          t.style.outlineOffset='1px';
+        });
+      } else {
+        det.querySelectorAll('.tag').forEach(t=>t.style.outline='');
+      }
+    }
+  });
+  emptyEl.classList.toggle('show',!anyShown);
+});
+</script>
