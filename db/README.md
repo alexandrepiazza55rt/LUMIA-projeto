@@ -1,8 +1,9 @@
 # Modelo de dados — Fundação
 
-Schema das duas decisões que travam todo o resto do sistema: a **hierarquia de
-estabelecimentos** e o **Meu Catálogo**. Escrito para PostgreSQL 16+ e validado
-contra um banco real — 40 asserções, todas passando.
+Schema das decisões que travam todo o resto do sistema: a **hierarquia de
+estabelecimentos**, o **Meu Catálogo** e a **Minha Agenda**. Escrito para
+PostgreSQL 16+ e validado contra um banco real — **78 asserções**, incluindo um
+teste de concorrência com 30 sessões simultâneas.
 
 ```bash
 ./db/run.sh                # migrations + seed + testes
@@ -19,8 +20,11 @@ contra um banco real — 40 asserções, todas passando.
 | `migrations/0004_papeis.sql` | Papéis `lumia_app` e `lumia_leitura` com concessões |
 | `migrations/0005_preco_deterministico.sql` | `EXCLUDE` que impede empate ambíguo de prioridade de tabela |
 | `migrations/0006_corrige_profundidade_subarvore.sql` | Correção de erro de 1 na profundidade ao mover subárvore |
+| `migrations/0007_agenda.sql` | Profissional, cliente, recurso agendável, agendamento, **reserva com EXCLUDE**, bloqueio, lista de espera |
 | `seed_demo.sql` | Rede com 2 estabelecimentos em **fusos diferentes** (SP e Manaus), coloração com pausa química, custo com 2 vigências |
-| `tests/test_fundacao.sql` | 40 asserções; termina em `ROLLBACK`, é idempotente |
+| `tests/test_fundacao.sql` | 40 asserções de hierarquia e catálogo |
+| `tests/test_agenda.sql` | 37 asserções de agenda; termina em `ROLLBACK`, é idempotente |
+| `tests/test_concorrencia.sh` | 30 sessões paralelas disputando o mesmo horário |
 
 As migrations 0005 e 0006 existem porque a suíte de testes encontrou os dois
 problemas. Ficaram como migrations separadas em vez de edição das anteriores
@@ -112,9 +116,64 @@ reescreveria o relatório de março, a comissão seria recalculada
 retroativamente — gerando passivo trabalhista — e não haveria backfill
 possível, porque a informação da vigência teria sido destruída.
 
+## A agenda: a garantia está no banco
+
+Em vez de "um agendamento tem um horário", o modelo tem **reservas** — uma linha
+por `(recurso, intervalo)`. Uma única constraint faz o double-booking ser
+impossível:
+
+```sql
+CONSTRAINT rs_sem_sobreposicao EXCLUDE USING gist (
+  tenant_id WITH =, recurso_id WITH =, slot WITH =, periodo WITH &&
+) WHERE (ativa)
+```
+
+`recurso_agendavel` unifica profissional e unidade operacional sob uma
+identidade só, de modo que **uma** constraint cobre profissional, sala, cadeira,
+maca e equipamento. Capacidade > 1 (uma sala para duas pessoas) é modelada por
+`slot`: a sala aceita slot 1 e 2 no mesmo horário e recusa o terceiro.
+
+### A pausa química cai fora de graça
+
+Coloração ocupa a profissional 40 min, depois 30 min de pausa química, depois
+20 min de finalização. Durante a pausa ela atende outra cliente, mas a cadeira
+segue ocupada. No modelo isso não é código especial — é a contagem de linhas:
+
+```
+profissional →  2 reservas (antes e depois da pausa)   =  70 min
+cadeira      →  1 reserva contígua                     = 100 min
+```
+
+É essa distinção que devolve ao salão cerca de 30% da capacidade que uma agenda
+ingênua desperdiça.
+
+### A prova de concorrência
+
+```
+30 sessões PostgreSQL simultâneas disputando o mesmo horário
+   sessões que gravaram ......... 1
+   recusadas pela constraint .... 29
+   reservas no banco ............ 1
+```
+
+Nenhum lock distribuído participou. `lumia.slot_livre()` existe para a tela de
+disponibilidade, mas **não é a garantia** — entre consultar e gravar há uma
+janela de corrida, e é o `EXCLUDE` que a fecha. A aplicação trata a violação de
+exclusão como "o horário acabou de ser ocupado" e reapresenta a agenda.
+
+### Fuso é por estabelecimento, não por servidor
+
+O mesmo instante UTC cai em **dias comerciais diferentes**:
+
+```
+2026-03-11 03:30 UTC  →  11/mar em São Paulo (UTC-3)
+2026-03-11 03:30 UTC  →  10/mar em Manaus    (UTC-4)
+```
+
+Sem isso, o fechamento de caixa da virada vaza para o dia seguinte.
+
 ## Próximas migrations
 
-`0007` diante: agenda (com garantia de não-sobreposição multi-recurso **no
-banco**, não em lock de Redis), balcão (comanda com itens polimórficos e
-multi-executor), estoque (livro append-only), fiscal (regime versionado e
-memória de cálculo imutável).
+`0008` diante: balcão (comanda com itens polimórficos, multi-executor e sessão
+de caixa), estoque (livro append-only com custo médio), fiscal (regime
+versionado e memória de cálculo imutável).

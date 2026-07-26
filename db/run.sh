@@ -50,12 +50,26 @@ if [[ "$so_testes" -eq 0 ]]; then
   fi
 fi
 
-echo ""
-echo "→ testes de fundação"
-# A suíte termina em ROLLBACK: pode rodar quantas vezes for preciso.
-saida="$("${PSQL[@]}" -f "$RAIZ/tests/test_fundacao.sql" 2>&1)"
-echo "$saida" | sed 's/psql:[^ ]*: NOTICE:  //' | grep -E '^(=== | +OK |====)|PASSARAM' || true
+# As suítes SQL terminam em ROLLBACK: podem rodar quantas vezes for preciso.
+total=0
+for suite in test_fundacao test_agenda; do
+  echo ""
+  echo "→ $suite"
+  saida="$("${PSQL[@]}" -f "$RAIZ/tests/$suite.sql" 2>&1)"
+  echo "$saida" | sed 's/psql:[^ ]*: NOTICE:  //' | grep -E '^(=== | +OK |====)|PASSARAM' || true
+  n="$(echo "$saida" | grep -c 'OK  ' || true)"
+  total=$((total + n))
+done
 
-total="$(echo "$saida" | grep -c 'OK  ' || true)"
+if [[ "$com_seed" -eq 1 ]]; then
+  echo ""
+  echo "→ concorrência (prova que o EXCLUDE dispensa lock distribuído)"
+  if "$RAIZ/tests/test_concorrencia.sh" 30 2>&1 | grep -E '^(   |  OK|FALHOU)'; then
+    total=$((total + 1))
+  else
+    echo "FALHOU: teste de concorrência"; exit 1
+  fi
+fi
+
 echo ""
 echo "→ $total asserções passaram"
