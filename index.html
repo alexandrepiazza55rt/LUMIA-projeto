@@ -1,4 +1,4 @@
-<title>LUMIA · Blueprint — Fundação do Negócio</title>
+<title>LUMIA · Fluxograma de Dependências</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root{
@@ -7,6 +7,7 @@
     --line:#e8dff2; --line-strong:#d8cbe8;
     --accent:#7c3aed; --accent-soft:#ede4fb;
     --gold:#b8862f; --gold-soft:#f6edd8;
+    --feed:#7c3aed; --dep:#c2751a;
     --shadow:0 1px 2px rgba(40,20,60,.05), 0 8px 24px -12px rgba(60,30,90,.18);
     --shadow-lg:0 24px 60px -24px rgba(60,25,100,.35);
     --serif:Georgia,'Times New Roman',ui-serif,serif;
@@ -21,6 +22,7 @@
       --line:#2c2140; --line-strong:#3a2c52;
       --accent:#b78cf5; --accent-soft:#271a3c;
       --gold:#e2b662; --gold-soft:#2a2113;
+      --feed:#b78cf5; --dep:#e2a25a;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 30px -14px rgba(0,0,0,.7);
       --shadow-lg:0 30px 70px -30px rgba(0,0,0,.8);
     }
@@ -30,6 +32,7 @@
     --ink:#241b30; --ink-soft:#5b5068; --ink-faint:#8a7f97;
     --line:#e8dff2; --line-strong:#d8cbe8;
     --accent:#7c3aed; --accent-soft:#ede4fb; --gold:#b8862f; --gold-soft:#f6edd8;
+    --feed:#7c3aed; --dep:#c2751a;
     --shadow:0 1px 2px rgba(40,20,60,.05), 0 8px 24px -12px rgba(60,30,90,.18);
     --shadow-lg:0 24px 60px -24px rgba(60,25,100,.35);
   }
@@ -38,153 +41,160 @@
     --ink:#f2ecf8; --ink-soft:#b9adca; --ink-faint:#877a9a;
     --line:#2c2140; --line-strong:#3a2c52;
     --accent:#b78cf5; --accent-soft:#271a3c; --gold:#e2b662; --gold-soft:#2a2113;
+    --feed:#b78cf5; --dep:#e2a25a;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 30px -14px rgba(0,0,0,.7);
     --shadow-lg:0 30px 70px -30px rgba(0,0,0,.8);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
-  body{
-    margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.55;-webkit-font-smoothing:antialiased;
-    background-image:radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);
-    background-attachment:fixed;
-  }
-  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);background-attachment:fixed}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
 
-  /* ---- top bar ---- */
-  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
-    background:color-mix(in srgb,var(--bg) 82%, transparent);border-bottom:1px solid var(--line)}
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 82%, transparent);border-bottom:1px solid var(--line)}
   .topbar .wrap{display:flex;align-items:center;gap:16px;height:60px}
-  .brand{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.14em;
-    display:flex;align-items:center;gap:10px}
-  .brand .dot{width:11px;height:11px;border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, #fff, var(--accent));
-    box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%,transparent)}
-  .brand small{font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:.18em;
-    color:var(--ink-faint);text-transform:uppercase}
+  .brand{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.14em;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #fff, var(--accent));box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%,transparent)}
+  .brand small{font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase}
   .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
-  .search{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-strong);
-    border-radius:999px;padding:6px 12px;color:var(--ink-soft);box-shadow:var(--shadow)}
-  .search input{border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;width:150px;outline:none}
-  .search svg{opacity:.55;flex:none}
-  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);
-    color:var(--ink-soft);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow);font-size:16px}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow);font-size:16px}
   .icon-btn:hover{color:var(--ink);border-color:var(--accent)}
-  .icon-btn:focus-visible,.search:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+  .icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-  /* ---- hero ---- */
-  .hero{padding:clamp(40px,7vw,88px) 0 clamp(24px,4vw,44px)}
-  .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600;
-    display:inline-flex;align-items:center;gap:10px}
+  .hero{padding:clamp(38px,6vw,72px) 0 clamp(14px,2vw,24px)}
+  .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600;display:inline-flex;align-items:center;gap:10px}
   .eyebrow::before{content:"";width:30px;height:1px;background:var(--gold)}
-  h1.title{font-family:var(--serif);font-weight:700;line-height:1.02;letter-spacing:-.02em;
-    font-size:clamp(38px,7vw,74px);margin:18px 0 0;text-wrap:balance;max-width:14ch}
+  h1.title{font-family:var(--serif);font-weight:700;line-height:1.03;letter-spacing:-.02em;font-size:clamp(34px,6vw,64px);margin:18px 0 0;text-wrap:balance;max-width:16ch}
   h1.title em{font-style:italic;color:var(--accent)}
-  .lede{margin:22px 0 0;max-width:56ch;font-size:clamp(16px,1.6vw,19px);color:var(--ink-soft)}
-  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-  .chip{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;
-    background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;color:var(--ink-soft);box-shadow:var(--shadow)}
-  .chip b{color:var(--ink);font-weight:600}
-  .chip .pip{width:7px;height:7px;border-radius:50%;background:var(--accent)}
-  .chip .pip.gold{background:var(--gold)}
+  .lede{margin:20px 0 0;max-width:60ch;font-size:clamp(16px,1.6vw,18px);color:var(--ink-soft)}
 
-  /* ---- flow overview ---- */
-  .section-label{font-family:var(--serif);font-size:13px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--ink-faint);margin:0 0 16px;font-weight:600;display:flex;align-items:center;gap:12px}
+  .tabs{display:flex;gap:6px;margin-top:30px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{appearance:none;border:0;background:none;font:inherit;font-size:14.5px;font-weight:600;color:var(--ink-faint);padding:11px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;display:inline-flex;align-items:center;gap:8px}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+  .tab:hover{color:var(--ink)}
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+  .view{display:none}
+  .view.active{display:block}
+
+  /* ---------- DEPENDENCY GRAPH ---------- */
+  .dep{padding:26px 0 70px}
+  .legend{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:center;margin:0 0 18px;font-size:13px;color:var(--ink-soft)}
+  .legend .lg{display:inline-flex;align-items:center;gap:9px}
+  .legend .swatch{width:34px;height:0;border-top:3px solid var(--c);border-radius:2px;position:relative;flex:none}
+  .legend .swatch.dash{border-top-style:dashed}
+  .legend .swatch::after{content:"";position:absolute;right:-2px;top:-4.5px;border-left:7px solid var(--c);border-top:4px solid transparent;border-bottom:4px solid transparent}
+  .legend b{color:var(--ink)}
+
+  .dep-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+  @media (max-width:900px){.dep-grid{grid-template-columns:1fr}}
+  .graph-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px}
+  .graph-wrap{overflow-x:auto;overflow-y:hidden}
+  svg.graph{width:100%;min-width:820px;height:auto;display:block}
+  .graph-hint{font-size:12px;color:var(--ink-faint);text-align:center;padding:6px 0 8px}
+
+  /* svg node/edge states */
+  .edge{fill:none;stroke:var(--line-strong);stroke-width:1.6;transition:stroke .2s,opacity .2s,stroke-width .2s}
+  .edge.feedback{stroke-dasharray:6 5}
+  .edge.dim{opacity:.10}
+  .edge.feed{stroke:var(--feed);stroke-width:2.6;opacity:1}
+  .edge.dep{stroke:var(--dep);stroke-width:2.6;opacity:1}
+  .node{cursor:pointer}
+  .node .box{fill:var(--surface);stroke:var(--nc);stroke-width:1.4;transition:opacity .2s,stroke-width .2s}
+  .node .cap{fill:var(--nc)}
+  .node .t{fill:var(--ink);font-family:var(--sans);font-weight:600;font-size:15px}
+  .node .n{fill:var(--nc);font-family:var(--serif);font-weight:700;font-size:12px}
+  .node.dim .box{opacity:.34}
+  .node.dim .t,.node.dim .n,.node.dim .cap,.node.dim .ico{opacity:.34}
+  .node.on .box{stroke-width:3;filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--nc) 45%,transparent))}
+  .node.base .box{fill:var(--surface-2);stroke-dasharray:5 4}
+  .node .ico{font-size:19px}
+  .node .sub{fill:var(--ink-faint);font-family:var(--sans);font-size:11px;font-weight:500}
+
+  /* details panel */
+  .panel{position:sticky;top:76px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;min-height:200px}
+  .panel .ph{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .panel .ph .pico{font-size:26px;line-height:1}
+  .panel .ph h3{font-family:var(--serif);font-size:20px;margin:0;letter-spacing:-.01em}
+  .panel .layer-tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pc);background:var(--pc-soft);padding:3px 9px;border-radius:999px;display:inline-block;margin:2px 0 12px}
+  .panel .ptag{font-size:13px;color:var(--ink-soft);font-style:italic;margin:0 0 14px}
+  .dep-block{margin-top:14px}
+  .dep-block h4{font-size:11px;letter-spacing:.09em;text-transform:uppercase;margin:0 0 9px;display:flex;align-items:center;gap:8px;font-weight:700}
+  .dep-block h4 .arw{font-family:var(--mono);font-weight:700}
+  .dep-block.needs h4{color:var(--dep)} .dep-block.feeds h4{color:var(--feed)}
+  .dep-item{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+  .dep-item .di-ico{font-size:16px;flex:none;line-height:1.3}
+  .dep-item .di-main b{display:block;font-weight:600;color:var(--ink);font-size:13px}
+  .dep-item .di-main span{color:var(--ink-soft);font-size:12.5px;line-height:1.4}
+  .dep-none{font-size:13px;color:var(--ink-faint);font-style:italic;padding:6px 0}
+  .panel-default .pd-title{font-family:var(--serif);font-size:17px;margin:0 0 6px}
+  .panel-default p{font-size:13px;color:var(--ink-soft);margin:0 0 16px}
+  .stepper{list-style:none;margin:0;padding:0;counter-reset:s}
+  .stepper li{position:relative;padding:0 0 14px 34px;font-size:13px}
+  .stepper li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:22px;height:22px;border-radius:50%;background:var(--sc);color:#fff;font-weight:700;font-size:11px;display:grid;place-items:center;font-family:var(--serif)}
+  .stepper li::after{content:"";position:absolute;left:10.5px;top:23px;bottom:0;width:1.5px;background:var(--line-strong)}
+  .stepper li:last-child{padding-bottom:0}
+  .stepper li:last-child::after{display:none}
+  .stepper li b{color:var(--ink);font-weight:600}
+  .stepper li span{color:var(--ink-faint)}
+
+  /* ---------- MODULES VIEW (reused) ---------- */
+  .section-label{font-family:var(--serif);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:26px 0 16px;font-weight:600;display:flex;align-items:center;gap:12px}
   .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
-  .flow{padding:clamp(20px,3vw,32px) 0}
-  .flow-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(130px,1fr);gap:10px;
-    overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
-  .flow-node{scroll-snap-align:start;text-align:left;cursor:pointer;position:relative;
-    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 14px 16px;
-    box-shadow:var(--shadow);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
-    border-top:3px solid var(--mc,var(--accent))}
+  .flow-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(130px,1fr);gap:10px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
+  .flow-node{scroll-snap-align:start;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);transition:transform .18s,border-color .18s,box-shadow .18s;border-top:3px solid var(--mc,var(--accent));font:inherit;color:inherit}
   .flow-node:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--mc,var(--accent))}
   .flow-node .fn-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .flow-node .fn-num{font-family:var(--serif);font-size:12px;font-weight:700;color:var(--mc);
-    background:var(--mc-soft);width:24px;height:24px;border-radius:7px;display:grid;place-items:center}
+  .flow-node .fn-num{font-family:var(--serif);font-size:12px;font-weight:700;color:var(--mc);background:var(--mc-soft);width:24px;height:24px;border-radius:7px;display:grid;place-items:center}
   .flow-node .fn-ico{font-size:19px}
-  .flow-node .fn-name{font-weight:600;font-size:13.5px;line-height:1.25;letter-spacing:-.01em}
+  .flow-node .fn-name{font-weight:600;font-size:13.5px;line-height:1.25}
   .flow-node .fn-count{font-size:11px;color:var(--ink-faint);margin-top:5px;font-variant-numeric:tabular-nums}
-  .flow-hint{font-size:12px;color:var(--ink-faint);margin-top:14px;display:flex;align-items:center;gap:8px}
 
-  /* ---- module cards ---- */
-  .modules{padding:clamp(20px,4vw,40px) 0 80px;display:flex;flex-direction:column;gap:20px}
-  .mod{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
-    overflow:hidden;scroll-margin-top:76px;position:relative}
+  .modules{padding:8px 0 80px;display:flex;flex-direction:column;gap:20px}
+  .mod{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:76px;position:relative}
   .mod::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mc,var(--accent))}
-  .mod-head{display:flex;align-items:flex-start;gap:16px;padding:22px clamp(18px,3vw,28px);cursor:pointer;
-    width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit}
+  .mod-head{display:flex;align-items:flex-start;gap:16px;padding:22px clamp(18px,3vw,28px);cursor:pointer;width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit}
   .mod-head:hover{background:var(--surface-2)}
   .mod-head:focus-visible{outline:2px solid var(--mc,var(--accent));outline-offset:-2px}
-  .mod-ico{font-size:30px;line-height:1;flex:none;filter:saturate(1.05)}
-  .mod-num{font-family:var(--serif);font-weight:700;font-size:13px;color:var(--mc);background:var(--mc-soft);
-    border-radius:8px;padding:4px 9px;flex:none;letter-spacing:.02em}
+  .mod-ico{font-size:30px;line-height:1;flex:none}
+  .mod-num{font-family:var(--serif);font-weight:700;font-size:13px;color:var(--mc);background:var(--mc-soft);border-radius:8px;padding:4px 9px;flex:none}
   .mod-h-main{flex:1;min-width:0}
-  .mod-h-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .mod-h-title h2{font-family:var(--serif);font-size:clamp(19px,2.4vw,25px);margin:0;letter-spacing:-.01em;font-weight:700}
   .mod-tag{font-size:14px;color:var(--ink-soft);margin:5px 0 0;font-style:italic}
   .mod-q{font-size:12.5px;color:var(--mc);margin:9px 0 0;font-weight:500;display:inline-flex;align-items:center;gap:7px}
-  .mod-q::before{content:"?";width:16px;height:16px;border-radius:50%;background:var(--mc-soft);color:var(--mc);
-    display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--serif)}
+  .mod-q::before{content:"?";width:16px;height:16px;border-radius:50%;background:var(--mc-soft);color:var(--mc);display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--serif)}
   .mod-status{flex:none;align-self:center;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
   .status-pill{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
   .status-pill.found{background:var(--gold-soft);color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
   .status-pill.map{background:var(--mc-soft);color:var(--mc)}
-  .chev{width:26px;height:26px;color:var(--ink-faint);transition:transform .25s ease;flex:none}
+  .chev{width:26px;height:26px;color:var(--ink-faint);transition:transform .25s;flex:none}
   .mod[open] .chev{transform:rotate(180deg)}
-
-  .mod-body{border-top:1px solid var(--line);padding:0 clamp(18px,3vw,28px);
-    max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+  .mod-body{border-top:1px solid var(--line);padding:0 clamp(18px,3vw,28px);max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
   .mod-body-inner{padding:22px 0 26px}
   .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
   .group{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px 17px}
-  .group h3{margin:0 0 11px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
-    font-weight:700;display:flex;align-items:center;gap:8px}
+  .group h3{margin:0 0 11px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;display:flex;align-items:center;gap:8px}
   .group h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--mc);flex:none}
   .tags{display:flex;flex-wrap:wrap;gap:7px}
-  .tag{font-size:12.5px;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;
-    padding:5px 10px;color:var(--ink);line-height:1.3}
+  .tag{font-size:12.5px;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;padding:5px 10px;color:var(--ink);line-height:1.3}
+  .needs-box{margin-top:22px;border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;background:color-mix(in srgb,var(--mc-soft) 55%, var(--surface))}
+  .needs-box h3{margin:0 0 4px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:9px}
+  .needs-box .sub{font-size:12px;color:var(--ink-soft);margin:0 0 14px}
+  .needs-box ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 22px}
+  .needs-box li{position:relative;padding-left:22px;font-size:13.5px;line-height:1.45}
+  .needs-box li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--mc);transform:rotate(45deg)}
+  .needs-box code{font-family:var(--mono);font-size:11.5px;background:var(--surface);border:1px solid var(--line-strong);border-radius:5px;padding:1px 6px;color:var(--mc);white-space:nowrap}
 
-  .needs{margin-top:22px;border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;
-    background:color-mix(in srgb,var(--mc-soft) 55%, var(--surface))}
-  .needs h3{margin:0 0 4px;font-size:13px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
-  .needs h3 .wr{font-size:16px}
-  .needs .sub{font-size:12px;color:var(--ink-soft);margin:0 0 14px}
-  .needs ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 22px}
-  .needs li{position:relative;padding-left:22px;font-size:13.5px;color:var(--ink);line-height:1.45}
-  .needs li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;
-    background:var(--mc);transform:rotate(45deg)}
-  .needs li b{font-weight:600}
-  .needs code{font-family:var(--mono);font-size:11.5px;background:var(--surface);border:1px solid var(--line-strong);
-    border-radius:5px;padding:1px 6px;color:var(--mc);white-space:nowrap}
-
-  /* footer */
-  footer{border-top:1px solid var(--line);padding:34px 0 70px;color:var(--ink-faint);font-size:13px}
+  footer{border-top:1px solid var(--line);padding:30px 0 70px;color:var(--ink-faint);font-size:13px}
   footer .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
   footer b{color:var(--ink-soft)}
-
-  .empty{display:none;text-align:center;padding:60px 0;color:var(--ink-faint)}
-  .empty.show{display:block}
-
-  @media (max-width:640px){
-    .search input{width:96px}
-    .mod-status{flex-direction:row;align-items:center}
-    .mod-head{gap:12px;padding:18px}
-    .mod-ico{font-size:24px}
-  }
 </style>
 
 <div class="topbar">
   <div class="wrap">
     <div class="brand"><span class="dot"></span>LUMIA <small>Blueprint</small></div>
     <div class="topbar-actions">
-      <label class="search">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="q" type="search" placeholder="Buscar módulo ou item…" aria-label="Buscar">
-      </label>
-      <button class="icon-btn" id="expandAll" title="Expandir / recolher tudo" aria-label="Expandir tudo">⇕</button>
       <button class="icon-btn" id="theme" title="Alternar tema" aria-label="Alternar tema">◐</button>
     </div>
   </div>
@@ -193,39 +203,53 @@
 <header class="hero">
   <div class="wrap">
     <span class="eyebrow">Sessão 1 · A Fundação</span>
-    <h1 class="title">O mapa vivo do seu <em>negócio</em>, módulo por módulo.</h1>
-    <p class="lede">Este é o blueprint da plataforma LUMIA. Começamos pela <b>fundação</b> — Meu Negócio — e a cada sessão incrementamos um módulo. Clique em qualquer bloco para abrir seus componentes e ver <b>o que é necessário</b> para construir aquela etapa: dados, integrações e requisitos.</p>
-    <div class="meta-row">
-      <span class="chip"><span class="pip"></span><b>10</b>&nbsp;módulos</span>
-      <span class="chip"><span class="pip"></span><b id="itemCount">—</b>&nbsp;componentes mapeados</span>
-      <span class="chip"><span class="pip gold"></span>Metodologia&nbsp;<b>MQS</b></span>
-      <span class="chip">Atualizado em&nbsp;<b>26 jul 2026</b></span>
+    <h1 class="title">Como cada módulo <em>depende</em> do outro.</h1>
+    <p class="lede">O mesmo blueprint, agora como um <b>fluxograma de dependências</b>. As setas mostram o que alimenta o quê — e revelam a ordem natural de construção: da fundação até a camada de inteligência. Clique em qualquer módulo para acender do que ele <b>depende</b> e o que ele <b>alimenta</b>.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tab-dep" role="tab" aria-selected="true" aria-controls="view-dep">🔗 Fluxo de dependências</button>
+      <button class="tab" id="tab-mod" role="tab" aria-selected="false" aria-controls="view-mod">🗂️ Módulos &amp; requisitos</button>
     </div>
   </div>
 </header>
 
-<section class="flow wrap" aria-label="Fluxo dos módulos">
-  <p class="section-label">O caminho — do alicerce à inteligência</p>
-  <div class="flow-track" id="flowTrack"></div>
-  <p class="flow-hint">↔ Arraste para percorrer · clique em um estágio para ir direto ao módulo</p>
-</section>
+<main class="wrap">
+  <!-- ===== DEPENDENCY VIEW ===== -->
+  <section class="view active dep" id="view-dep" role="tabpanel" aria-labelledby="tab-dep">
+    <div class="legend">
+      <span class="lg"><span class="swatch" style="--c:var(--feed)"></span> <b>Alimenta →</b>&nbsp;o que este módulo entrega adiante</span>
+      <span class="lg"><span class="swatch" style="--c:var(--dep)"></span> <b>Depende de →</b>&nbsp;o que precisa existir antes</span>
+      <span class="lg"><span class="swatch dash" style="--c:var(--ink-faint)"></span> <b>Retroalimentação</b>&nbsp;(dado que volta)</span>
+    </div>
+    <div class="dep-grid">
+      <div class="graph-card">
+        <div class="graph-wrap">
+          <svg class="graph" id="graph" viewBox="0 0 1160 1200" role="img" aria-label="Grafo de dependências entre os módulos"></svg>
+        </div>
+        <p class="graph-hint">Passe o mouse ou toque em um módulo · a leitura de cima para baixo é a ordem de construção</p>
+      </div>
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+  </section>
 
-<main class="modules wrap" id="modules"></main>
-<div class="empty wrap" id="empty">Nenhum módulo ou item corresponde à sua busca.</div>
+  <!-- ===== MODULES VIEW ===== -->
+  <section class="view" id="view-mod" role="tabpanel" aria-labelledby="tab-mod">
+    <p class="section-label">O caminho — do alicerce à inteligência</p>
+    <div class="flow-track" id="flowTrack"></div>
+    <p class="section-label">Cada módulo e o que é necessário para construí-lo</p>
+    <div class="modules" id="modules"></div>
+  </section>
+</main>
 
 <footer>
   <div class="wrap">
     <span>© LUMIA · Blueprint da plataforma — documento vivo, versão de fundação.</span>
-    <span><b>Próxima sessão:</b> aprofundar o módulo em foco e detalhar o modelo de dados.</span>
+    <span><b>Próxima sessão:</b> detalhar o modelo de dados do módulo em foco.</span>
   </div>
 </footer>
 
 <script>
 const MODULES = [
-  {
-    icon:"🏠", title:"Meu Negócio", color:"#8b5cf6",
-    tag:"A base da sua empresa.", q:"Como está estruturada a minha empresa?",
-    status:"found",
+  { icon:"🏠", title:"Meu Negócio", color:"#8b5cf6", layer:"Fundação", tag:"A base da sua empresa.", q:"Como está estruturada a minha empresa?", status:"found",
     groups:[
       {name:"Minha Empresa", items:["Dados cadastrais","Razão Social","Nome Fantasia","CNPJ","CNAEs","Inscrição Estadual","Inscrição Municipal","Certificados Digitais","Logomarca","Identidade Visual","Horários de Funcionamento","Unidades","Filiais"]},
       {name:"Estrutura Física", items:["Ambientes","Salas","Cabines","Cadeiras","Macas","Equipamentos","Mobiliário","Patrimônio","Depreciação","Fotos dos ambientes","Capacidade de atendimento"]},
@@ -234,19 +258,9 @@ const MODULES = [
       {name:"Calendário Empresarial", items:["Datas comemorativas","Campanhas","Eventos","Reuniões","Auditorias","Treinamentos","Ações comerciais"]},
       {name:"Expansão", items:["Novas unidades","Franquias","Simulação de expansão","ROI de expansão","Plano de crescimento"]},
     ],
-    needs:[
-      "Arquitetura <b>multi-tenant / multi-unidade</b> desde o início — cada filial é um nó com dados isolados mas consolidáveis.",
-      "Validação automática de <b>CNPJ</b> e preenchimento de razão social/CNAEs via <code>BrasilAPI</code> ou ReceitaWS.",
-      "Cofre seguro para <b>Certificados Digitais A1/A3</b> (criptografia em repouso) — base para emissão fiscal depois.",
-      "Modelo de <b>patrimônio</b> com cálculo de depreciação (linear/acelerada) e vida útil por categoria.",
-      "<b>Upload e otimização de imagens</b> (logomarca, fotos de ambientes) com CDN.",
-      "Base de <b>capacidade de atendimento</b> por ambiente/cadeira — alimenta a Agenda e os Resultados.",
-    ],
-  },
-  {
-    icon:"👥", title:"Meus Clientes", color:"#ec4899",
-    tag:"Toda a gestão do relacionamento.", q:"Quem são meus clientes e como me relaciono com eles?",
-    status:"map",
+    needs:["Arquitetura <b>multi-tenant / multi-unidade</b> desde o início.","Validação de <b>CNPJ</b> via <code>BrasilAPI</code> / ReceitaWS.","Cofre seguro para <b>Certificados A1/A3</b> (criptografia em repouso).","Modelo de <b>patrimônio</b> com depreciação por categoria.","<b>Upload de imagens</b> (logo, ambientes) com CDN.","Base de <b>capacidade de atendimento</b> por ambiente/cadeira."] },
+
+  { icon:"👥", title:"Meus Clientes", color:"#ec4899", layer:"Entidades", tag:"Toda a gestão do relacionamento.", q:"Quem são meus clientes?", status:"map",
     groups:[
       {name:"Cadastro Completo", items:["Dados pessoais","Foto","Redes sociais","Preferências","Observações","Consentimentos LGPD","Anexos"]},
       {name:"Histórico", items:["Serviços","Produtos","Fotos","Evolução","Avaliações","Frequência","Ticket médio"]},
@@ -255,19 +269,9 @@ const MODULES = [
       {name:"Comunicação", items:["WhatsApp","SMS","E-mail","Aniversários","Pós-atendimento","Retorno Programado","Pesquisa de satisfação","Automações"]},
       {name:"Inteligência do Cliente", items:["Probabilidade de retorno","Risco de perda","Potencial de compra","Lifetime Value","Perfil de consumo","Origem do cliente"]},
     ],
-    needs:[
-      "Módulo de <b>consentimento LGPD</b> com base legal, versão do termo e trilha de auditoria (direito ao esquecimento).",
-      "Motor de <b>segmentação</b> dinâmico (VIP, inativo, débito) recalculado por regras + eventos.",
-      "Integração de <b>comunicação</b>: WhatsApp Business API, provedor de SMS e SMTP transacional.",
-      "Cálculo de <b>LTV, churn e ticket médio</b> — requer histórico transacional (depende do Financeiro).",
-      "<b>Fotos de evolução</b> com armazenamento privado e consentimento de imagem.",
-      "Motor de <b>automações</b> (gatilho → condição → ação) para aniversário, pós-atendimento e retorno.",
-    ],
-  },
-  {
-    icon:"💇", title:"Minha Equipe", color:"#14b8a6",
-    tag:"Desenvolver pessoas para gerar resultados.", q:"Quem executa e como desenvolvo minha equipe?",
-    status:"map",
+    needs:["<b>Consentimento LGPD</b> com base legal e trilha de auditoria.","Motor de <b>segmentação</b> dinâmico (VIP, inativo, débito).","Integração de <b>comunicação</b> (WhatsApp API, SMS, e-mail).","Cálculo de <b>LTV, churn e ticket</b> (depende do Financeiro).","<b>Fotos de evolução</b> com consentimento de imagem.","Motor de <b>automações</b> (gatilho → condição → ação)."] },
+
+  { icon:"💇", title:"Minha Equipe", color:"#14b8a6", layer:"Entidades", tag:"Desenvolver pessoas para gerar resultados.", q:"Quem executa e como desenvolvo?", status:"map",
     groups:[
       {name:"Cadastro", items:["Profissionais","Parceiros","CLT","Prestadores","Estagiários"]},
       {name:"Jornada", items:["Escalas","Horários","Banco de horas","Férias","Ausências"]},
@@ -276,19 +280,9 @@ const MODULES = [
       {name:"Liderança", items:["Feedbacks","Reuniões 1:1","Plano de Carreira","Reconhecimentos","Clima Organizacional"]},
       {name:"Documentação", items:["Contratos","Lei Salão Parceiro","Advertências","Documentos pessoais","Assinaturas digitais"]},
     ],
-    needs:[
-      "Suporte aos vínculos <b>CLT, prestador e parceiro</b> — cada um com regras fiscais e de comissão distintas.",
-      "Conformidade com a <b>Lei do Salão Parceiro (13.352/2016)</b>: contrato de parceria e repasses separados.",
-      "Motor de <b>escalas e banco de horas</b> integrado à Agenda (disponibilidade real do profissional).",
-      "Regras de <b>comissionamento</b> flexíveis (por serviço, produto, meta, faixa) — insumo do Financeiro.",
-      "<b>Assinatura digital</b> de contratos e advertências (ICP-Brasil ou provedor de e-signature).",
-      "Cálculo de <b>taxa de ocupação e produtividade</b> a partir da capacidade × agenda executada.",
-    ],
-  },
-  {
-    icon:"📅", title:"Minha Agenda", color:"#3b82f6",
-    tag:"Toda a operação acontecendo em tempo real.", q:"O que está acontecendo agora e o que vem a seguir?",
-    status:"map",
+    needs:["Vínculos <b>CLT, prestador e parceiro</b> com regras distintas.","Conformidade com a <b>Lei do Salão Parceiro (13.352/2016)</b>.","Motor de <b>escalas e banco de horas</b> (integra a Agenda).","Regras de <b>comissionamento</b> flexíveis.","<b>Assinatura digital</b> de contratos e advertências.","<b>Taxa de ocupação e produtividade</b> por profissional."] },
+
+  { icon:"📅", title:"Minha Agenda", color:"#3b82f6", layer:"Operação", tag:"Toda a operação em tempo real.", q:"O que acontece agora?", status:"map",
     groups:[
       {name:"Agenda Geral", items:["Dia","Semana","Mês","Timeline"]},
       {name:"Agendamentos", items:["Clientes","Profissionais","Salas","Equipamentos"]},
@@ -296,56 +290,27 @@ const MODULES = [
       {name:"Agenda Comercial", items:["Reuniões","Cursos","Eventos","Datas comemorativas"]},
       {name:"Experiência do Cliente", items:["Confirmação","Avaliação","Pesquisa","Próximo retorno"]},
     ],
-    needs:[
-      "Motor de agendamento com <b>resolução de conflito multi-recurso</b>: profissional × sala × cadeira × equipamento ao mesmo tempo.",
-      "<b>Confirmação automática</b> via WhatsApp com resposta que atualiza o status (confirmado/cancelado).",
-      "<b>Lista de espera inteligente</b> que reocupa horários vagos por prioridade e preferência.",
-      "Fluxo de <b>check-in / check-out</b> que abre comanda no Financeiro automaticamente.",
-      "Visões <b>dia/semana/mês/timeline</b> em tempo real (WebSocket) para atualização entre dispositivos.",
-      "Regras de <b>cancelamento e remarcação</b> com política de antecedência e taxa opcional.",
-    ],
-  },
-  {
-    icon:"💰", title:"Meu Financeiro", color:"#10b981",
-    tag:"Onde faturamento se transforma em lucro.", q:"Estou realmente tendo lucro?",
-    status:"map",
+    needs:["<b>Resolução de conflito multi-recurso</b>: profissional × sala × cadeira × equipamento.","<b>Confirmação automática</b> via WhatsApp que atualiza status.","<b>Lista de espera inteligente</b> que reocupa vagas.","<b>Check-in / check-out</b> que abre comanda no Financeiro.","Visões em <b>tempo real</b> (WebSocket) entre dispositivos.","Políticas de <b>cancelamento e remarcação</b>."] },
+
+  { icon:"💰", title:"Meu Financeiro", color:"#10b981", layer:"Monetização", tag:"Onde faturamento vira lucro.", q:"Estou tendo lucro?", status:"map",
     groups:[
       {name:"Operação de Caixa", items:["Caixa","Comandas","Contas a Pagar","Contas a Receber","Fluxo de Caixa","Conciliação Bancária","Centro de Custos"]},
       {name:"Pagamentos", items:["PIX","Cartões","Split de Pagamentos","Cobranças","Inadimplência"]},
       {name:"Fiscal", items:["NF-e","NFS-e"]},
       {name:"Gestão", items:["DRE","Capital de Giro","Projeções Financeiras"]},
     ],
-    needs:[
-      "Integração <b>PIX</b> via PSP ou API do Banco Central (cobrança com QR dinâmico + webhook de liquidação).",
-      "<b>Gateway de pagamento</b> com <b>split</b> — essencial para repasse de parceiros e aluguel de cadeira.",
-      "Emissão fiscal <b>NF-e (produtos)</b> e <b>NFS-e (serviços)</b> integrada à SEFAZ e prefeituras (multi-município).",
-      "<b>Conciliação bancária</b> via Open Finance / extratos (OFX) para bater recebíveis automaticamente.",
-      "Geração de <b>DRE</b> e fluxo de caixa a partir do centro de custos — base do módulo Resultados.",
-      "Gestão de <b>inadimplência</b> com régua de cobrança automatizada (integra Comunicação).",
-    ],
-  },
-  {
-    icon:"📈", title:"Meus Resultados", color:"#f59e0b",
-    tag:"Transformando dados em decisões.", q:"O que os números estão me dizendo?",
-    status:"map",
+    needs:["Integração <b>PIX</b> (QR dinâmico + webhook de liquidação).","<b>Gateway</b> com <b>split</b> (repasse de parceiros / aluguel).","Emissão <b>NF-e</b> e <b>NFS-e</b> (SEFAZ / prefeituras).","<b>Conciliação bancária</b> via Open Finance / OFX.","Geração de <b>DRE</b> e fluxo de caixa.","<b>Inadimplência</b> com régua de cobrança."] },
+
+  { icon:"📈", title:"Meus Resultados", color:"#f59e0b", layer:"Inteligência", tag:"Transformando dados em decisões.", q:"O que os números dizem?", status:"map",
     groups:[
       {name:"Visão Executiva", items:["Painel Executivo","Beauty Plan","KPIs","Indicadores","DRE Gerencial"]},
       {name:"Financeiro & Crescimento", items:["Lucratividade","Rentabilidade","Crescimento","ROI","Ticket Médio","Performance Financeira"]},
       {name:"Operação", items:["Produtividade","Performance da Equipe","Clientes","Agenda","Marketing","Estoque"]},
       {name:"Análise", items:["Relatórios","Benchmark","Comparativos"]},
     ],
-    needs:[
-      "Camada de <b>BI / data warehouse</b> que consolida dados de todos os módulos (ETL agendado ou eventos).",
-      "Biblioteca de <b>KPIs</b> com fórmulas versionadas e definição única (ticket médio, ocupação, ROI).",
-      "<b>Painel executivo</b> responsivo com drill-down e comparativos por período/unidade/profissional.",
-      "Motor de <b>benchmark</b> — comparar a empresa com médias do setor (dado anonimizado agregado).",
-      "Exportação de <b>relatórios</b> (PDF/Excel) e agendamento de envio automático.",
-    ],
-  },
-  {
-    icon:"🧭", title:"Ferramentas MQS", color:"#d4820a",
-    tag:"A metodologia aplicada ao dia a dia.", q:"Como aplico o método na prática?", mqs:true,
-    status:"map",
+    needs:["Camada de <b>BI / data warehouse</b> que consolida todos os módulos.","Biblioteca de <b>KPIs</b> com fórmulas versionadas.","<b>Painel executivo</b> com drill-down e comparativos.","Motor de <b>benchmark</b> (dado setorial anonimizado).","Exportação de <b>relatórios</b> (PDF/Excel) agendável."] },
+
+  { icon:"🧭", title:"Ferramentas MQS", color:"#d4820a", layer:"Método", tag:"A metodologia no dia a dia.", q:"Como aplico o método?", status:"map",
     groups:[
       {name:"Diagnóstico & Mapas", items:["Diagnóstico MQS","Beauty Plan","Mapa da Lucratividade","SWOT Inteligente"]},
       {name:"Bússolas", items:["Bússola de Preços","Bússola da Comissão","Bússola do Aluguel de Cadeiras","Bússola do Aluguel de Salas"]},
@@ -354,54 +319,27 @@ const MODULES = [
       {name:"Biblioteca Operacional", items:["Checklists","POPs","Templates","Contratos","Modelos"]},
       {name:"Playbooks", items:["Contratação","Desligamento","Inventário","Campanhas","Reuniões","Feedback","Expansão","Implantação","Auditorias"]},
     ],
-    needs:[
-      "<b>Motor de cálculo da metodologia MQS</b> — regras de precificação, comissão e aluguel como fórmulas configuráveis.",
-      "<b>Simuladores</b> que consomem dados reais da empresa (custos, ocupação) e projetam cenários lado a lado.",
-      "Engine de <b>Plano de Ação</b> com matriz de prioridades (impacto × esforço) e acompanhamento de execução.",
-      "Repositório versionado de <b>POPs, checklists, templates e playbooks</b> — o ativo de conhecimento MQS.",
-      "As <b>Bússolas</b> precisam do Financeiro (custos) e da Equipe (comissão) já alimentados para gerar recomendação.",
-    ],
-  },
-  {
-    icon:"📚", title:"Universidade MQS", color:"#6366f1",
-    tag:"Aprender enquanto administra.", q:"Como evoluo enquanto gerencio?", mqs:true,
-    status:"map",
+    needs:["<b>Motor de cálculo MQS</b> (preço, comissão, aluguel como fórmulas).","<b>Simuladores</b> que consomem dados reais e projetam cenários.","Engine de <b>Plano de Ação</b> (matriz impacto × esforço).","Repositório de <b>POPs, checklists e playbooks</b> versionado.","As <b>Bússolas</b> exigem Financeiro e Equipe já alimentados."] },
+
+  { icon:"📚", title:"Universidade MQS", color:"#6366f1", layer:"Método", tag:"Aprender enquanto administra.", q:"Como evoluo?", status:"map",
     groups:[
       {name:"Minha Jornada", items:["Trilhas","Cursos","Missões","Exercícios","Certificados"]},
       {name:"Conteúdo", items:["Biblioteca","Podcast","Webinars","Eventos"]},
       {name:"Comunidade & Suporte", items:["Comunidade","Mentorias","Central de Ajuda","Implantação Guiada"]},
       {name:"Engajamento", items:["Avaliações","Gamificação","Ranking","Evolução"]},
     ],
-    needs:[
-      "Um <b>LMS</b> leve: trilhas, progresso, pré-requisitos e emissão de <b>certificados</b>.",
-      "<b>Hospedagem de vídeo</b> (streaming adaptativo) para cursos, webinars e podcast.",
-      "Camada de <b>gamificação</b> (missões, pontos, ranking) reaproveitável no módulo Equipe.",
-      "<b>Implantação guiada</b> (onboarding por etapas) conectada ao progresso real de configuração da plataforma.",
-      "Integração com o <b>Consultor MQS</b> — recomendar a aula certa no momento certo.",
-    ],
-  },
-  {
-    icon:"🤖", title:"Consultor MQS", color:"#06b6d4",
-    tag:"Seu consultor empresarial disponível todos os dias.", q:"O que eu deveria fazer hoje?", mqs:true,
-    status:"map",
+    needs:["Um <b>LMS</b> leve (trilhas, progresso, certificados).","<b>Hospedagem de vídeo</b> (streaming adaptativo).","<b>Gamificação</b> reaproveitável no módulo Equipe.","<b>Implantação guiada</b> ligada ao progresso real da conta.","Integração com o <b>Consultor MQS</b>."] },
+
+  { icon:"🤖", title:"Consultor MQS", color:"#06b6d4", layer:"Consultoria", tag:"Seu consultor todos os dias.", q:"O que fazer hoje?", status:"map",
     groups:[
       {name:"Rotina Diária", items:["Bom Dia","Resumo diário","Alertas Inteligentes"]},
       {name:"Análise", items:["Diagnóstico Automático","Comparativos","Oportunidades"]},
       {name:"Direção", items:["Recomendações","Simulações","Planejamento","Metas","Plano de Ação","Acompanhamento"]},
       {name:"Consultoria IA", items:["Consultoria IA","Mentor MQS","Pergunte ao Consultor"]},
     ],
-    needs:[
-      "Motor de <b>IA (LLM)</b> com <b>RAG</b> sobre: Método MQS, dados da empresa, histórico, indicadores, Universidade e Playbooks.",
-      "Base de <b>alertas inteligentes</b> por regras + detecção de anomalia (queda de ticket, agenda ociosa, inadimplência).",
-      "Geração do <b>“Bom Dia”</b> — resumo diário automatizado com as 3 prioridades do dia.",
-      "<b>Guard-rails</b>: a IA responde ancorada nos dados reais e no método, com citação da fonte.",
-      "Depende de <b>todos os módulos alimentados</b> — é a camada de inteligência que fecha o ciclo.",
-    ],
-  },
-  {
-    icon:"⚙️", title:"Configurações", color:"#64748b",
-    tag:"Tudo que faz o sistema funcionar.", q:"Como o sistema é administrado e mantido seguro?",
-    status:"map",
+    needs:["<b>IA (LLM)</b> com <b>RAG</b> sobre método, dados, indicadores e playbooks.","<b>Alertas</b> por regras + detecção de anomalia.","Geração do <b>“Bom Dia”</b> (3 prioridades do dia).","<b>Guard-rails</b>: responde ancorado nos dados reais, com fonte.","Depende de <b>todos os módulos alimentados</b>."] },
+
+  { icon:"⚙️", title:"Configurações", color:"#64748b", layer:"Plataforma", tag:"Tudo que faz o sistema funcionar.", q:"Como o sistema é administrado?", status:"map",
     groups:[
       {name:"Acesso", items:["Usuários","Perfis","Permissões"]},
       {name:"Integrações", items:["WhatsApp","Google","Meta","Pagamentos","APIs","Chaves de Integração","Webhooks","API"]},
@@ -409,137 +347,233 @@ const MODULES = [
       {name:"Preferências", items:["Preferências","Idiomas","Notificações"]},
       {name:"Segurança & Dados", items:["Auditoria","Logs","Segurança","Backup","Importação","Exportação","LGPD"]},
     ],
-    needs:[
-      "<b>RBAC</b> — perfis e permissões granulares por módulo/ação (fora do fluxo de rotina, boa prática SaaS).",
-      "Central de <b>integrações OAuth</b> (WhatsApp, Google, Meta, pagamentos) com gestão de chaves e webhooks.",
-      "Motor de <b>billing / assinatura</b>: planos, cobrança recorrente e controle de acesso por plano.",
-      "<b>Trilha de auditoria e logs</b> imutáveis + rotina de <b>backup</b> e importação/exportação de dados.",
-      "Painel <b>LGPD</b>: exportar/apagar dados do titular e registrar consentimentos de forma centralizada.",
-    ],
-  },
+    needs:["<b>RBAC</b> — perfis e permissões por módulo/ação.","Central de <b>integrações OAuth</b> e chaves.","Motor de <b>billing / assinatura</b> por plano.","<b>Auditoria, logs</b> imutáveis e <b>backup</b>.","Painel <b>LGPD</b> centralizado (exportar/apagar dados)."] },
 ];
 
-const modulesEl = document.getElementById('modules');
-const flowEl = document.getElementById('flowTrack');
-let totalItems = 0;
+// node id == index in MODULES
+const NODES = {
+  0:{x:475,y:150,w:210,h:66}, 1:{x:225,y:300,w:210,h:66}, 2:{x:725,y:300,w:210,h:66},
+  3:{x:475,y:450,w:210,h:66}, 4:{x:475,y:600,w:210,h:66}, 5:{x:475,y:748,w:210,h:66},
+  6:{x:205,y:900,w:222,h:66}, 7:{x:733,y:900,w:222,h:66}, 8:{x:455,y:1052,w:250,h:76},
+  9:{x:80,y:40,w:1000,h:50},
+};
+// edges: from feeds to  (to depends on from)
+const EDGES = [
+  [0,2,"Estrutura, unidades e cargos moldam a equipe"],
+  [0,3,"Salas, cabines, cadeiras, macas, equipamentos e capacidade"],
+  [1,3,"O cliente é quem ocupa o horário agendado"],
+  [2,3,"Escalas, horários e disponibilidade real dos profissionais"],
+  [2,4,"Regras de comissão, bonificação e repasses"],
+  [3,4,"O check-out abre a comanda no caixa"],
+  [1,4,"Pacotes, assinaturas, cobranças e inadimplência"],
+  [0,5,"Capacidade instalada — base dos indicadores"],
+  [1,5,"Base de clientes, frequência e ticket"],
+  [2,5,"Produtividade e performance da equipe"],
+  [3,5,"Taxa de ocupação e volume de atendimentos"],
+  [4,5,"DRE, faturamento, custos e margem"],
+  [4,6,"Custos reais alimentam Bússolas e simuladores"],
+  [2,6,"Comissão para a Bússola da Comissão"],
+  [5,6,"Indicadores para diagnóstico e plano de ação"],
+  [5,8,"Painel e KPIs guiam as recomendações"],
+  [4,8,"Saúde financeira dispara alertas"],
+  [1,8,"Risco de perda e oportunidades por cliente"],
+  [3,8,"Agenda ociosa vira alerta e ação"],
+  [6,8,"Método, playbooks e simuladores MQS"],
+  [7,8,"Conteúdo e trilhas para recomendar no momento certo"],
+  [4,1,"Histórico transacional gera LTV, ticket médio e churn","feedback"],
+];
+const BASE = 9; // Configurações underpins all
 
-MODULES.forEach((m,i)=>{
-  const num = String(i+1).padStart(2,'0');
-  const count = m.groups.reduce((a,g)=>a+g.items.length,0);
-  totalItems += count;
-  const soft = hexSoft(m.color);
-  const styleVars = `--mc:${m.color};--mc-soft:${soft}`;
+const SVGNS="http://www.w3.org/2000/svg";
+const graph=document.getElementById('graph');
+const panel=document.getElementById('panel');
 
-  // flow node
-  const node = document.createElement('button');
-  node.className='flow-node';
-  node.style.cssText=styleVars;
-  node.innerHTML = `<div class="fn-top"><span class="fn-num">${num}</span><span class="fn-ico">${m.icon}</span></div>
-    <div class="fn-name">${m.title}</div><div class="fn-count">${count} itens · ${m.groups.length} grupos</div>`;
-  node.addEventListener('click',()=>{
-    const d=document.getElementById('mod-'+i); d.open=true; syncBody(d);
-    d.scrollIntoView({behavior:'smooth',block:'start'});
-  });
-  flowEl.appendChild(node);
+function el(tag,attrs){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function cx(i){return NODES[i].x+NODES[i].w/2}
 
-  // module card
-  const det = document.createElement('details');
-  det.className='mod'; det.id='mod-'+i; det.style.cssText=styleVars;
-  const groupsHtml = m.groups.map(g=>`
-    <div class="group"><h3>${g.name}</h3>
-      <div class="tags">${g.items.map(it=>`<span class="tag">${it}</span>`).join('')}</div>
-    </div>`).join('');
-  const needsHtml = m.needs.map(n=>`<li>${n}</li>`).join('');
-  const statusLabel = m.status==='found' ? 'Fundação · foco' : 'Mapeado';
-  det.innerHTML = `
-    <summary class="mod-head">
-      <span class="mod-num">${num}</span>
-      <span class="mod-ico">${m.icon}</span>
-      <span class="mod-h-main">
-        <span class="mod-h-title"><h2>${m.title}</h2></span>
-        <p class="mod-tag">“${m.tag}”</p>
-        <span class="mod-q">${m.q}</span>
-      </span>
-      <span class="mod-status">
-        <span class="status-pill ${m.status}">${statusLabel}</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-      </span>
-    </summary>
-    <div class="mod-body"><div class="mod-body-inner">
-      <div class="groups">${groupsHtml}</div>
-      <div class="needs">
-        <h3><span class="wr">🔧</span> O que é necessário para construir</h3>
-        <p class="sub">Requisitos, dados e integrações que esta etapa exige — resultado da pesquisa por módulo.</p>
-        <ul>${needsHtml}</ul>
-      </div>
-    </div></div>`;
-  modulesEl.appendChild(det);
+function edgePath(a,b){
+  const A=NODES[a],B=NODES[b];
+  const ax=A.x+A.w/2, bx=B.x+B.w/2;
+  if(B.y>A.y){ // down
+    const y1=A.y+A.h, y2=B.y, my=(y1+y2)/2;
+    return `M${ax} ${y1} C ${ax} ${my}, ${bx} ${my}, ${bx} ${y2}`;
+  } else { // up (feedback)
+    const y1=A.y, y2=B.y+B.h, my=(y1+y2)/2, bow=200;
+    return `M${ax} ${y1} C ${ax-bow} ${my}, ${bx-bow} ${my}, ${bx} ${y2}`;
+  }
+}
 
-  // native <details> summary click handled; animate max-height
-  det.addEventListener('toggle',()=>syncBody(det));
+// markers
+const defs=el('defs',{});
+[['ar-def','var(--line-strong)'],['ar-feed','var(--feed)'],['ar-dep','var(--dep)']].forEach(([id,c])=>{
+  const m=el('marker',{id,viewBox:'0 0 10 10',refX:'8',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'});
+  m.appendChild(el('path',{d:'M0 0 L10 5 L0 10 z',fill:c}));
+  defs.appendChild(m);
+});
+graph.appendChild(defs);
+
+// draw edges
+const edgeEls=[];
+EDGES.forEach((e,i)=>{
+  const p=el('path',{class:'edge'+(e[2]&&e.length>3?' feedback':''),d:edgePath(e[0],e[1]),'marker-end':'url(#ar-def)'});
+  p.dataset.from=e[0];p.dataset.to=e[1];
+  graph.appendChild(p);edgeEls.push(p);
 });
 
-document.getElementById('itemCount').textContent = totalItems;
+// draw nodes
+const nodeEls={};
+Object.keys(NODES).forEach(k=>{
+  const i=+k, N=NODES[i], m=MODULES[i];
+  const g=el('g',{class:'node'+(i===BASE?' base':''),tabindex:'0',role:'button','aria-label':m.title});
+  g.style.setProperty('--nc',m.color);
+  g.appendChild(el('rect',{class:'box',x:N.x,y:N.y,width:N.w,height:N.h,rx:14}));
+  if(i!==BASE) g.appendChild(el('rect',{class:'cap',x:N.x,y:N.y,width:N.w,height:4,rx:2}));
+  if(i===BASE){
+    const t=el('text',{class:'t',x:N.x+20,y:N.y+30,'font-size':'14'});t.textContent=`⚙️  ${m.title}`;g.appendChild(t);
+    const s=el('text',{class:'sub',x:N.x+20,y:N.y+43});s.textContent='Plataforma base — autenticação, integrações e LGPD sustentam todos os módulos';g.appendChild(s);
+  } else {
+    const num=el('text',{class:'n',x:N.x+15,y:N.y+27});num.textContent=String(i+1).padStart(2,'0');g.appendChild(num);
+    const ico=el('text',{class:'ico',x:N.x+15,y:N.y+50});ico.textContent=m.icon;g.appendChild(ico);
+    const t=el('text',{class:'t',x:N.x+46,y:N.y+41});t.textContent=m.title;g.appendChild(t);
+    const s=el('text',{class:'sub',x:N.x+46,y:N.y+56});s.textContent=m.layer;g.appendChild(s);
+  }
+  g.addEventListener('pointerenter',()=>{if(selected==null)highlight(i)});
+  g.addEventListener('pointerleave',()=>{if(selected==null)clearHi()});
+  g.addEventListener('click',()=>{selected=(selected===i?null:i);selected==null?clearHi():highlight(i,true)});
+  g.addEventListener('focus',()=>highlight(i));
+  g.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selected=(selected===i?null:i);selected==null?clearHi():highlight(i,true)}});
+  graph.appendChild(g);nodeEls[i]=g;
+});
 
-function syncBody(det){
-  const body = det.querySelector('.mod-body');
-  const inner = det.querySelector('.mod-body-inner');
-  if(det.open){ body.style.maxHeight = inner.scrollHeight + 40 + 'px'; }
-  else { body.style.maxHeight = '0px'; }
+let selected=null;
+
+function highlight(i,persist){
+  const ups=EDGES.filter(e=>e[1]===i).map(e=>e[0]); // depende de
+  const downs=EDGES.filter(e=>e[0]===i).map(e=>e[1]); // alimenta
+  const related=new Set([i,...ups,...downs]);
+  const baseLinked = (i===BASE);
+  Object.keys(nodeEls).forEach(k=>{
+    const n=+k;
+    nodeEls[n].classList.toggle('on',n===i);
+    const keep = related.has(n) || (baseLinked) || (n===BASE);
+    nodeEls[n].classList.toggle('dim',!keep && !(baseLinked));
+  });
+  edgeEls.forEach(p=>{
+    const f=+p.dataset.from,t=+p.dataset.to;
+    p.classList.remove('feed','dep','dim');
+    if(f===i){p.classList.add('feed');p.setAttribute('marker-end','url(#ar-feed)');}
+    else if(t===i){p.classList.add('dep');p.setAttribute('marker-end','url(#ar-dep)');}
+    else {p.classList.add('dim');p.setAttribute('marker-end','url(#ar-def)');}
+  });
+  renderPanel(i,ups,downs);
 }
-// keep heights correct on resize
-let rz; window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{
-  document.querySelectorAll('.mod[open]').forEach(syncBody);
-},150);});
+function clearHi(){
+  Object.values(nodeEls).forEach(n=>n.classList.remove('on','dim'));
+  edgeEls.forEach(p=>{p.classList.remove('feed','dep','dim');p.setAttribute('marker-end','url(#ar-def)');});
+  renderDefault();
+}
+
+function chipRef(idx,reason){
+  const m=MODULES[idx];
+  return `<div class="dep-item"><span class="di-ico">${m.icon}</span><span class="di-main"><b>${m.title}</b><span>${reason}</span></span></div>`;
+}
+function renderPanel(i,ups,downs){
+  const m=MODULES[i];
+  panel.style.setProperty('--pc',m.color);
+  panel.style.setProperty('--pc-soft',hexSoft(m.color));
+  let needsHtml, feedsHtml;
+  if(i===BASE){
+    needsHtml=`<p class="dep-none">É a camada base — não depende de nenhum módulo de negócio.</p>`;
+    feedsHtml=`<div class="dep-item"><span class="di-ico">∞</span><span class="di-main"><b>Todos os módulos</b><span>Autenticação, permissões (RBAC), integrações e LGPD sustentam a plataforma inteira.</span></span></div>`;
+  } else {
+    const upEdges=EDGES.filter(e=>e[1]===i);
+    const downEdges=EDGES.filter(e=>e[0]===i);
+    needsHtml = upEdges.length ? upEdges.map(e=>chipRef(e[0],e[2])).join('') : `<p class="dep-none">Não depende de outros módulos — junto de Configurações, é ponto de partida.</p>`;
+    feedsHtml = downEdges.length ? downEdges.map(e=>chipRef(e[1],e[2])).join('') : `<p class="dep-none">É uma camada final — entrega valor direto ao usuário, sem alimentar outros módulos.</p>`;
+  }
+  panel.innerHTML = `
+    <div class="ph"><span class="pico">${m.icon}</span><h3>${m.title}</h3></div>
+    <span class="layer-tag">${m.layer}</span>
+    <p class="ptag">“${m.tag}”</p>
+    <div class="dep-block needs"><h4><span class="arw">↑</span> Depende de</h4>${needsHtml}</div>
+    <div class="dep-block feeds"><h4><span class="arw">↓</span> Alimenta</h4>${feedsHtml}</div>`;
+}
+function renderDefault(){
+  const layers=[
+    ["#64748b","Plataforma","Configurações","autenticação, integrações e LGPD"],
+    ["#8b5cf6","Fundação","Meu Negócio","estrutura, unidades e capacidade"],
+    ["#ec4899","Entidades","Meus Clientes · Minha Equipe","quem compra e quem executa"],
+    ["#3b82f6","Operação","Minha Agenda","o atendimento acontecendo"],
+    ["#10b981","Monetização","Meu Financeiro","comandas, caixa e fiscal"],
+    ["#f59e0b","Inteligência","Meus Resultados","dados viram indicadores"],
+    ["#d4820a","Método","Ferramentas MQS · Universidade MQS","a metodologia aplicada"],
+    ["#06b6d4","Consultoria","Consultor MQS","IA que fecha o ciclo"],
+  ];
+  panel.style.setProperty('--pc',getVar('--accent'));
+  panel.innerHTML = `<div class="panel-default">
+    <p class="pd-title">Ordem natural de construção</p>
+    <p>Cada camada só funciona plenamente quando a de cima já existe. Clique num módulo do grafo para ver suas ligações.</p>
+    <ol class="stepper">${layers.map(l=>`<li style="--sc:${l[0]}"><b>${l[1]} · ${l[2]}</b><br><span>${l[3]}</span></li>`).join('')}</ol>
+  </div>`;
+}
+function getVar(v){return getComputedStyle(document.documentElement).getPropertyValue(v)}
 
 function hexSoft(hex){
   const c=hex.replace('#','');
   const r=parseInt(c.slice(0,2),16),g=parseInt(c.slice(2,4),16),b=parseInt(c.slice(4,6),16);
   const dark = matchMedia('(prefers-color-scheme:dark)').matches || document.documentElement.dataset.theme==='dark';
-  return dark ? `rgba(${r},${g},${b},.18)` : `rgba(${r},${g},${b},.12)`;
+  return dark ? `rgba(${r},${g},${b},.22)` : `rgba(${r},${g},${b},.12)`;
 }
 
-/* expand / collapse all */
-let allOpen=false;
-document.getElementById('expandAll').addEventListener('click',()=>{
-  allOpen=!allOpen;
-  document.querySelectorAll('.mod').forEach(d=>{d.open=allOpen;syncBody(d);});
-});
+renderDefault();
 
-/* theme toggle */
-const themeBtn=document.getElementById('theme');
-themeBtn.addEventListener('click',()=>{
+/* ===== MODULES VIEW (cards) ===== */
+const modulesEl=document.getElementById('modules'), flowEl=document.getElementById('flowTrack');
+MODULES.forEach((m,i)=>{
+  const num=String(i+1).padStart(2,'0');
+  const count=m.groups.reduce((a,g)=>a+g.items.length,0);
+  const soft=hexSoft(m.color), vars=`--mc:${m.color};--mc-soft:${soft}`;
+  const node=document.createElement('button');
+  node.className='flow-node';node.style.cssText=vars;
+  node.innerHTML=`<div class="fn-top"><span class="fn-num">${num}</span><span class="fn-ico">${m.icon}</span></div><div class="fn-name">${m.title}</div><div class="fn-count">${count} itens · ${m.groups.length} grupos</div>`;
+  node.addEventListener('click',()=>{const d=document.getElementById('mod-'+i);d.open=true;syncBody(d);d.scrollIntoView({behavior:'smooth',block:'start'})});
+  flowEl.appendChild(node);
+
+  const det=document.createElement('details');det.className='mod';det.id='mod-'+i;det.style.cssText=vars;
+  const groupsHtml=m.groups.map(g=>`<div class="group"><h3>${g.name}</h3><div class="tags">${g.items.map(it=>`<span class="tag">${it}</span>`).join('')}</div></div>`).join('');
+  const needsHtml=m.needs.map(n=>`<li>${n}</li>`).join('');
+  const statusLabel=m.status==='found'?'Fundação · foco':'Mapeado';
+  det.innerHTML=`<summary class="mod-head"><span class="mod-num">${num}</span><span class="mod-ico">${m.icon}</span>
+    <span class="mod-h-main"><span class="mod-h-title"><h2>${m.title}</h2></span><p class="mod-tag">“${m.tag}”</p><span class="mod-q">${m.q}</span></span>
+    <span class="mod-status"><span class="status-pill ${m.status}">${statusLabel}</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+    <div class="mod-body"><div class="mod-body-inner"><div class="groups">${groupsHtml}</div>
+      <div class="needs-box"><h3>🔧 O que é necessário para construir</h3><p class="sub">Requisitos, dados e integrações que esta etapa exige.</p><ul>${needsHtml}</ul></div>
+    </div></div>`;
+  modulesEl.appendChild(det);
+  det.addEventListener('toggle',()=>syncBody(det));
+});
+function syncBody(det){const b=det.querySelector('.mod-body'),inner=det.querySelector('.mod-body-inner');b.style.maxHeight=det.open?inner.scrollHeight+40+'px':'0px';}
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>document.querySelectorAll('.mod[open]').forEach(syncBody),150)});
+
+/* ===== tabs ===== */
+const tD=document.getElementById('tab-dep'),tM=document.getElementById('tab-mod');
+const vD=document.getElementById('view-dep'),vM=document.getElementById('view-mod');
+function selTab(dep){
+  tD.setAttribute('aria-selected',dep);tM.setAttribute('aria-selected',!dep);
+  vD.classList.toggle('active',dep);vM.classList.toggle('active',!dep);
+}
+tD.addEventListener('click',()=>selTab(true));
+tM.addEventListener('click',()=>selTab(false));
+
+/* ===== theme ===== */
+document.getElementById('theme').addEventListener('click',()=>{
   const root=document.documentElement;
-  const isDark = root.dataset.theme==='dark' || (!root.dataset.theme && matchMedia('(prefers-color-scheme:dark)').matches);
-  root.dataset.theme = isDark ? 'light' : 'dark';
-  // recolor soft backgrounds for new theme
-  MODULES.forEach((m,i)=>{document.getElementById('mod-'+i).style.setProperty('--mc-soft',hexSoft(m.color));});
-  document.querySelectorAll('.flow-node').forEach((n,i)=>n.style.setProperty('--mc-soft',hexSoft(MODULES[i].color)));
+  const isDark=root.dataset.theme==='dark'||(!root.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches);
+  root.dataset.theme=isDark?'light':'dark';
+  Object.keys(nodeEls).forEach(k=>nodeEls[k].style.setProperty('--nc',MODULES[+k].color));
+  document.querySelectorAll('.flow-node,.mod').forEach((n,i)=>n.style.setProperty('--mc-soft',hexSoft(MODULES[i%MODULES.length].color)));
+  if(selected==null)renderDefault();else highlight(selected,true);
   document.querySelectorAll('.mod[open]').forEach(syncBody);
-});
-
-/* search */
-const q=document.getElementById('q'), emptyEl=document.getElementById('empty');
-q.addEventListener('input',()=>{
-  const term=q.value.trim().toLowerCase();
-  let anyShown=false;
-  MODULES.forEach((m,i)=>{
-    const det=document.getElementById('mod-'+i);
-    const hay=(m.title+' '+m.tag+' '+m.q+' '+m.groups.map(g=>g.name+' '+g.items.join(' ')).join(' ')).toLowerCase();
-    const hit = !term || hay.includes(term);
-    det.style.display = hit ? '' : 'none';
-    if(hit){
-      anyShown=true;
-      if(term){det.open=true;syncBody(det);
-        det.querySelectorAll('.tag').forEach(t=>{
-          t.style.outline = t.textContent.toLowerCase().includes(term)?'2px solid var(--mc)':'';
-          t.style.outlineOffset='1px';
-        });
-      } else {
-        det.querySelectorAll('.tag').forEach(t=>t.style.outline='');
-      }
-    }
-  });
-  emptyEl.classList.toggle('show',!anyShown);
 });
 </script>
