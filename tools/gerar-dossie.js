@@ -151,6 +151,23 @@ w(`<p class="meta">Documento estático · gerado em ${DATA} · <a href="${BASE_U
 w(`<h1>LUMIA — Dossiê completo da fundação</h1>`);
 w(`<p class="lead">Sistema de gestão para o setor de beleza e estética no Brasil, com metodologia MQS embutida, projetado para escala nacional. Este documento contém <strong>todo</strong> o conteúdo do blueprint em HTML estático, para leitura por pessoas e por programas.</p>`);
 
+/* Bloco de fatos logo no topo: leitores automáticos frequentemente truncam
+   documentos longos, então os números que mais importam não podem depender de
+   o leitor chegar à seção 8. */
+w(`<h2 style="border:0;padding:0;margin:1.8rem 0 .6rem">Resumo em números</h2>
+<div class="wrap"><table><tbody>
+<tr><td>Módulos no total</td><td><strong>21</strong> — 10 originais e ${gaps.modulos_novos.length + 1} novos (marcados com <span class="novo">*</span>)</td></tr>
+<tr><td>Ligações de dependência</td><td><strong>${deps.total}</strong>, das quais <strong>${deps.verificadas}</strong> comprovadas por chave estrangeira real</td></tr>
+<tr><td>Decisões irreversíveis de fundação</td><td><strong>${gaps.decisoes_irreversiveis.length}</strong></td></tr>
+<tr><td>Reforços em módulos existentes</td><td><strong>${gaps.reforcos_modulos_existentes.length}</strong></td></tr>
+<tr><td>Achados da análise de lacunas</td><td><strong>${gaps.meta.contagem.consolidados}</strong> verificados</td></tr>
+<tr><td><strong>Tabelas no banco</strong></td><td><strong>${inv.resumo.tabelas}</strong> tabelas · ${inv.resumo.colunas} colunas · ${inv.resumo.com_rls} com RLS forçada</td></tr>
+<tr><td>Constraints</td><td>${inv.resumo.checks} CHECK · ${inv.resumo.excludes} EXCLUDE · ${inv.resumo.fks} chaves estrangeiras</td></tr>
+<tr><td>Migrations PostgreSQL</td><td><strong>${inv.resumo.migrations}</strong></td></tr>
+<tr><td>Asserções de teste passando</td><td><strong>${inv.resumo.asercoes}</strong>, incluindo prova de concorrência com 30 sessões simultâneas</td></tr>
+</tbody></table></div>
+<p class="meta">Módulos, na ordem de dependência: Configurações · Plataforma LUMIA* · Central de Privacidade* · Minhas Conversas* · Meu Negócio · Meu Catálogo* · Meus Clientes · Minha Equipe · Minha Vitrine* · Meu Prontuário* · Meu Estoque* · Meu Marketing* · Minha Agenda · Meu Caixa* · Minhas Comandas* · Meu Financeiro · Meu Fiscal* · Meus Resultados · Ferramentas MQS · Universidade MQS · Consultor MQS</p>`);
+
 w(`<div class="aviso"><strong>Por que este documento existe.</strong> A versão interativa monta o conteúdo por JavaScript. Leitores automáticos que não executam scripts enxergam apenas cerca de 2% do texto. Aqui está tudo, sem depender de JavaScript.</div>`);
 
 w(`<nav><h2 style="border:0;padding:0;margin-top:1.5rem">Índice</h2><ol>
