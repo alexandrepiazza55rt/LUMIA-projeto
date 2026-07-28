@@ -160,7 +160,8 @@ w(`<h2 style="border:0;padding:0;margin:1.8rem 0 .6rem">Resumo em números</h2>
 <tr><td>Ligações de dependência</td><td><strong>${deps.total}</strong>, das quais <strong>${deps.verificadas}</strong> comprovadas por chave estrangeira real</td></tr>
 <tr><td>Decisões irreversíveis de fundação</td><td><strong>${gaps.decisoes_irreversiveis.length}</strong></td></tr>
 <tr><td>Reforços em módulos existentes</td><td><strong>${gaps.reforcos_modulos_existentes.length}</strong></td></tr>
-<tr><td>Achados da análise de lacunas</td><td><strong>${gaps.meta.contagem.consolidados}</strong> verificados</td></tr>
+<tr><td>Achados da análise de lacunas</td><td><strong>${gaps.meta.contagem.consolidados}</strong> verificados, sob <strong>7</strong> lentes independentes</td></tr>
+<tr><td>Custo já pago pelo sistema anterior</td><td><strong>${gaps.lente_legado.custo_ja_pago.ciclos_de_reorganizacao}</strong> ciclos de reorganização + <strong>${gaps.lente_legado.custo_ja_pago.ciclos_de_migracao_para_banco}</strong> de migração, sem funcionalidade nova ao dono</td></tr>
 <tr><td><strong>Tabelas no banco</strong></td><td><strong>${inv.resumo.tabelas}</strong> tabelas · ${inv.resumo.colunas} colunas · ${inv.resumo.com_rls} com RLS forçada</td></tr>
 <tr><td>Constraints</td><td>${inv.resumo.checks} CHECK · ${inv.resumo.excludes} EXCLUDE · ${inv.resumo.fks} chaves estrangeiras</td></tr>
 <tr><td>Migrations PostgreSQL</td><td><strong>${inv.resumo.migrations}</strong></td></tr>
@@ -175,6 +176,7 @@ w(`<nav><h2 style="border:0;padding:0;margin-top:1.5rem">Índice</h2><ol>
 <li><a href="#modulos">Os 21 módulos</a></li>
 <li><a href="#dependencias">Mapa de dependências</a></li>
 <li><a href="#decisoes">Decisões irreversíveis de fundação</a></li>
+<li><a href="#legado">Lente do sistema legado</a></li>
 <li><a href="#arquitetura">Arquitetura técnica</a></li>
 <li><a href="#rotas">Mapa de rotas da API</a></li>
 <li><a href="#fases">Fases de construção</a></li>
@@ -289,8 +291,39 @@ gaps.decisoes_irreversiveis.forEach((d, i) => {
   w(`<p><strong>Se errar:</strong> ${esc(d.se_errar)}</p>`);
 });
 
+/* --- lente do legado --- */
+const LG = gaps.lente_legado;
+w(`<h2 id="legado">5. Lente do sistema legado</h2>`);
+w(`<p class="meta">${esc(LG.origem)}</p>`);
+w(`<p>${esc(LG.natureza)}</p>`);
+w(`<p class="meta">Método: ${esc(LG.metodo)}</p>`);
+w(`<h3>O custo já pago</h3>`);
+w(`<p>${esc(LG.custo_ja_pago.resumo)}</p>`);
+w(`<table><tbody>` + Object.entries(LG.custo_ja_pago).filter(([k]) => k !== 'resumo').map(([k, v]) =>
+  `<tr><td>${esc(k.replace(/_/g, ' '))}</td><td><strong>${v.toLocaleString('pt-BR')}</strong></td></tr>`).join('') + `</tbody></table>`);
+const achLeg = gaps.achados_detalhados.filter((a) => a.lente === 'legado');
+w(`<h3>Os ${achLeg.length} achados que nenhuma outra lente viu</h3>`);
+achLeg.forEach((a, i) => {
+  w(`<h4>${i + 1}. ${esc(a.titulo)} <span class="meta">[${esc(a.prioridade)}]</span></h4>`);
+  w(`<p>${esc(a.descricao)}</p>`);
+  w(`<p><strong>Por que é fundação:</strong> ${esc(a.por_que_fundacao)}</p>`);
+  w(`<p><strong>Evidência:</strong> ${esc(a.evidencia)}</p>`);
+});
+w(`<h3>Antipadrões e guarda-corpos</h3>`);
+w(`<table><thead><tr><th>O erro</th><th>O que custou</th><th>Guarda-corpo</th></tr></thead><tbody>` +
+  LG.antipadroes.map((a) => `<tr><td>${esc(a.erro)}</td><td>${esc(a.consequencia_real)}</td><td>${esc(a.guarda_corpo)}</td></tr>`).join('') +
+  `</tbody></table>`);
+w(`<h3>Confirmações empíricas de achados já levantados</h3>`);
+w(`<table><thead><tr><th>Achado</th><th>O que de fato aconteceu</th><th>Data</th></tr></thead><tbody>` +
+  LG.confirmacoes.map((c) => `<tr><td>${esc(c.achado_id)}</td><td>${esc(c.evidencia)}</td><td>${esc(c.data_no_changelog)}</td></tr>`).join('') +
+  `</tbody></table>`);
+w(`<h3>Já resolvido no schema atual</h3>`);
+w(`<table><thead><tr><th>Item</th><th>Onde</th><th>Nota</th></tr></thead><tbody>` +
+  LG.ja_implementado_no_schema.map((d) => `<tr><td>${esc(d.item)}</td><td><code>${esc(d.onde)}</code></td><td>${esc(d.nota)}</td></tr>`).join('') +
+  `</tbody></table>`);
+
 /* --- arquitetura --- */
-w(`<h2 id="arquitetura">5. Arquitetura técnica</h2>`);
+w(`<h2 id="arquitetura">6. Arquitetura técnica</h2>`);
 w(`<p>${esc(arq.meta.ambicao)}</p>`);
 w(`<h3>Princípios</h3><ul>` + arq.meta.principios.map((x) => `<li>${esc(x)}</li>`).join('') + `</ul>`);
 const kv = (o) => `<table><tbody>` + Object.entries(o).map(([k, v]) =>
@@ -324,14 +357,14 @@ w(`<h3>Convenções de API</h3><ul>` + arq.api.convencoes.map((x) => `<li>${esc(
 w(`<h3>Eventos assíncronos</h3><ul>` + arq.api.eventos_assincronos.map((x) => `<li><code>${esc(x)}</code></li>`).join('') + `</ul>`);
 
 /* --- rotas --- */
-w(`<h2 id="rotas">6. Mapa de rotas da API</h2>`);
+w(`<h2 id="rotas">7. Mapa de rotas da API</h2>`);
 w(`<div class="wrap"><table><thead><tr><th>Domínio</th><th>Base</th><th>Endpoints</th></tr></thead><tbody>` +
   Object.entries(arq.api.rotas).map(([k, r]) =>
     `<tr><td><strong>${esc(k.replace(/_/g, ' '))}</strong></td><td><code>${esc(r.base)}</code></td><td>${r.endpoints.map((e) => `<code>${esc(e)}</code>`).join('<br>')}</td></tr>`
   ).join('') + `</tbody></table></div>`);
 
 /* --- fases --- */
-w(`<h2 id="fases">7. Fases de construção</h2>`);
+w(`<h2 id="fases">8. Fases de construção</h2>`);
 w(`<p>Reordenadas para respeitar a dependência do catálogo. Cada fase tem critério objetivo de conclusão.</p><ol>`);
 arq.fases_de_construcao.forEach((f) => {
   w(`<li><strong>${esc(f.nome)}</strong> — ${esc(f.entrega)}<br><span class="meta">Pronto quando: ${esc(f.pronto_quando)}</span></li>`);
@@ -339,7 +372,7 @@ arq.fases_de_construcao.forEach((f) => {
 w(`</ol>`);
 
 /* --- modelo de dados --- */
-w(`<h2 id="modelo">8. Modelo de dados implementado</h2>`);
+w(`<h2 id="modelo">9. Modelo de dados implementado</h2>`);
 const R = inv.resumo;
 w(`<p>Hierarquia de estabelecimentos, catálogo, agenda e balcão estão modelados em PostgreSQL ${inv.postgres} e validados contra um banco real.</p>`);
 w(`<table><tbody>
@@ -377,7 +410,7 @@ w(`<h3>Tabelas</h3><div class="wrap"><table>
     `<td>${esc((t.doc || '').split('.')[0])}</td></tr>`).join('') + `</tbody></table></div>`);
 
 /* --- provas --- */
-w(`<h2 id="provas">9. Provas executadas</h2>`);
+w(`<h2 id="provas">10. Provas executadas</h2>`);
 w(`<h3>Concorrência: o double-booking é impossível</h3>
 <p>Trinta sessões PostgreSQL independentes disputaram o mesmo profissional no mesmo horário. Nenhum lock distribuído participou — a garantia é uma exclusion constraint.</p>
 <pre>sessões que gravaram ......... 1
@@ -411,7 +444,7 @@ w(`<h3>A comanda nunca fica sem dono</h3>
 <p>A custódia usa períodos com <code>EXCLUDE</code> contra sobreposição, mais um trigger que impede buraco entre um elo e o seguinte. Cadeia testada: recepção → cabeleireira → manicure → caixa, quatro elos, sempre exatamente um responsável, zero buracos. Transferir exige motivo tipado; motivo “outro” exige justificativa escrita. São recusados: transferir sem motivo, transferir sem deter a comanda, e transferir para si mesmo.</p>`);
 
 /* --- fontes --- */
-w(`<h2 id="fontes">10. Fontes legíveis por máquina</h2>`);
+w(`<h2 id="fontes">11. Fontes legíveis por máquina</h2>`);
 w(`<p>Todos os arquivos abaixo são servidos diretamente e podem ser buscados por programa.</p>`);
 w(`<div class="wrap"><table><thead><tr><th>Arquivo</th><th>Conteúdo</th></tr></thead><tbody>
 <tr><td><a href="${BASE_URL}/gaps.json"><code>gaps.json</code></a></td><td>Análise de lacunas completa: diagnóstico, módulos novos, reforços, decisões irreversíveis e os ${gaps.meta.contagem.consolidados} achados detalhados</td></tr>
@@ -458,9 +491,12 @@ Se você não executa scripts, use o dossiê estático abaixo — ele contém tu
 ## Contexto
 
 Os módulos marcados com asterisco foram identificados em uma análise de lacunas
-conduzida sob seis lentes independentes (operação de beleza, fiscal brasileiro,
-LGPD, arquitetura, escala SaaS e benchmark competitivo), cada achado passando
-por revisão adversarial. A ordem de construção segue a dependência: catálogo
+conduzida sob sete lentes independentes (operação de beleza, fiscal brasileiro,
+LGPD, arquitetura, escala SaaS, benchmark competitivo e o sistema legado), cada
+achado passando por revisão adversarial. A sétima lente é empírica: extraída do
+CHANGELOG do sistema anterior, registra defeito que ocorreu em produção, decisão
+já tomada pelo dono e custo já pago — ${gaps.lente_legado.custo_ja_pago.ciclos_de_reorganizacao} ciclos de reorganização e
+${gaps.lente_legado.custo_ja_pago.ciclos_de_migracao_para_banco} de migração por ter construído a regra de negócio antes da fundação. A ordem de construção segue a dependência: catálogo
 antes de agenda, agenda antes de caixa, caixa antes de comanda.
 `;
 fs.writeFileSync(path.join(RAIZ, 'llms.txt'), llms);

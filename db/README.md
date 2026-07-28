@@ -3,7 +3,7 @@
 Schema das decisões que travam todo o resto do sistema: a **hierarquia de
 estabelecimentos**, o **Meu Catálogo**, a **Minha Agenda** e o **Meu Balcão**
 (caixa e comanda). Escrito para PostgreSQL 16+ e validado contra um banco real —
-**137 asserções**, incluindo um teste de concorrência com 30 sessões simultâneas.
+**142 asserções**, incluindo um teste de concorrência com 30 sessões simultâneas.
 
 ```bash
 ./db/run.sh                # migrations + seed + testes
@@ -254,8 +254,39 @@ Pagamento tem **chave de idempotência** única por tenant: o botão clicado dua
 vezes, ou o retry após timeout, resulta em um pagamento — não em cobrança
 dobrada.
 
+### Custódia e comissão são eixos independentes
+
+Custódia e execução respondem a perguntas diferentes: a custódia diz **em qual
+caixa o dinheiro entra**; o executor do item diz **a quem a produção pertence**.
+Elas divergem exatamente no caso que motiva a transferência — o profissional vai
+almoçar e passa a comanda adiante.
+
+Por isso `vw_producao_executor` agrega por `comanda_item.executor_id` e não pode
+sequer mencionar a custódia. O teste do balcão prova as duas coisas: a produção
+da cabeleireira e a da manicure continuam intactas depois de três transferências,
+o caixa que ficou com a comanda no fim não produziu nada, e a definição da view
+é verificada contra qualquer referência a `custodia` ou `responsavel_atual`. O
+controle negativo foi executado: reescrita a view atribuindo produção pelo
+responsável atual, a asserção estrutural reprova.
+
+Uma única consulta de apuração que confundisse os dois eixos pagaria o
+profissional errado — e o erro só apareceria na reclamação de quem recebeu a
+menos, depois do pagamento feito. É a decisão irreversível 18, e veio da lente do
+sistema legado: lá, a máquina de transferência e a regra "o dinheiro cai no caixa
+de quem recebeu" foram construídas separadamente, e a interação das duas com a
+comissão nunca foi declarada nem testada.
+
 ## Próximas migrations
 
 `0010` diante: estoque (livro append-only com custo médio ponderado e baixa
 disparada pelo check-out), fiscal (regime versionado, memória de cálculo
 imutável, numeração sem lacuna).
+
+O núcleo financeiro (`lancamento`) ainda não existe, e é onde entram quatro
+achados da lente do legado antes da primeira linha de DDL: **natureza em eixos
+independentes** (`afeta_receita`, `afeta_gaveta`, `gera_comissao` são ortogonais
+— gorjeta em dinheiro entra na gaveta sem ser receita), **estorno que herda a
+natureza da origem por trigger**, **origem polimórfica** (`tipo_origem` +
+`id_origem`, nunca `comanda_id` no ledger, porque locação, compra e conta a pagar
+também produzem lançamento) e **efeito tipado com inverso declarado**, para que o
+estorno enumere os efeitos gravados em vez de repetir uma lista escrita à mão.

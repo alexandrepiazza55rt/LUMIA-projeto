@@ -1,5 +1,26 @@
 # Invariantes da Fase de Fundação
 
+> ### Leia isto antes: a maior parte já existe
+>
+> Este documento foi escrito a partir do CHANGELOG do sistema legado, **antes** de eu conhecer o
+> blueprint e o schema já implementados. Confrontado com eles, o resultado honesto é:
+>
+> | | |
+> |---|---|
+> | Já implementado no banco | 43 tabelas, 9 migrations, **142 asserções** passando — inclusive contagem cega, custódia com `EXCLUDE`, RLS forçada, idempotência de pagamento |
+> | Já coberto por `gaps.json` | a maioria destes 34 — fuso e dia operacional, `FORCE RLS`, snapshot, multi-executor, auditoria com de/para, mascaramento de ambientes |
+> | Genuinamente novo | **12 achados** e **4 decisões irreversíveis**, agora em `gaps.json` como lente 7 |
+>
+> **A fonte de verdade é [`gaps.json`](../../gaps.json) e [`architecture.json`](../../architecture.json)**,
+> renderizados no [fluxograma](../../index.html) e no [dossiê](../../dossie.html). Este arquivo fica
+> como derivação: o mecanismo concreto (DDL, GRANT, política, lint, teste) de cada invariante, útil
+> na hora de escrever a migration — não como uma segunda especificação concorrente.
+>
+> Os quatro que viraram decisão irreversível: **F-C3** (natureza em eixos independentes → decisão 17),
+> **F-D1** (cliente sem GRANT de escrita → decisão 19), **F-E3** (documento renderizado imutável →
+> decisão 20) e o invariante de custódia × comissão (decisão 18), este último já provado em
+> `db/tests/test_balcao.sql` com controle negativo.
+
 Os 34 itens que precisam existir **no commit 1**, porque cada um marca toda linha que o sistema
 gravar depois. O critério de entrada está em [`ANALISE-DO-LEGADO.md §2`](./ANALISE-DO-LEGADO.md).
 

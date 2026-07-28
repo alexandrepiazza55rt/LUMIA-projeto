@@ -1,8 +1,8 @@
 {
   "meta": {
     "sistema": "LUMIA",
-    "versao_blueprint": "3.0",
-    "atualizado": "2026-07-26",
+    "versao_blueprint": "3.1",
+    "atualizado": "2026-07-28",
     "ambicao": "Plataforma SaaS de gestão + metodologia MQS para o setor da beleza, projetada para escala nacional: 100 mil+ empresas, milhões de agendamentos por mês, dados residentes no Brasil.",
     "principios": [
       "Multi-tenant por design — isolamento de dados por empresa desde a primeira tabela",
@@ -12,7 +12,7 @@
       "Monólito modular DDD → microserviços por estrangulamento (extrai só o que a escala exigir)",
       "Observabilidade desde o dia 1 — não se opera o que não se mede"
     ],
-    "nota_de_revisao": "Revisado apos a analise de lacunas da fundacao (ver gaps.json): 10 modulos novos e 36 reforcos incorporados. As fases foram reordenadas para respeitar a dependencia do catalogo."
+    "nota_de_revisao": "Revisado apos a analise de lacunas da fundacao (ver gaps.json): 10 modulos novos e 43 reforcos incorporados, fases reordenadas para respeitar a dependencia do catalogo. Revisao 3.1: incorporada a lente do sistema legado (CHANGELOG do sistema anterior) — 12 achados novos, 12 confirmacoes empiricas e 4 decisoes irreversiveis (17 a 20). A lente do legado nao projeta risco: registra defeito ocorrido, decisao ja tomada pelo dono e custo ja pago."
   },
   "stack": {
     "frontend": {
@@ -71,7 +71,9 @@
       "Validação e sanitização de toda entrada (schema validation em todas as rotas)",
       "Rate limiting por tenant, por usuário e por IP",
       "CSP estrita, proteção CSRF/XSS/SQL injection, headers de segurança",
-      "Idempotency keys em toda operação financeira — retry nunca duplica cobrança"
+      "Idempotency keys em toda operação financeira — retry nunca duplica cobrança",
+      "Papel de aplicacao sem GRANT de escrita: SELECT sob RLS e EXECUTE nas funcoes de escrita; nenhum INSERT/UPDATE/DELETE direto em tabela de fato, verificado por teste de arquitetura no CI (decisao 19)",
+      "Proibicao de marcacao montada por concatenacao de string em todo o repositorio, verificada por lint; superficie de impressao renderiza por caminho unico escapado por padrao (decisao 20)"
     ],
     "segredos": "AWS Secrets Manager — zero credenciais em código, rotação automática, acesso auditado",
     "auditoria": "Trilha imutável append-only de toda ação sensível: quem, o quê, quando, de onde e valor anterior",
@@ -351,7 +353,8 @@
       "GitHub Actions: lint → testes → SAST → build → deploy com aprovação",
       "Trunk-based development + feature flags (liberação gradual por tenant)",
       "Migrações de banco versionadas, com rollback ensaiado",
-      "Deploy blue/green — zero downtime, rollback em 1 clique"
+      "Deploy blue/green — zero downtime, rollback em 1 clique",
+      "Validacao de configuracao no arranque: a aplicacao e cada funcao de servidor abortam nomeando a variavel ausente; paridade de runtime dev/prod e smoke test no ambiente publicado como portao de entrega"
     ],
     "monitoramento": [
       "OpenTelemetry (traces distribuídos) + Prometheus/Grafana (métricas) + logs estruturados centralizados",
@@ -439,7 +442,7 @@
     }
   ],
   "decisoes_de_fundacao": {
-    "origem": "Analise de lacunas — 6 lentes independentes com revisao adversarial. Detalhe completo em gaps.json.",
+    "origem": "Analise de lacunas — 7 lentes independentes com revisao adversarial, sendo a setima o CHANGELOG do sistema legado (empirica). Detalhe completo em gaps.json.",
     "itens": [
       {
         "ordem": 1,
@@ -552,6 +555,34 @@
         "titulo": "Procedência e confiança de todo número que vira conselho",
         "decisao": "Cada parâmetro e cada indicador carrega origem (declarado pelo usuário, medido pelo sistema, estimado por IA, padrão setorial), confiança, data de referência e completude. Todo valor calculado persiste versão do motor, versão da regra e digest das entradas, indexados para busca reversa. Bússola e Consultor bloqueiam ou rotulam explicitamente a saída quando a base é insuficiente, e existe entidade de remediação com escopo, dry-run, diff, lançamento de ajuste e notificação ao tenant.",
         "se_errar": "Uma Bússola que precifica sobre custo inexistente faz o salão vender no prejuízo com a marca LUMIA no relatório — dano de reputação e exposição civil, não bug de tela. Sem procedência, medição e chute ficam indistinguíveis na mesma série histórica e o benchmark nacional nasce contaminado. Sem linhagem reversa, corrigir um erro de alíquota ou de regra que atingiu dezenas de milhares de empresas é varredura cega de bilhões de linhas sobre lançamentos imutáveis e períodos travados."
+      },
+      {
+        "ordem": 17,
+        "area": "Modelo de dados",
+        "titulo": "Natureza do lançamento em eixos independentes, com estorno que herda a natureza",
+        "decisao": "Modele a natureza do lançamento como tabela de domínio com flags ORTOGONAIS (afeta_receita, afeta_gaveta, gera_comissao, conta_canônica), não como um enum receita/despesa. O estorno referencia a linha de origem e herda a natureza dela por trigger, com valor simétrico e um estorno por origem. Todo relatório agrega pelas flags — nunca pelo sinal do valor nem por heurística de tipo.",
+        "se_errar": "Gorjeta em dinheiro (entra na gaveta, não é receita), gorjeta em cartão (não entra em nenhuma das duas) e crédito de cliente (gaveta como passivo) ficam indistinguíveis de receita. Foi exatamente o defeito do sistema anterior: o estorno gravado como receita deflacionou o relatório de receita do dia com a gaveta correta ao lado, o que o manteve invisível. Corrigir depois é reclassificar lançamento por lançamento, sem saber a natureza original."
+      },
+      {
+        "ordem": 18,
+        "area": "Modelo de dados",
+        "titulo": "A custódia da comanda não move comissão",
+        "decisao": "Separe formalmente os três eixos da comanda: quem abriu (imutável), quem responde por ela agora (custódia — determina em qual caixa o dinheiro entra) e quem executou cada item (participante — a quem a comissão pertence). A apuração de comissão referencia SEMPRE o participante do item; nenhuma consulta de comissão pode referenciar a custódia. Teste adversarial obrigatório no CI: abrir com A, transferir para B, fechar, e provar que a apuração de A não mudou e a de B continua zero.",
+        "se_errar": "Uma única consulta de apuração que faça JOIN pela custódia paga o profissional errado. O erro aparece na reclamação de quem recebeu a menos, depois do pagamento feito, e vira passivo trabalhista. As duas metades já existem no schema (comanda_custodia e comanda_item.executor_id); o que falta é o invariante escrito e testado."
+      },
+      {
+        "ordem": 19,
+        "area": "Seguranca",
+        "titulo": "Escrita exclusivamente por função de servidor: o cliente não tem GRANT de escrita",
+        "decisao": "O papel de aplicação recebe SELECT (sob RLS) e EXECUTE nas funções de escrita — nunca INSERT, UPDATE ou DELETE direto em tabela de fato. Some-se ao papel sem BYPASSRLS e ao FORCE ROW LEVEL SECURITY. Teste de arquitetura no CI reprova qualquer escrita direta fora dos arquivos de função do banco.",
+        "se_errar": "É o que torna inexprimível a segunda implementação de uma regra de dinheiro. Sem isso, motor único, append-only e trilha na mesma transação viram disciplina, não garantia — e o sistema anterior provou os dois modos de falha: uma cópia local do cálculo de total sem as travas, e um caminho de escrita novo criado por fora do banco depois de a migração estar concluída. Revogar o GRANT depois exige auditar cada consulta em produção."
+      },
+      {
+        "ordem": 20,
+        "area": "LGPD",
+        "titulo": "Documento emitido ou assinado é conteúdo renderizado imutável",
+        "decisao": "Termo assinado, comprovante de caixa, recibo e relatório impresso são gravados como conteúdo renderizado + hash + versão do modelo + autor, em tabela append-only, e toda impressão lê dali — nunca re-renderiza do cadastro atual. Proíba construção de marcação por concatenação de string em todo o repositório, verificado por lint.",
+        "se_errar": "Um documento que se re-renderiza do cadastro atual não prova nada: mudar a comissão em agosto altera o termo assinado em junho, e a assinatura deixa de ser evidência — que é a única prova documental do acordo com o profissional. O sistema anterior tinha esse defeito e, na mesma superfície, uma injeção de código pelo texto do documento publicada por três semanas."
       }
     ]
   }

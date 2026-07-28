@@ -547,6 +547,9 @@ DO $$
 DECLARE
   t uuid := '00000000-0000-7000-8000-00000000a001';
   v_cm uuid := current_setting('lumia.comanda_teste')::uuid;
+  v_ana   uuid := '00000000-0000-7000-8000-0000000a2002';  -- cabeleireira, executou
+  v_bia   uuid := '00000000-0000-7000-8000-0000000a2003';  -- manicure parceira, executou
+  v_diego uuid := '00000000-0000-7000-8000-0000000a2004';  -- caixa, custódia final
 BEGIN
   PERFORM set_config('lumia.tenant_id', t::text, true);
 
@@ -567,6 +570,35 @@ BEGIN
       JOIN lumia.comanda c ON c.data_comercial = v.data_comercial
      WHERE c.finalidade <> 'REAL' AND c.id = v_cm),
     'a view de producao filtra finalidade REAL');
+
+  -- ---- Decisão 18: a custódia da comanda NÃO move comissão ---------------
+  -- Esta comanda passou por quatro responsáveis (recepção → cabeleireira →
+  -- manicure → caixa) e teve dois executores. São eixos independentes: a
+  -- custódia diz em qual caixa o dinheiro entra; o executor do item diz a
+  -- quem a produção — e portanto a comissão — pertence. Uma única consulta
+  -- que confundisse os dois pagaria o profissional errado, e o erro só
+  -- apareceria na reclamação de quem recebeu a menos, depois do pagamento.
+  PERFORM pg_temp.ok((SELECT responsavel_atual_id FROM lumia.comanda WHERE id = v_cm) = v_diego,
+    'a custodia final e do caixa (Diego), nao de quem executou');
+
+  PERFORM pg_temp.ok((SELECT total_produzido FROM lumia.vw_producao_executor
+                       WHERE executor_id = v_ana) = 180.00,
+    'producao da cabeleireira intacta apos as 3 transferencias de custodia');
+
+  PERFORM pg_temp.ok((SELECT total_produzido FROM lumia.vw_producao_executor
+                       WHERE executor_id = v_bia) = 120.00,
+    'producao da manicure intacta apos as 3 transferencias de custodia');
+
+  PERFORM pg_temp.ok(NOT EXISTS (SELECT 1 FROM lumia.vw_producao_executor
+                                  WHERE executor_id = v_diego),
+    'quem detem a custodia final e nao executou nada NAO produz');
+
+  -- A garantia estrutural: não basta a consulta estar certa hoje. A produção
+  -- não pode nem mencionar a custódia, senão a confusão volta na próxima
+  -- consulta que alguém escrever.
+  PERFORM pg_temp.ok(
+    pg_get_viewdef('lumia.vw_producao_executor'::regclass) !~* '(custodia|responsavel_atual)',
+    'a view de producao nao referencia custodia nem responsavel atual');
 END $$;
 
 \echo ''

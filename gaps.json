@@ -2,14 +2,14 @@
   "meta": {
     "sistema": "LUMIA",
     "documento": "Analise de lacunas da fundacao",
-    "versao": "1.0",
-    "data": "2026-07-26",
-    "metodo": "6 lentes independentes (dominio de beleza, fiscal/tributario BR, LGPD, arquitetura, escala SaaS, benchmark competitivo) + revisao adversarial por lente + critico de completude + sintese canonica. 14 agentes, 207 achados brutos, 226 consolidados.",
+    "versao": "1.1",
+    "data": "2026-07-28",
+    "metodo": "7 lentes independentes (dominio de beleza, fiscal/tributario BR, LGPD, arquitetura, escala SaaS, benchmark competitivo e o sistema legado) + revisao adversarial por lente + critico de completude + sintese canonica. 14 agentes na rodada 1 (207 achados brutos, 226 consolidados); 14 agentes na lente do legado (150 regras levantadas, 12 achados sem cobertura previa, 12 confirmacoes empiricas de achados existentes).",
     "contagem": {
-      "brutos": 207,
-      "consolidados": 226,
-      "P0": 118,
-      "P1": 98,
+      "brutos": 357,
+      "consolidados": 238,
+      "P0": 129,
+      "P1": 99,
       "P2": 10
     },
     "legenda": {
@@ -17,10 +17,11 @@
       "base": "os 10 modulos originais",
       "P0": "sem isso o modelo de dados/arquitetura nasce errado — corrigir depois exige migracao, reescrita ou perda de historico",
       "P1": "necessario antes do lancamento comercial, encaixa sem migracao destrutiva",
-      "P2": "maturidade/escala, adicionavel com custo normal"
+      "P2": "maturidade/escala, adicionavel com custo normal",
+      "legado": "lente empirica extraida do CHANGELOG do sistema anterior: defeito que ocorreu de fato, decisao ja tomada pelo dono e custo ja pago — ver lente_legado"
     }
   },
-  "diagnostico": "Não, os 10 módulos não são suficientes: eles descrevem bem o que o dono vê na tela e quase nada do que sustenta o número. A lacuna mais grave é a ausência do catálogo — não existe módulo que defina O QUE A EMPRESA VENDE, e serviço é o nó do qual agenda, comanda, comissão, estoque, DRE e todas as Bússolas dependem; construir a agenda antes dele (como prevê a fase 3) faz nascer \"descrição do atendimento\" em texto livre e condena todo o histórico. Logo atrás vêm quatro camadas inteiras que hoje são apenas rótulos: estoque e CMV (o segundo maior custo do setor), o balcão (comanda com itens polimórficos, multi-executor e sessão de caixa), o fiscal (regime, Fator R, numeração sem lacuna, transição IBS/CBS) e a superfície pública onde o cliente descobre e agenda sozinho. Do lado da plataforma, LGPD é um checkbox em Configurações quando o setor trata dado sensível de saúde todos os dias, e não existe nada do negócio LUMIA — ciclo de vida do tenant, plano versionado, medição de uso, back office — o que significa margem invisível e SQL manual em produção. Veredicto honesto: a estrutura atual é um bom mapa de telas e um mapa de dependências incompleto; se a fase 1 começar sem catálogo, sem a hierarquia CNPJ/estabelecimento, sem livro append-only e sem duas classes de dado, o retrabalho não é refactor — é reescrever o núcleo transacional com dinheiro real e nota fiscal emitida no caminho.",
+  "diagnostico": "Não, os 10 módulos não são suficientes: eles descrevem bem o que o dono vê na tela e quase nada do que sustenta o número. A lacuna mais grave é a ausência do catálogo — não existe módulo que defina O QUE A EMPRESA VENDE, e serviço é o nó do qual agenda, comanda, comissão, estoque, DRE e todas as Bússolas dependem; construir a agenda antes dele (como prevê a fase 3) faz nascer \"descrição do atendimento\" em texto livre e condena todo o histórico. Logo atrás vêm quatro camadas inteiras que hoje são apenas rótulos: estoque e CMV (o segundo maior custo do setor), o balcão (comanda com itens polimórficos, multi-executor e sessão de caixa), o fiscal (regime, Fator R, numeração sem lacuna, transição IBS/CBS) e a superfície pública onde o cliente descobre e agenda sozinho. Do lado da plataforma, LGPD é um checkbox em Configurações quando o setor trata dado sensível de saúde todos os dias, e não existe nada do negócio LUMIA — ciclo de vida do tenant, plano versionado, medição de uso, back office — o que significa margem invisível e SQL manual em produção. Veredicto honesto: a estrutura atual é um bom mapa de telas e um mapa de dependências incompleto; se a fase 1 começar sem catálogo, sem a hierarquia CNPJ/estabelecimento, sem livro append-only e sem duas classes de dado, o retrabalho não é refactor — é reescrever o núcleo transacional com dinheiro real e nota fiscal emitida no caminho. ADENDO DA LENTE 7 (o sistema legado): a análise do CHANGELOG do sistema anterior não muda o diagnóstico — ela o comprova. Aquele sistema tomou tarde exatamente as decisões que este documento chama de irreversíveis, e o preço não foi refactor: foram 17 ciclos de reorganização para tornar o código migrável e mais 7 de migração para tirar o dinheiro do navegador, sem uma funcionalidade nova para o dono no caminho. Doze achados novos vieram dessa leitura — nenhum deles teórico: natureza do lançamento em eixos independentes (o estorno gravado como receita deflacionou o relatório de receita com a gaveta correta ao lado), efeito com inverso declarado, documento emitido imutável, custódia que não move comissão, ponto único de arredondamento, política de resíduo de centavos, período fechado genérico, escrita só por função de servidor, catálogo de autorização fora do cliente, chave de negócio que avisa em vez de bloquear, configuração validada no arranque e semente sem dinheiro. E doze achados que já estavam aqui deixaram de ser risco projetado para virar incidente documentado com data.",
   "modulos_novos": [
     {
       "id": "meu-catalogo",
@@ -1559,6 +1560,97 @@
       ],
       "prioridade": "P1",
       "por_que": "WCAG 2.1 AA é uma linha do design system e precisa ser propriedade dos primitivos: retrofit em 300 telas nunca acontece. E vocabulário fixado no código na linguagem de salão deixa barbearia e clínica com produto estranho — a refatoração mais difusa que existe."
+    },
+    {
+      "modulo": "Meu Balcão",
+      "grupo": "Custódia, comissão e integridade do item",
+      "prioridade": "P0",
+      "itens": [
+        "Custódia não move comissão (comissão é do participante do item)",
+        "Item com identidade própria e vínculo alterável entre comandas abertas",
+        "Movimento de item entre comandas como evento auditado",
+        "Vínculo do item imutável após o fechamento",
+        "Procedência do valor congelado (qual nível da cascata resolveu preço, duração e percentual)",
+        "Motivo obrigatório em desconto, estorno, reabertura e transferência"
+      ],
+      "por_que": "O sistema anterior modelou item como posição em lista dentro da comanda e precisou inventar uma mecânica própria para mover item sem apagar dinheiro. Com identidade própria e vínculo alterável, mover é UPDATE auditado; sem ela, é apagar aqui e recriar lá."
+    },
+    {
+      "modulo": "Meu Financeiro",
+      "grupo": "Integridade aritmética e reversão",
+      "prioridade": "P0",
+      "itens": [
+        "Natureza em eixos independentes (receita × gaveta × comissão)",
+        "Estorno herda a natureza da origem, por trigger",
+        "Efeito tipado com inverso declarado; estorno por enumeração",
+        "Ponto único de arredondamento declarado no motor",
+        "Política de resíduo de centavos como parâmetro obrigatório do rateio",
+        "Período fechado como trava genérica do banco",
+        "Leitura congelada: consulta que produz dinheiro não faz JOIN com catálogo"
+      ],
+      "por_que": "São as seis classes de defeito que o sistema anterior confessou por escrito no núcleo financeiro. Nenhuma delas é feature: todas são propriedades do schema e do motor, e todas foram descobertas depois de o dinheiro já estar gravado."
+    },
+    {
+      "modulo": "Meus Clientes",
+      "grupo": "Chave de negócio e edição de cadastro",
+      "prioridade": "P0",
+      "itens": [
+        "Documento e contato validados e normalizados, com índice NÃO único",
+        "Duplicidade avisa e nunca bloqueia o cadastro",
+        "Editar cadastro não reescreve o passado: fato guarda o valor de então",
+        "Trilha de/para por campo em toda edição"
+      ],
+      "por_que": "Decisão explícita do dono do sistema anterior, contraintuitiva o bastante para que uma modelagem instintiva a quebre sozinha ao colocar UNIQUE no documento."
+    },
+    {
+      "modulo": "Plataforma LUMIA",
+      "grupo": "Ambiente, carga e entrega",
+      "prioridade": "P0",
+      "itens": [
+        "Semente sem dinheiro: no máximo catálogo, com origem declarada",
+        "Nenhuma rotina automática que promove dado local a dado real",
+        "Carga bloqueada em produção e idempotente",
+        "Configuração validada no arranque, abortando com o nome do que falta",
+        "Paridade de runtime entre desenvolvimento e produção",
+        "Smoke test no ambiente publicado como portão de entrega"
+      ],
+      "por_que": "O sistema anterior injetou 48 comandas e 70 lançamentos fictícios no razão real por uma rotina de conveniência, e quebrou em produção por variáveis de ambiente ausentes depois de declarar a entrega testada de ponta a ponta."
+    },
+    {
+      "modulo": "Central de Privacidade",
+      "grupo": "Documento emitido e superfície de impressão",
+      "prioridade": "P0",
+      "itens": [
+        "Documento assinado gravado como conteúdo renderizado + hash + versão do modelo",
+        "Impressão e PDF leem o conteúdo congelado, nunca o cadastro atual",
+        "Proibição de marcação por concatenação de string, verificada por lint",
+        "Exportação de dado pessoal como operação privilegiada com registro append-only"
+      ],
+      "por_que": "Estende ao termo de parceria, ao comprovante de caixa e ao recibo o mecanismo que o motor de consentimento já prevê para o termo LGPD — e fecha a superfície de impressão, que no sistema anterior teve injeção de código publicada por três semanas."
+    },
+    {
+      "modulo": "Configurações",
+      "grupo": "Parâmetro de negócio versus literal no código",
+      "prioridade": "P0",
+      "itens": [
+        "Nenhum número de negócio dentro do motor de cálculo, verificado por lint",
+        "Parâmetro ausente é falha alta, nunca um valor padrão silencioso",
+        "Todo parâmetro com vigência, autor e trilha de/para",
+        "Catálogo de autorização servido pelo banco, nunca embarcado no cliente"
+      ],
+      "por_que": "No sistema anterior uma matriz de comissão escrita no código governou o pagamento dos profissionais até ser eliminada por invisível ao dono, e o percentual de segurança escondido causou comissão indevida em venda de balcão."
+    },
+    {
+      "modulo": "Minha Equipe",
+      "grupo": "Identidade de acesso versus ficha de negócio",
+      "prioridade": "P0",
+      "itens": [
+        "Profissional sem login e login sem ficha, com vínculo opcional",
+        "Regra de FK: negócio aponta para a ficha, ato do sistema aponta para o usuário",
+        "Promover e despromover sem recadastrar, reativando a mesma ficha",
+        "Termo de parceria assinado com conteúdo congelado"
+      ],
+      "por_que": "O sistema anterior criou quem tinha a função Profissional na tabela de LOGIN, que a agenda, o PDV e a comissão não leem — a pessoa ganhava acesso e não existia como profissional. Custou uma tabela nova e uma migração no meio do caminho."
     }
   ],
   "decisoes_irreversiveis": [
@@ -1657,6 +1749,30 @@
       "decisao": "Cada parâmetro e cada indicador carrega origem (declarado pelo usuário, medido pelo sistema, estimado por IA, padrão setorial), confiança, data de referência e completude. Todo valor calculado persiste versão do motor, versão da regra e digest das entradas, indexados para busca reversa. Bússola e Consultor bloqueiam ou rotulam explicitamente a saída quando a base é insuficiente, e existe entidade de remediação com escopo, dry-run, diff, lançamento de ajuste e notificação ao tenant.",
       "se_errar": "Uma Bússola que precifica sobre custo inexistente faz o salão vender no prejuízo com a marca LUMIA no relatório — dano de reputação e exposição civil, não bug de tela. Sem procedência, medição e chute ficam indistinguíveis na mesma série histórica e o benchmark nacional nasce contaminado. Sem linhagem reversa, corrigir um erro de alíquota ou de regra que atingiu dezenas de milhares de empresas é varredura cega de bilhões de linhas sobre lançamentos imutáveis e períodos travados.",
       "area": "Produto"
+    },
+    {
+      "titulo": "Natureza do lançamento em eixos independentes, com estorno que herda a natureza",
+      "decisao": "Modele a natureza do lançamento como tabela de domínio com flags ORTOGONAIS (afeta_receita, afeta_gaveta, gera_comissao, conta_canônica), não como um enum receita/despesa. O estorno referencia a linha de origem e herda a natureza dela por trigger, com valor simétrico e um estorno por origem. Todo relatório agrega pelas flags — nunca pelo sinal do valor nem por heurística de tipo.",
+      "se_errar": "Gorjeta em dinheiro (entra na gaveta, não é receita), gorjeta em cartão (não entra em nenhuma das duas) e crédito de cliente (gaveta como passivo) ficam indistinguíveis de receita. Foi exatamente o defeito do sistema anterior: o estorno gravado como receita deflacionou o relatório de receita do dia com a gaveta correta ao lado, o que o manteve invisível. Corrigir depois é reclassificar lançamento por lançamento, sem saber a natureza original.",
+      "area": "Modelo de dados"
+    },
+    {
+      "titulo": "A custódia da comanda não move comissão",
+      "decisao": "Separe formalmente os três eixos da comanda: quem abriu (imutável), quem responde por ela agora (custódia — determina em qual caixa o dinheiro entra) e quem executou cada item (participante — a quem a comissão pertence). A apuração de comissão referencia SEMPRE o participante do item; nenhuma consulta de comissão pode referenciar a custódia. Teste adversarial obrigatório no CI: abrir com A, transferir para B, fechar, e provar que a apuração de A não mudou e a de B continua zero.",
+      "se_errar": "Uma única consulta de apuração que faça JOIN pela custódia paga o profissional errado. O erro aparece na reclamação de quem recebeu a menos, depois do pagamento feito, e vira passivo trabalhista. As duas metades já existem no schema (comanda_custodia e comanda_item.executor_id); o que falta é o invariante escrito e testado.",
+      "area": "Modelo de dados"
+    },
+    {
+      "titulo": "Escrita exclusivamente por função de servidor: o cliente não tem GRANT de escrita",
+      "decisao": "O papel de aplicação recebe SELECT (sob RLS) e EXECUTE nas funções de escrita — nunca INSERT, UPDATE ou DELETE direto em tabela de fato. Some-se ao papel sem BYPASSRLS e ao FORCE ROW LEVEL SECURITY. Teste de arquitetura no CI reprova qualquer escrita direta fora dos arquivos de função do banco.",
+      "se_errar": "É o que torna inexprimível a segunda implementação de uma regra de dinheiro. Sem isso, motor único, append-only e trilha na mesma transação viram disciplina, não garantia — e o sistema anterior provou os dois modos de falha: uma cópia local do cálculo de total sem as travas, e um caminho de escrita novo criado por fora do banco depois de a migração estar concluída. Revogar o GRANT depois exige auditar cada consulta em produção.",
+      "area": "Seguranca"
+    },
+    {
+      "titulo": "Documento emitido ou assinado é conteúdo renderizado imutável",
+      "decisao": "Termo assinado, comprovante de caixa, recibo e relatório impresso são gravados como conteúdo renderizado + hash + versão do modelo + autor, em tabela append-only, e toda impressão lê dali — nunca re-renderiza do cadastro atual. Proíba construção de marcação por concatenação de string em todo o repositório, verificado por lint.",
+      "se_errar": "Um documento que se re-renderiza do cadastro atual não prova nada: mudar a comissão em agosto altera o termo assinado em junho, e a assinatura deixa de ser evidência — que é a única prova documental do acordo com o profissional. O sistema anterior tinha esse defeito e, na mesma superfície, uma injeção de código pelo texto do documento publicada por três semanas.",
+      "area": "LGPD"
     }
   ],
   "achados_detalhados": [
@@ -6953,6 +7069,406 @@
       "lente": "completude",
       "veredicto": "CONFIRMADO",
       "ajuste": ""
+    },
+    {
+      "id": "natureza-do-lancamento-em-eixos-independentes",
+      "titulo": "Natureza do lançamento em eixos independentes, e estorno que herda a natureza",
+      "tipo": "requisito_tecnico",
+      "descricao": "Um único enum receita/despesa não expressa o domínio: gorjeta em dinheiro entra na gaveta e NÃO é receita; gorjeta em cartão não entra na gaveta nem na receita; crédito de cliente entra na gaveta como passivo. A natureza precisa ser tabela de domínio com flags ortogonais (afeta_receita, afeta_gaveta, gera_comissao, conta_canonica) e o estorno precisa HERDAR a natureza da linha de origem, garantido por trigger — nunca ser montado à mão pelo chamador.",
+      "por_que_fundacao": "A tabela de lançamento ainda não existe (o núcleo financeiro é a próxima camada), então a decisão custa uma tabela de domínio agora e uma reclassificação manual de histórico depois. Todo relatório passa a agregar pelas flags, nunca pelo sinal do valor nem por heurística de tipo.",
+      "risco_retrabalho": "No sistema anterior a natureza era inferida na hora do relatório e o estorno montado à mão: estornar uma comanda que gerou crédito ou gorjeta em dinheiro gravava o estorno como RECEITA e deflacionava o relatório de receita do dia — com a gaveta correta ao lado, o que tornou o defeito invisível por semanas.",
+      "prioridade": "P0",
+      "depende_de": [
+        "plano-de-contas-canonico"
+      ],
+      "alimenta": [
+        "gorjeta-como-passivo-de-rateio",
+        "motor-de-comissao-e-fechamento",
+        "integracao-contabil-exportacao-sped"
+      ],
+      "evidencia": "Incidente real: CHANGELOG 07/07 — \"o lançamento de estorno agora preserva a NATUREZA do lançamento original; antes o estorno entrava como receita e derrubava indevidamente o relatório de receita do dia (a gaveta já ficava certa)\".",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "efeito-tipado-com-inverso-declarado",
+      "titulo": "Todo efeito do fechamento é tipado e declara seu inverso; o estorno enumera, não lista à mão",
+      "tipo": "risco_arquitetural",
+      "descricao": "Refina a saga de compensação: em vez de o estorno conter uma lista escrita à mão dos passos a desfazer, cada saída do motor de fechamento é persistida como EFEITO tipado (tipo, alvo, valor, dados) ligado ao fechamento, e a tabela de domínio de tipos declara o inverso de cada um. O estorno recebe o retrato + os efeitos gravados daquele fechamento e devolve os inversos. Efeito de tipo desconhecido FALHA a operação, nunca é ignorado.",
+      "por_que_fundacao": "Atomicidade garante que o executado foi tudo; não garante que a LISTA esteja completa. Cada módulo novo (estoque, cashback, gorjeta, crédito, fiscal) é uma chance de esquecer um inverso, e cada esquecimento é dinheiro ou estoque que sobra sem dono. A diferença entre lista enumerada e lista escrita à mão é de schema, não de código.",
+      "risco_retrabalho": "Reescrever o estorno depois de o fechamento já ter produzido efeitos não catalogados exige varrer o histórico para descobrir o que foi feito — sem registro, é adivinhação.",
+      "prioridade": "P0",
+      "depende_de": [
+        "saga-checkout-pagamento-fiscal",
+        "natureza-do-lancamento-em-eixos-independentes"
+      ],
+      "alimenta": [
+        "motor-de-comissao-e-fechamento",
+        "estoque-e-movimentacoes",
+        "conciliacao-de-adquirente-e-antecipacao"
+      ],
+      "evidencia": "No sistema anterior o estorno era uma função com os casos conhecidos escritos à mão e cresceu a cada módulo. A auditoria dos ciclos 15 e 16 (CHANGELOG 21/07) precisou reconstruir as 455 linhas do fechamento e as 265 do estorno linha a linha para provar equivalência, e ainda assim reprovou a primeira versão por três divergências finas.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "documento-emitido-como-conteudo-renderizado-imutavel",
+      "titulo": "Documento emitido ou assinado é conteúdo renderizado imutável, nunca re-renderizado do cadastro atual",
+      "tipo": "requisito_tecnico",
+      "descricao": "Generaliza para todo documento o que o motor de consentimento já faz para o termo LGPD: termo de parceria assinado, comprovante de fechamento de caixa, recibo e relatório impresso são gravados como conteúdo renderizado + hash + versão do modelo + autor, em tabela append-only, e toda impressão/PDF lê dali. Complemento obrigatório: proibição de construção de marcação por concatenação de string em todo o repositório, verificada por lint — texto do usuário é DADO, nunca template.",
+      "por_que_fundacao": "É decisão de schema (a tabela e o hash) somada a uma convenção de renderização transversal. Um documento assinado que se re-renderiza do cadastro atual não prova nada: mude a comissão em agosto e o termo assinado em junho passa a exibir o número novo.",
+      "risco_retrabalho": "Sem o conteúdo congelado, nenhum documento já assinado pode ser reconstituído — e é a única prova documental que o estabelecimento tem de um acordo com o profissional.",
+      "prioridade": "P0",
+      "depende_de": [
+        "consentimento-versionado-append-only"
+      ],
+      "alimenta": [
+        "contrato-de-parceria-e-locacao-de-espaco",
+        "remuneracao-variavel-reflexos-trabalhistas",
+        "sessao-de-caixa"
+      ],
+      "evidencia": "Duas cicatrizes reais: o \"Documento para assinar\" do sistema anterior era regenerado dos dados atuais (CHANGELOG 17/06), e ficou vulnerável a injeção de código pelo próprio texto do documento por cerca de três semanas, até a auditoria de segurança C2 (CHANGELOG 07/07).",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "validacao-de-configuracao-no-boot-e-paridade-de-runtime",
+      "titulo": "Configuração validada no arranque e paridade de runtime entre desenvolvimento e produção",
+      "tipo": "requisito_tecnico",
+      "descricao": "A aplicação e cada função de servidor conferem no boot a lista declarada de variáveis e ABORTAM nomeando exatamente o que falta — nunca um erro genérico em tempo de requisição. O runtime de desenvolvimento é o mesmo de produção (resolução de módulos, versão, formato de import), e o portão de entrega inclui um smoke test executado no ambiente publicado.",
+      "por_que_fundacao": "É contrato de operação barato agora e caro como incidente: a diferença entre 'testado ponta a ponta' e 'funciona em produção' foi exatamente essa no sistema anterior. Encaixa na esteira de CI/CD da Fase 1.",
+      "risco_retrabalho": "Sem isso, toda entrega que envolve função de servidor tem uma janela de falha que só aparece com o cliente usando, e o modo de falha é um erro genérico que não diz o que faltou.",
+      "prioridade": "P1",
+      "depende_de": [
+        "feature-flags-e-rollout-gradual"
+      ],
+      "alimenta": [
+        "plataforma-lumia"
+      ],
+      "evidencia": "CHANGELOG 15/06 declarou a criação de usuários \"testada de ponta a ponta\"; 17/06 registrou erro 500 em produção por duas causas simultâneas — variáveis de ambiente não cadastradas no provedor e um import sem a extensão .js, que só quebra no runtime do servidor. A funcionalidade também não rodava no servidor de desenvolvimento comum.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "chave-de-negocio-duplicada-avisa-nunca-bloqueia",
+      "titulo": "CPF, CNPJ, telefone e e-mail: validados e normalizados, nunca únicos — duplicidade avisa",
+      "tipo": "requisito_tecnico",
+      "descricao": "Documento e contato são validados por dígito verificador e armazenados normalizados, com índice NÃO único; a detecção de duplicidade alimenta um aviso na tela e nunca bloqueia o cadastro. Vale para cliente e para a pessoa da equipe.",
+      "por_que_fundacao": "É uma restrição NEGATIVA de custo zero agora e alto depois: a tabela cliente ainda não tem coluna de documento, e a modelagem instintiva colocaria UNIQUE nela. Restrição única em documento parece higiene e é o erro no domínio — mãe e filha com o mesmo telefone, cliente sem documento, CPF do responsável, marido e mulher com o mesmo e-mail.",
+      "risco_retrabalho": "Se nascer única, a recepção trava no balcão com o cliente na frente e a saída de emergência vira documento inventado, que polui a base para sempre. Remover a restrição depois é fácil; limpar os documentos falsos, não.",
+      "prioridade": "P0",
+      "depende_de": [
+        "identidade-do-cliente-final",
+        "nome-social-e-modelo-de-identificacao-da-pessoa"
+      ],
+      "alimenta": [
+        "MEUS CLIENTES",
+        "merge-de-clientes-e-base-compartilhada"
+      ],
+      "evidencia": "Decisão explícita do dono no sistema anterior, CHANGELOG 23/06: \"telefone/CPF que já existe em OUTRO cliente apenas AVISA (possível cadastro duplicado), mas deixa salvar\".",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "custodia-da-comanda-nao-move-comissao",
+      "titulo": "Transferir a custódia da comanda nunca move comissão: comissão pertence ao participante do item",
+      "tipo": "risco_arquitetural",
+      "descricao": "A comanda carrega três identidades independentes e não deriváveis entre si: quem abriu (imutável), quem responde por ela agora (a custódia, que determina em qual caixa o dinheiro entra) e quem executou cada ITEM (a quem a comissão pertence). Nenhuma consulta de comissão pode referenciar a custódia; a apuração é sempre pelo participante do item.",
+      "por_que_fundacao": "As duas metades já existem no schema — comanda_custodia e comanda_item.executor_id — mas o invariante que as separa não está escrito nem testado. É o caso de uso que motiva a transferência (o profissional vai almoçar e passa a comanda) e o ponto exato em que os dois eixos divergem.",
+      "risco_retrabalho": "Uma única consulta de apuração que faça JOIN pela custódia paga o profissional errado, e o erro só aparece na reclamação de quem recebeu a menos — depois do pagamento feito.",
+      "prioridade": "P0",
+      "depende_de": [
+        "comanda-e-itens-multi-executor",
+        "motor-de-comissao-e-fechamento"
+      ],
+      "alimenta": [
+        "meu-balcao",
+        "remuneracao-variavel-reflexos-trabalhistas"
+      ],
+      "evidencia": "O sistema anterior construiu a máquina de transferência com aceite (CHANGELOG 02/07) e depois a regra \"o dinheiro cai no caixa de QUEM RECEBEU, não de quem abriu a comanda\" (07/07) — dois eixos corretos, cuja interação com a comissão nunca foi declarada nem testada.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "politica-de-residuo-de-centavos-como-parametro-do-rateio",
+      "titulo": "A primitiva de rateio recebe política de resíduo e ordenação como parâmetros obrigatórios",
+      "tipo": "requisito_tecnico",
+      "descricao": "Existe uma única função de rateio, mas ela não pode ter política fixa: quem chama declara para onde vai o resíduo dos centavos e qual a ordenação estável usada. A soma das partes bate exatamente com o todo, sempre, e o resultado é determinístico entre execuções.",
+      "por_que_fundacao": "Módulos diferentes exigem políticas incompatíveis do mesmo mecanismo, e descobrir isso depois significa ou duplicar a primitiva (voltando ao problema de duas verdades) ou mudar a distribuição de valores já apurados.",
+      "risco_retrabalho": "Resíduo com política implícita produz diferença de centavos entre o total do documento e a soma dos rateios — que é a classe de divergência mais difícil de diagnosticar em conciliação.",
+      "prioridade": "P0",
+      "depende_de": [
+        "motor-de-comissao-e-fechamento"
+      ],
+      "alimenta": [
+        "gorjeta-como-passivo-de-rateio",
+        "comanda-mista-multi-documento",
+        "conciliacao-de-adquirente-e-antecipacao"
+      ],
+      "evidencia": "No sistema anterior a mesma \"primitiva única\" foi usada com duas políticas contraditórias: o resíduo da junção de comandas cai na ÚLTIMA comanda e o resíduo da gorjeta vai para o PRIMEIRO profissional (CHANGELOG 07/07). A auditoria do ciclo 15 também reprovou uma versão por alterar a ordem de geração de identificadores na junção.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "ponto-unico-de-arredondamento",
+      "titulo": "O arredondamento acontece uma vez só, em ponto declarado do motor",
+      "tipo": "requisito_tecnico",
+      "descricao": "Nenhuma etapa posterior ao ponto de arredondamento declarado (baixa de estoque, rateio, conversão de unidade, relatório) arredonda de novo. O motor de cálculo é função pura, sem literal numérico de negócio e sem I/O, e a regra é verificada por teste com controle negativo.",
+      "por_que_fundacao": "Arredondamento duplo não quebra nada: produz diferença de centavos que atravessa silenciosamente para estoque, comissão e apuração. Fixar o ponto único é convenção de motor, barata no início e cara de auditar depois, porque exige reconstruir cada cálculo do histórico.",
+      "risco_retrabalho": "Divergência de centavos em cascata que só aparece na conciliação, sem nenhum indício de qual etapa a introduziu.",
+      "prioridade": "P0",
+      "depende_de": [
+        "motor-de-comissao-e-fechamento",
+        "ficha-tecnica-de-consumo"
+      ],
+      "alimenta": [
+        "estoque-e-movimentacoes",
+        "plano-de-contas-canonico"
+      ],
+      "evidencia": "CHANGELOG 21/07, ciclo 15: a auditoria reprovou a primeira versão do motor de fechamento por \"um arredondamento extra na baixa de estoque que mudava 0,01 em embalagens fracionadas\" — defeito que as 428 asserções de teste então existentes não pegaram.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "catalogo-de-autorizacao-nunca-embarcado-no-cliente",
+      "titulo": "Nenhum catálogo de funções, papéis ou políticas é embarcado no cliente, nem como reserva offline",
+      "tipo": "risco_arquitetural",
+      "descricao": "O catálogo de autorização é dado servido pelo banco e é o mesmo objeto que as políticas consultam. Sem conexão, a superfície de administração não abre, com mensagem clara — falha alta, nunca degradação silenciosa com uma cópia local. Nenhuma constante de autorização no repositório do front.",
+      "por_que_fundacao": "É uma restrição negativa de custo zero que precisa estar escrita antes de alguém 'resolver' o primeiro problema de tela offline. Vale também para o app móvel, cuja fundação prevê sincronização delta — autorização fica explicitamente fora do que se sincroniza.",
+      "risco_retrabalho": "Um catálogo local vira a segunda fonte de verdade de AUTORIZAÇÃO, que é a pior das duplicações: diverge em silêncio e o modo de falha é conceder acesso indevido.",
+      "prioridade": "P0",
+      "depende_de": [
+        "isolamento-multitenant-alem-do-rls",
+        "rbac-por-classificacao-de-dado"
+      ],
+      "alimenta": [
+        "requisitos-de-fundacao-mobile",
+        "plataforma-lumia"
+      ],
+      "evidencia": "CHANGELOG 23/07, última entrada, já depois de a migração para banco estar declarada concluída: \"a lista de funções do Novo cadastro agora aparece MESMO sem conexão com o banco (catálogo de reserva local espelhando o seed oficial)\".",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "escrita-exclusivamente-por-rpc-cliente-sem-grant",
+      "titulo": "O cliente não tem GRANT de escrita: toda gravação é EXECUTE de função de servidor",
+      "tipo": "risco_arquitetural",
+      "descricao": "O papel de aplicação recebe SELECT nas tabelas permitidas por RLS e EXECUTE nas funções de escrita; nenhum INSERT, UPDATE ou DELETE direto em tabela de fato, de lugar nenhum. Complementa o papel sem BYPASSRLS e o FORCE ROW LEVEL SECURITY já exigidos pelo isolamento entre tenants.",
+      "por_que_fundacao": "É o que torna INEXPRIMÍVEL a segunda implementação de uma regra de dinheiro, em vez de proibida por disciplina. Toda a arquitetura de motor único, append-only e trilha na mesma transação depende de não existir um caminho de escrita alternativo — e um GRANT amplo concedido no início é removido depois só com auditoria de cada consulta em produção.",
+      "risco_retrabalho": "Com GRANT de escrita no cliente, qualquer tela nova pode gravar por fora do motor, e a divergência entre relatório, PDV e conciliação volta sem ninguém conseguir dizer qual está certo.",
+      "prioridade": "P0",
+      "depende_de": [
+        "isolamento-multitenant-alem-do-rls"
+      ],
+      "alimenta": [
+        "auditoria-diff-e-soft-delete",
+        "alcadas-aprovacoes-e-antifraude",
+        "saga-checkout-pagamento-fiscal"
+      ],
+      "evidencia": "No sistema anterior a regra do motor único estava escrita e mesmo assim o Fechamento de Caixa usava uma cópia local do cálculo, sem as travas (descoberto na auditoria de 07/07). Pior: em 23/07, na entrada seguinte à que declarou a migração concluída, nasceu um cadastro que gravava só no navegador — \"continua funcionando 100% no navegador\".",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "periodo-fechado-como-trava-generica",
+      "titulo": "Período fechado é uma trava genérica do banco, não três travas por módulo",
+      "tipo": "requisito_tecnico",
+      "descricao": "Uma tabela periodo_fechado (tenant, estabelecimento, tipo, competência, fechado_por/em, reaberto_por/em) append-only e UMA trigger genérica que recusa fato novo cuja data operacional caia em período fechado, salvo quando a linha referencia o evento de reabertura. Serve caixa, comissão e competência fiscal com o mesmo mecanismo.",
+      "por_que_fundacao": "O conceito já aparece em três lugares com três escopos (bloqueio de lançamento em sessão fechada, trava de período no motor de comissão, reabertura de período fechado nas alçadas) e nenhum mecanismo comum. Snapshot impede que o passado seja RECALCULADO; não impede que um fato NOVO entre com data retroativa num dia já conciliado.",
+      "risco_retrabalho": "Três implementações do mesmo controle divergem pela ponta mais fraca — e o número que o dono assinou muda depois de ele ter assinado, sem nada indicar que mudou.",
+      "prioridade": "P0",
+      "depende_de": [
+        "sessao-de-caixa",
+        "motor-de-comissao-e-fechamento",
+        "alcadas-aprovacoes-e-antifraude"
+      ],
+      "alimenta": [
+        "plano-de-contas-e-competencia",
+        "integracao-contabil-exportacao-sped"
+      ],
+      "evidencia": "O sistema anterior terminou com quatro trilhas de auditoria separadas e o mesmo controle reimplementado por módulo; o fechamento de caixa foi entregue com a ressalva explícita de que \"o bloqueio total de edição de lançamentos já fechados entra numa próxima rodada\" (CHANGELOG 17/06) — rodada que nunca veio.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
+    },
+    {
+      "id": "semente-e-demonstracao-nunca-contem-dinheiro",
+      "titulo": "Semente e demonstração nunca contêm dinheiro, e nenhum caminho automático promove dado local a real",
+      "tipo": "requisito_tecnico",
+      "descricao": "Complementa a segregação de dado de treinamento pelo lado da CARGA: semente contém no máximo catálogo (serviços, categorias, meios de pagamento, funções), nunca comanda, lançamento ou pagamento; toda linha semeada carrega origem declarada; a carga é idempotente, explícita e bloqueada no ambiente de produção. Não pode existir nenhuma rotina do tipo 'banco vazio, então promovo o que está aqui'.",
+      "por_que_fundacao": "Com livro append-only e sem GRANT de DELETE, dinheiro fictício que entra no razão real NÃO SAI. A restrição precisa estar escrita antes da primeira rotina de conveniência de onboarding.",
+      "risco_retrabalho": "Faturamento, ticket médio, comissão, DRE e benchmark setorial contaminados de forma permanente e não reversível.",
+      "prioridade": "P0",
+      "depende_de": [
+        "dado-de-treinamento-e-homologacao-segregado",
+        "mascaramento-ambientes-acesso-suporte"
+      ],
+      "alimenta": [
+        "motor-de-onboarding-e-time-to-value",
+        "benchmark-anonimizacao-e-base-legal"
+      ],
+      "evidencia": "CHANGELOG 22/07, ciclos 21 a 24: o sistema anterior subiu sozinho para o banco, ao encontrá-lo vazio, 16 clientes, 19 serviços, 6 profissionais, 31 agendamentos, 17 produtos, 11 contas a pagar, os pontos de fidelidade de 16 clientes e — o mais grave — 48 COMANDAS e 70 LANÇAMENTOS financeiros de exemplo.",
+      "lente": "legado",
+      "veredicto": "CONFIRMADO",
+      "ajuste": ""
     }
-  ]
+  ],
+  "lente_legado": {
+    "titulo": "Lente 7 — o sistema legado",
+    "origem": "CHANGELOG do sistema anterior (Beauty 360 / Sistema Elaine), 170 entradas entre 10/06 e 23/07.",
+    "natureza": "Lente empírica, e a única do conjunto que não projeta risco: registra defeito que ocorreu em produção, decisão que o dono já tomou e custo que já foi pago. Onde ela confirma uma lacuna levantada pelas outras seis, a prioridade deixa de ser argumento e passa a ser evidência.",
+    "custo_ja_pago": {
+      "linhas_do_sistema": 33596,
+      "arquivo_central_de_estado": 5653,
+      "ciclos_de_reorganizacao": 17,
+      "ciclos_de_migracao_para_banco": 7,
+      "padroes_de_fiacao_inventados": 7,
+      "pareceres_de_auditoria_independente": 30,
+      "bugs_criticos_interceptados_antes_do_commit": 2,
+      "bug_de_perda_de_dados_em_producao": 1,
+      "resumo": "Dois meses de regra de negócio (agenda, comanda, comissão, caixa, estoque, fidelidade) construídos sobre um blob em armazenamento local, com o banco cuidando apenas do login. A correção consumiu 17 ciclos de reorganização e 7 de migração, sem entregar uma funcionalidade nova ao dono."
+    },
+    "metodo": "Extração por domínio (6 agentes), classificação em fundação × fase × descarte, e duas revisões adversariais — uma de escopo (o que NÃO é fundação) e uma de lacuna (o que ninguém pegou). 150 regras levantadas, 34 invariantes distintos após deduplicação, 12 achados sem cobertura nas outras seis lentes.",
+    "confirmacoes": [
+      {
+        "achado_id": "catalogo-de-servicos",
+        "evidencia": "O sistema anterior construiu agenda e comanda antes do catálogo e passou a cobrar o preço acordado no agendamento porque o catálogo mudava embaixo. A decisão \"catálogo antes de agenda e de comanda\" é confirmada pelo custo já pago.",
+        "data_no_changelog": "11/06"
+      },
+      {
+        "achado_id": "dia-operacional-e-turno-de-caixa",
+        "evidencia": "\"Caixa do dia\", \"faturamento de hoje\", reset diário da numeração e meta dividida por 26 dias úteis foram implementados sem nunca definir o que é um dia. A data operacional derivada nunca chegou a existir.",
+        "data_no_changelog": "17/06 e 07/07"
+      },
+      {
+        "achado_id": "isolamento-multitenant-alem-do-rls",
+        "evidencia": "Adotou multi-tenant oculto (coluna de empresa em tudo, isolamento no banco, sem troca de empresa na tela) e acertou — mas deixou a tabela de perfis e permissões sem a coluna por ser \"seguro e inofensivo com um salão só\".",
+        "data_no_changelog": "22/07"
+      },
+      {
+        "achado_id": "snapshot-transacional-comanda",
+        "evidencia": "Congelar preço, percentual, papel e taxa no fechamento foi a decisão que permitiu mudar cadastro sem reescrever o passado, e sobreviveu a toda a reorganização sem uma exceção.",
+        "data_no_changelog": "17/06 a 02/07"
+      },
+      {
+        "achado_id": "comanda-e-itens-multi-executor",
+        "evidencia": "Precisou evoluir de nenhum assistente para um assistente e depois para N assistentes com papel, migrando comandas abertas duas vezes. A comissão do assistente sai da fatia do principal, com piso zero — adicionar assistente nunca aumenta o custo do estabelecimento.",
+        "data_no_changelog": "17/06 e 02/07"
+      },
+      {
+        "achado_id": "gorjeta-como-passivo-de-rateio",
+        "evidencia": "Chegou por conta própria ao mesmo modelo: gorjeta em dinheiro entra na gaveta sem ser receita, em cartão vira obrigação a pagar, para a casa é receita, e nunca gera comissão.",
+        "data_no_changelog": "07/07"
+      },
+      {
+        "achado_id": "sessao-de-caixa",
+        "evidencia": "Implementou contagem cega depois de pesquisa de mercado, com recontagem e justificativa obrigatória, exatamente para impedir a \"contagem ajustada para bater\" — e o schema atual já nasceu com esse desenho.",
+        "data_no_changelog": "22/07"
+      },
+      {
+        "achado_id": "auditoria-diff-e-soft-delete",
+        "evidencia": "Terminou com quatro trilhas de auditoria separadas (cadastro, locação, PDV e parâmetros) por não ter convenção única desde o início.",
+        "data_no_changelog": "22/07"
+      },
+      {
+        "achado_id": "alcadas-aprovacoes-e-antifraude",
+        "evidencia": "Motivo obrigatório foi sendo acrescentado por incidente: primeiro no desconto, depois no estorno com categoria, na diferença de caixa, na reabertura e no destrave da consolidação — cinco rodadas para uma regra transversal.",
+        "data_no_changelog": "11/06 a 07/07"
+      },
+      {
+        "achado_id": "offline-first-comandos-idempotentes",
+        "evidencia": "A ausência de idempotência apareceu como bug de clique duplo em pagamento de locação e foi corrigida caso a caso, nunca como contrato.",
+        "data_no_changelog": "11/06"
+      },
+      {
+        "achado_id": "dado-de-treinamento-e-homologacao-segregado",
+        "evidencia": "Sem marcação de finalidade no fato, dado de demonstração entrou no razão real e, com livro append-only, tornou-se permanente.",
+        "data_no_changelog": "22/07"
+      },
+      {
+        "achado_id": "saga-checkout-pagamento-fiscal",
+        "evidencia": "O fechamento e o estorno só ficaram auditáveis quando viraram motor puro mais aplicador único, com os efeitos aplicados em ordem definida — e a auditoria ainda encontrou três divergências finas na primeira versão.",
+        "data_no_changelog": "21/07"
+      }
+    ],
+    "antipadroes": [
+      {
+        "erro": "Construir a regra de negócio sobre estado do navegador e migrar depois",
+        "consequencia_real": "17 ciclos de reorganização para tornar o código migrável, mais 7 ciclos de migração, mais 7 padrões de fiação inventados — nenhum deles entregando valor ao dono.",
+        "guarda_corpo": "A primeira funcionalidade já é escrita contra o banco real; o cliente não tem GRANT de escrita, então não existe caminho alternativo nem \"temporariamente\"."
+      },
+      {
+        "erro": "Manter modo de demonstração como segundo caminho de execução e gravação",
+        "consequencia_real": "Toda entrega provada duas vezes durante a migração inteira, e a porta de demonstração exposta no ambiente publicado por quase um mês.",
+        "guarda_corpo": "Um caminho só. Ambiente é ambiente (projeto separado), não modo de login. Nenhuma bifurcação de gravação por modo."
+      },
+      {
+        "erro": "Promover automaticamente o estado local quando o banco está vazio",
+        "consequencia_real": "48 comandas e 70 lançamentos financeiros fictícios no razão real, irreversíveis sob append-only.",
+        "guarda_corpo": "Semente sem dinheiro, com origem declarada, idempotente e bloqueada em produção. Nenhuma rotina de conveniência que promove dado local a real."
+      },
+      {
+        "erro": "Número de negócio escrito no código",
+        "consequencia_real": "Matriz de comissão invisível ao dono governando pagamento por semanas, e percentual de segurança causando comissão indevida em venda de balcão.",
+        "guarda_corpo": "Literal numérico de negócio proibido no motor, verificado por lint. Parâmetro ausente é falha alta, nunca valor padrão silencioso."
+      },
+      {
+        "erro": "Embarcar catálogo de autorização no cliente como reserva offline",
+        "consequencia_real": "Segunda fonte de verdade para autorização, criada no último dia, depois de toda a migração concluída.",
+        "guarda_corpo": "Catálogo servido pelo banco, igual ao que as políticas consultam. Sem banco, a superfície de administração não abre."
+      },
+      {
+        "erro": "Descobrir configuração de ambiente em produção",
+        "consequencia_real": "Erro 500 em produção dois dias depois de a entrega ser declarada testada de ponta a ponta.",
+        "guarda_corpo": "Validação no arranque abortando com o nome do que falta, paridade de runtime e smoke test no ambiente publicado como portão."
+      },
+      {
+        "erro": "Montar marcação por concatenação de string na superfície de impressão",
+        "consequencia_real": "Injeção de código pelo texto do documento assinado, publicada por cerca de três semanas.",
+        "guarda_corpo": "Renderização escapada por padrão em caminho único; lint proíbe concatenação de marcação em todo o repositório."
+      },
+      {
+        "erro": "Tratar exportação manual de arquivo como plano de continuidade",
+        "consequencia_real": "Base inteira de clientes num arquivo baixável por qualquer um com acesso a configurações, sem registro de quem exportou.",
+        "guarda_corpo": "Continuidade é do banco, com restauração testada. Exportar dado pessoal é operação privilegiada com registro append-only."
+      },
+      {
+        "erro": "Criar caminho de escrita fora do banco depois da migração concluída",
+        "consequencia_real": "Na entrada seguinte à que declarou a migração concluída, nasceu um cadastro que gravava só no navegador — a pessoa existia em uma máquina só.",
+        "guarda_corpo": "Consequência de não haver GRANT de escrita no cliente, somada a teste de arquitetura que reprova escrita direta."
+      }
+    ],
+    "ja_implementado_no_schema": [
+      {
+        "item": "Contagem cega no fechamento de caixa",
+        "onde": "lumia.conferencia_caixa (valor_declarado escrito às cegas, valor_esperado escrito pelo sistema, recontagens)",
+        "nota": "O sistema anterior chegou a esse desenho por pesquisa de mercado em 22/07; o schema atual já nasceu com ele."
+      },
+      {
+        "item": "Item de comanda nunca é texto livre",
+        "onde": "lumia.comanda_item (ci_referencia_coerente: serviço OU produto, com descricao_congelada)",
+        "nota": "É o defeito que o sistema anterior evitou por sorte, ao abrir a comanda a partir da agenda."
+      },
+      {
+        "item": "Desconto exige motivo e autorizador",
+        "onde": "lumia.comanda_item (motivo_desconto_id, desconto_autorizado_por)",
+        "nota": "No sistema anterior o motivo obrigatório foi acrescentado por incidente, cinco vezes, em superfícies diferentes."
+      },
+      {
+        "item": "Custódia da comanda com histórico sem buraco",
+        "onde": "lumia.comanda_custodia (EXCLUDE contra dois responsáveis simultâneos + trigger contra lacuna temporal)",
+        "nota": "O sistema anterior levou três rodadas para chegar a \"a comanda nunca fica órfã\" e nunca teve garantia no armazenamento."
+      }
+    ]
+  }
 }

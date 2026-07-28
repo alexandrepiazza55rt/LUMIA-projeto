@@ -4,6 +4,22 @@
 > entre 10/06 e 23/07. Este documento é **julgamento**, não extração: diz o que faz sentido trazer,
 > o que não faz, e por quê.
 
+> ### Status: integrado
+>
+> Esta análise virou a **lente 7** da análise de lacunas. A versão canônica está em
+> [`gaps.json`](../../gaps.json) → `lente_legado`, e aparece no fluxograma na aba
+> **🩹 Lente do legado** ([blueprint](../../index.html)) e na seção 5 do
+> [dossiê](../../dossie.html).
+>
+> O que foi incorporado, depois de deduplicar contra os 226 achados que já existiam:
+> **12 achados novos** (nenhuma das outras seis lentes os tinha), **4 decisões irreversíveis**
+> (17 a 20), **7 reforços de módulo**, **12 confirmações empíricas** de achados já levantados e
+> **9 antipadrões** com guarda-corpo. Um item — contagem cega no fechamento de caixa — já estava
+> **implementado** no schema, e virou confirmação em vez de achado.
+>
+> Este arquivo permanece como o raciocínio e o critério de decisão. Para o que vale como
+> especificação, use `gaps.json` e `architecture.json`.
+
 ---
 
 ## 1. O que esse changelog realmente é

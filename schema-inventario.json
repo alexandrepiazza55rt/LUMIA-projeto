@@ -1,5 +1,5 @@
 {
-  "gerado_em": "2026-07-26",
+  "gerado_em": "2026-07-28",
   "postgres": "16",
   "resumo": {
     "tabelas": 43,
@@ -8,7 +8,7 @@
     "checks": 100,
     "excludes": 9,
     "fks": 129,
-    "asercoes": 137,
+    "asercoes": 142,
     "migrations": 9
   },
   "tabelas": [
