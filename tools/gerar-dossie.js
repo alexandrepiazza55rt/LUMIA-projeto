@@ -23,6 +23,7 @@ const path = require('path');
 
 const RAIZ = path.resolve(__dirname, '..');
 const ler = (f) => JSON.parse(fs.readFileSync(path.join(RAIZ, f), 'utf8'));
+const CALC = JSON.parse(fs.readFileSync(path.join(RAIZ, 'calculos.json'), 'utf8'));
 
 const gaps = ler('gaps.json');
 const arq = ler('architecture.json');
@@ -156,6 +157,7 @@ w(`<p class="lead">Sistema de gestão para o setor de beleza e estética no Bras
    o leitor chegar à seção 8. */
 w(`<h2 style="border:0;padding:0;margin:1.8rem 0 .6rem">Resumo em números</h2>
 <div class="wrap"><table><tbody>
+<tr><td>Cálculos documentados com exemplo</td><td><strong>${CALC.calculos.length}</strong> em ${CALC.grupos.length} grupos, cobrindo as ${CALC.percurso.length} etapas do dia</td></tr>
 <tr><td>Módulos no total</td><td><strong>21</strong> — 10 originais e ${gaps.modulos_novos.length + 1} novos (marcados com <span class="novo">*</span>)</td></tr>
 <tr><td>Ligações de dependência</td><td><strong>${deps.total}</strong>, das quais <strong>${deps.verificadas}</strong> comprovadas por chave estrangeira real</td></tr>
 <tr><td>Decisões irreversíveis de fundação</td><td><strong>${gaps.decisoes_irreversiveis.length}</strong></td></tr>
@@ -172,6 +174,7 @@ w(`<h2 style="border:0;padding:0;margin:1.8rem 0 .6rem">Resumo em números</h2>
 w(`<div class="aviso"><strong>Por que este documento existe.</strong> A versão interativa monta o conteúdo por JavaScript. Leitores automáticos que não executam scripts enxergam apenas cerca de 2% do texto. Aqui está tudo, sem depender de JavaScript.</div>`);
 
 w(`<nav><h2 style="border:0;padding:0;margin-top:1.5rem">Índice</h2><ol>
+<li><a href="#sistema">O sistema: o que faz e como calcula</a></li>
 <li><a href="#diagnostico">Diagnóstico da estrutura</a></li>
 <li><a href="#modulos">Os 21 módulos</a></li>
 <li><a href="#dependencias">Mapa de dependências</a></li>
@@ -185,8 +188,43 @@ w(`<nav><h2 style="border:0;padding:0;margin-top:1.5rem">Índice</h2><ol>
 <li><a href="#fontes">Fontes legíveis por máquina</a></li>
 </ol></nav>`);
 
+/* --- o sistema (visão do cliente) --- */
+w(`<h2 id="sistema">1. O sistema: o que faz e como calcula</h2>`);
+w(`<p class="meta">${esc(CALC.meta.publico)}</p>`);
+w(`<p>${esc(CALC.meta.nota)}</p>`);
+
+w(`<h3>Um dia no salão, de ponta a ponta</h3>`);
+CALC.percurso.forEach((e, i) => {
+  w(`<h4>${i + 1}. ${esc(e.etapa)}</h4>`);
+  w(`<p>${esc(e.resumo)}</p>`);
+  w(`<ul>` + e.funcoes.map((x) => `<li>${esc(x)}</li>`).join('') + `</ul>`);
+});
+
+const STL = { no_banco: 'já no banco', decidido: 'regra fechada', a_definir: 'você escolhe' };
+w(`<h3>Os ${CALC.calculos.length} cálculos</h3>`);
+w(`<table><tbody>` + Object.entries(CALC.meta.legenda_status).map(([k, v]) =>
+  `<tr><td><strong>${esc(STL[k] || k)}</strong></td><td>${esc(v)}</td></tr>`).join('') + `</tbody></table>`);
+CALC.grupos.forEach((g) => {
+  const doGrupo = CALC.calculos.filter((c) => c.grupo === g.id);
+  if (!doGrupo.length) return;
+  w(`<h4>${esc(g.nome)}</h4>`);
+  doGrupo.forEach((c) => {
+    w(`<p><strong>${esc(c.nome)}</strong> <span class="meta">[${esc(STL[c.status] || c.status)}${c.onde ? ' — ' + esc(c.onde) : ' — fase ' + esc(c.fase)}]</span></p>`);
+    w(`<p>${esc(c.regra)}</p>`);
+    w(`<pre>${esc(c.formula)}</pre>`);
+    w(`<p><em>${esc(c.exemplo.cenario)}</em></p>`);
+    w(`<ol>` + c.exemplo.passos.map((p) => `<li>${esc(p)}</li>`).join('') + `</ol>`);
+    w(`<p><strong>= ${esc(c.exemplo.resultado)}</strong></p>`);
+  });
+});
+
+w(`<h3>O que o sistema não faz — de propósito</h3>`);
+w(`<table><thead><tr><th>Não faz</th><th>Por quê</th></tr></thead><tbody>` +
+  CALC.nao_faz.map((n) => `<tr><td>${esc(n.item)}</td><td>${esc(n.porque)}</td></tr>`).join('') +
+  `</tbody></table>`);
+
 /* --- diagnóstico --- */
-w(`<h2 id="diagnostico">1. Diagnóstico da estrutura</h2>`);
+w(`<h2 id="diagnostico">2. Diagnóstico da estrutura</h2>`);
 w(`<p>${esc(gaps.diagnostico)}</p>`);
 w(`<p class="meta">Método: ${esc(gaps.meta.metodo)}</p>`);
 w(`<table><tbody>
@@ -199,7 +237,7 @@ w(`<table><tbody>
 w(`<p class="meta"><strong>Prioridades.</strong> P0 = sem isso o modelo de dados nasce errado, e corrigir depois exige migração, reescrita ou perda de histórico. P1 = necessário antes do lançamento comercial, encaixa sem migração destrutiva. P2 = maturidade e escala.</p>`);
 
 /* --- módulos --- */
-w(`<h2 id="modulos">2. Os 21 módulos</h2>`);
+w(`<h2 id="modulos">3. Os 21 módulos</h2>`);
 w(`<p>Onze módulos aparecem marcados com <span class="novo">*</span>: foram identificados na análise de lacunas e não constavam da estrutura original. Meu Balcão foi dividido em <strong>Meu Caixa</strong> e <strong>Minhas Comandas</strong> quando o schema foi implementado, porque as dependências de cada um são distintas.</p>`);
 
 ORDEM.forEach((id) => {
@@ -236,7 +274,7 @@ ORDEM.forEach((id) => {
 });
 
 /* --- dependências --- */
-w(`<h2 id="dependencias">3. Mapa de dependências</h2>`);
+w(`<h2 id="dependencias">4. Mapa de dependências</h2>`);
 w(`<p>${deps.total} ligações entre módulos. <strong>${deps.verificadas}</strong> delas não são opinião: foram derivadas das chaves estrangeiras reais do schema implementado, e a contagem indica quantas FKs sustentam cada ligação. As demais são dependências planejadas, ainda não implementadas.</p>`);
 w(`<h3>Ordem de construção</h3><pre>Plataforma      Configurações · Plataforma LUMIA* · Central de Privacidade* · Minhas Conversas*
   ↓
@@ -282,7 +320,7 @@ if (retro.length) {
 }
 
 /* --- decisões --- */
-w(`<h2 id="decisoes">4. Decisões irreversíveis de fundação</h2>`);
+w(`<h2 id="decisoes">5. Decisões irreversíveis de fundação</h2>`);
 w(`<p>Ordenadas por custo de erro. São as escolhas cuja correção tardia exige migração de dados, reescrita de módulo ou perda de histórico.</p>`);
 gaps.decisoes_irreversiveis.forEach((d, i) => {
   w(`<h3>${i + 1}. ${esc(d.titulo)}</h3>`);
@@ -293,7 +331,7 @@ gaps.decisoes_irreversiveis.forEach((d, i) => {
 
 /* --- lente do legado --- */
 const LG = gaps.lente_legado;
-w(`<h2 id="legado">5. Lente do sistema legado</h2>`);
+w(`<h2 id="legado">6. Lente do sistema legado</h2>`);
 w(`<p class="meta">${esc(LG.origem)}</p>`);
 w(`<p>${esc(LG.natureza)}</p>`);
 w(`<p class="meta">Método: ${esc(LG.metodo)}</p>`);
@@ -323,7 +361,7 @@ w(`<table><thead><tr><th>Item</th><th>Onde</th><th>Nota</th></tr></thead><tbody>
   `</tbody></table>`);
 
 /* --- arquitetura --- */
-w(`<h2 id="arquitetura">6. Arquitetura técnica</h2>`);
+w(`<h2 id="arquitetura">7. Arquitetura técnica</h2>`);
 w(`<p>${esc(arq.meta.ambicao)}</p>`);
 w(`<h3>Princípios</h3><ul>` + arq.meta.principios.map((x) => `<li>${esc(x)}</li>`).join('') + `</ul>`);
 const kv = (o) => `<table><tbody>` + Object.entries(o).map(([k, v]) =>
@@ -357,14 +395,14 @@ w(`<h3>Convenções de API</h3><ul>` + arq.api.convencoes.map((x) => `<li>${esc(
 w(`<h3>Eventos assíncronos</h3><ul>` + arq.api.eventos_assincronos.map((x) => `<li><code>${esc(x)}</code></li>`).join('') + `</ul>`);
 
 /* --- rotas --- */
-w(`<h2 id="rotas">7. Mapa de rotas da API</h2>`);
+w(`<h2 id="rotas">8. Mapa de rotas da API</h2>`);
 w(`<div class="wrap"><table><thead><tr><th>Domínio</th><th>Base</th><th>Endpoints</th></tr></thead><tbody>` +
   Object.entries(arq.api.rotas).map(([k, r]) =>
     `<tr><td><strong>${esc(k.replace(/_/g, ' '))}</strong></td><td><code>${esc(r.base)}</code></td><td>${r.endpoints.map((e) => `<code>${esc(e)}</code>`).join('<br>')}</td></tr>`
   ).join('') + `</tbody></table></div>`);
 
 /* --- fases --- */
-w(`<h2 id="fases">8. Fases de construção</h2>`);
+w(`<h2 id="fases">9. Fases de construção</h2>`);
 w(`<p>Reordenadas para respeitar a dependência do catálogo. Cada fase tem critério objetivo de conclusão.</p><ol>`);
 arq.fases_de_construcao.forEach((f) => {
   w(`<li><strong>${esc(f.nome)}</strong> — ${esc(f.entrega)}<br><span class="meta">Pronto quando: ${esc(f.pronto_quando)}</span></li>`);
@@ -372,7 +410,7 @@ arq.fases_de_construcao.forEach((f) => {
 w(`</ol>`);
 
 /* --- modelo de dados --- */
-w(`<h2 id="modelo">9. Modelo de dados implementado</h2>`);
+w(`<h2 id="modelo">10. Modelo de dados implementado</h2>`);
 const R = inv.resumo;
 w(`<p>Hierarquia de estabelecimentos, catálogo, agenda e balcão estão modelados em PostgreSQL ${inv.postgres} e validados contra um banco real.</p>`);
 w(`<table><tbody>
@@ -410,7 +448,7 @@ w(`<h3>Tabelas</h3><div class="wrap"><table>
     `<td>${esc((t.doc || '').split('.')[0])}</td></tr>`).join('') + `</tbody></table></div>`);
 
 /* --- provas --- */
-w(`<h2 id="provas">10. Provas executadas</h2>`);
+w(`<h2 id="provas">11. Provas executadas</h2>`);
 w(`<h3>Concorrência: o double-booking é impossível</h3>
 <p>Trinta sessões PostgreSQL independentes disputaram o mesmo profissional no mesmo horário. Nenhum lock distribuído participou — a garantia é uma exclusion constraint.</p>
 <pre>sessões que gravaram ......... 1
@@ -444,7 +482,7 @@ w(`<h3>A comanda nunca fica sem dono</h3>
 <p>A custódia usa períodos com <code>EXCLUDE</code> contra sobreposição, mais um trigger que impede buraco entre um elo e o seguinte. Cadeia testada: recepção → cabeleireira → manicure → caixa, quatro elos, sempre exatamente um responsável, zero buracos. Transferir exige motivo tipado; motivo “outro” exige justificativa escrita. São recusados: transferir sem motivo, transferir sem deter a comanda, e transferir para si mesmo.</p>`);
 
 /* --- fontes --- */
-w(`<h2 id="fontes">11. Fontes legíveis por máquina</h2>`);
+w(`<h2 id="fontes">12. Fontes legíveis por máquina</h2>`);
 w(`<p>Todos os arquivos abaixo são servidos diretamente e podem ser buscados por programa.</p>`);
 w(`<div class="wrap"><table><thead><tr><th>Arquivo</th><th>Conteúdo</th></tr></thead><tbody>
 <tr><td><a href="${BASE_URL}/gaps.json"><code>gaps.json</code></a></td><td>Análise de lacunas completa: diagnóstico, módulos novos, reforços, decisões irreversíveis e os ${gaps.meta.contagem.consolidados} achados detalhados</td></tr>
@@ -477,6 +515,7 @@ Se você não executa scripts, use o dossiê estático abaixo — ele contém tu
 
 ## Dados estruturados
 
+- [calculos.json](${BASE_URL}/calculos.json): o que o sistema faz e como cada número é calculado — ${CALC.percurso.length} etapas do dia, ${CALC.calculos.length} cálculos com fórmula e exemplo numérico
 - [gaps.json](${BASE_URL}/gaps.json): análise de lacunas — diagnóstico, ${gaps.modulos_novos.length} módulos novos, ${gaps.reforcos_modulos_existentes.length} reforços, ${gaps.decisoes_irreversiveis.length} decisões irreversíveis, ${gaps.meta.contagem.consolidados} achados
 - [architecture.json](${BASE_URL}/architecture.json): stack, banco de dados, segurança, LGPD, ${Object.keys(arq.api.rotas).length} domínios de API, SLOs, ${arq.fases_de_construcao.length} fases de construção
 - [dependencias.json](${BASE_URL}/dependencias.json): ${deps.total} ligações entre módulos, ${deps.verificadas} verificadas por chave estrangeira real

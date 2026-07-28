@@ -14,6 +14,7 @@ Se você não executa scripts, use o dossiê estático abaixo — ele contém tu
 
 ## Dados estruturados
 
+- [calculos.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/calculos.json): o que o sistema faz e como cada número é calculado — 7 etapas do dia, 29 cálculos com fórmula e exemplo numérico
 - [gaps.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/gaps.json): análise de lacunas — diagnóstico, 10 módulos novos, 43 reforços, 20 decisões irreversíveis, 238 achados
 - [architecture.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/architecture.json): stack, banco de dados, segurança, LGPD, 20 domínios de API, SLOs, 10 fases de construção
 - [dependencias.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/dependencias.json): 54 ligações entre módulos, 14 verificadas por chave estrangeira real
