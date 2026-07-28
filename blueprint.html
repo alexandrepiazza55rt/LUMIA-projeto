@@ -1428,27 +1428,27 @@ document.getElementById('decList').innerHTML=D.decisoes.map((d,i)=>
   <h3>${esc(d.titulo)}</h3><p class="rec">${esc(d.decisao)}</p><p class="risk">${esc(d.se_errar)}</p></div></div>`).join('');
 
 /* ---- lente 7 · legado ---- */
-const G=D.legado;
+const LEG=D.legado;
 const ROT={linhas_do_sistema:'linhas no sistema anterior',arquivo_central_de_estado:'linhas num só arquivo de estado',
  ciclos_de_reorganizacao:'ciclos de reorganização',ciclos_de_migracao_para_banco:'ciclos de migração para o banco',
  padroes_de_fiacao_inventados:'padrões de fiação inventados',pareceres_de_auditoria_independente:'pareceres de auditoria',
  bugs_criticos_interceptados_antes_do_commit:'bugs críticos interceptados',bug_de_perda_de_dados_em_producao:'bug de perda de dados real'};
-document.getElementById('legTit').textContent=G.titulo;
-document.getElementById('legSub').textContent=G.origem+' · '+G.metodo;
-document.getElementById('legNat').textContent=G.natureza;
+document.getElementById('legTit').textContent=LEG.titulo;
+document.getElementById('legSub').textContent=LEG.origem+' · '+LEG.metodo;
+document.getElementById('legNat').textContent=LEG.natureza;
 document.getElementById('legCost').innerHTML=Object.keys(ROT).map(k=>
- `<div class="c"><b>${G.custo[k].toLocaleString('pt-BR')}</b><span>${ROT[k]}</span></div>`).join('')
- +`<div class="c" style="flex:1 1 100%;min-width:0"><span style="margin:0">${esc(G.custo.resumo)}</span></div>`;
-document.getElementById('legAch').innerHTML=G.achados.map((a,i)=>
+ `<div class="c"><b>${LEG.custo[k].toLocaleString('pt-BR')}</b><span>${ROT[k]}</span></div>`).join('')
+ +`<div class="c" style="flex:1 1 100%;min-width:0"><span style="margin:0">${esc(LEG.custo.resumo)}</span></div>`;
+document.getElementById('legAch').innerHTML=LEG.achados.map((a,i)=>
  `<div class="dec"><div class="num">${i+1}</div><div><span class="area">${a.prioridade} · achado novo</span>
   <h3>${esc(a.titulo)}</h3><p class="rec">${esc(a.descricao)}</p><p class="risk">${esc(a.evidencia)}</p></div></div>`).join('');
-document.getElementById('legAnti').innerHTML=G.antipadroes.map(a=>
+document.getElementById('legAnti').innerHTML=LEG.antipadroes.map(a=>
  `<div class="anti"><h4>${esc(a.erro)}</h4><p class="cons">${esc(a.consequencia_real)}</p>
   <p class="guard">${esc(a.guarda_corpo)}</p></div>`).join('');
-document.getElementById('legConf').innerHTML=G.confirmacoes.map(c=>
+document.getElementById('legConf').innerHTML=LEG.confirmacoes.map(c=>
  `<div class="conf"><h4>${esc(c.achado_id)}</h4><p>${esc(c.evidencia)}</p>
   <span class="dt">CHANGELOG ${esc(c.data_no_changelog)}</span></div>`).join('');
-document.getElementById('legDone').innerHTML=G.ja_implementado.map(d=>
+document.getElementById('legDone').innerHTML=LEG.ja_implementado.map(d=>
  `<div class="done"><h4>${esc(d.item)}</h4><code>${esc(d.onde)}</code><p>${esc(d.nota)}</p></div>`).join('');
 
 /* ---- modules ---- */
