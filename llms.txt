@@ -1,0 +1,38 @@
+# LUMIA
+
+> Sistema de gestão para o setor de beleza e estética no Brasil, com metodologia
+> MQS embutida, projetado para escala nacional. Fundação em PostgreSQL:
+> 43 tabelas, 129 chaves estrangeiras, 142 asserções de teste passando.
+
+A página inicial (https://alexandrepiazza55rt.github.io/LUMIA-projeto/) é interativa e monta o conteúdo por JavaScript.
+Se você não executa scripts, use o dossiê estático abaixo — ele contém tudo.
+
+## Documentos principais
+
+- [Dossiê completo](https://alexandrepiazza55rt.github.io/LUMIA-projeto/dossie.html): todo o conteúdo em HTML estático, sem JavaScript — 21 módulos, dependências, decisões, arquitetura e modelo de dados
+- [Blueprint interativo](https://alexandrepiazza55rt.github.io/LUMIA-projeto/): fluxograma de dependências navegável, requer JavaScript
+
+## Dados estruturados
+
+- [calculos.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/calculos.json): o que o sistema faz e como cada número é calculado — 7 etapas do dia, 29 cálculos com fórmula e exemplo numérico
+- [gaps.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/gaps.json): análise de lacunas — diagnóstico, 10 módulos novos, 43 reforços, 20 decisões irreversíveis, 238 achados
+- [architecture.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/architecture.json): stack, banco de dados, segurança, LGPD, 20 domínios de API, SLOs, 10 fases de construção
+- [dependencias.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/dependencias.json): 54 ligações entre módulos, 14 verificadas por chave estrangeira real
+- [schema-inventario.json](https://alexandrepiazza55rt.github.io/LUMIA-projeto/schema-inventario.json): as 43 tabelas do schema com contagem de constraints
+
+## Código
+
+- [db/README.md](https://alexandrepiazza55rt.github.io/LUMIA-projeto/db/README.md): documentação do modelo de dados
+- [db/migrations/](https://alexandrepiazza55rt.github.io/LUMIA-projeto/db/migrations/): 9 migrations PostgreSQL
+- [db/tests/](https://alexandrepiazza55rt.github.io/LUMIA-projeto/db/tests/): suítes de teste, incluindo prova de concorrência com 30 sessões
+
+## Contexto
+
+Os módulos marcados com asterisco foram identificados em uma análise de lacunas
+conduzida sob sete lentes independentes (operação de beleza, fiscal brasileiro,
+LGPD, arquitetura, escala SaaS, benchmark competitivo e o sistema legado), cada
+achado passando por revisão adversarial. A sétima lente é empírica: extraída do
+CHANGELOG do sistema anterior, registra defeito que ocorreu em produção, decisão
+já tomada pelo dono e custo já pago — 17 ciclos de reorganização e
+7 de migração por ter construído a regra de negócio antes da fundação. A ordem de construção segue a dependência: catálogo
+antes de agenda, agenda antes de caixa, caixa antes de comanda.

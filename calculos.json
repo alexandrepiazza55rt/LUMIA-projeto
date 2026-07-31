@@ -1,0 +1,453 @@
+{
+  "meta": {
+    "sistema": "LUMIA",
+    "documento": "O que o sistema faz e como cada número é calculado",
+    "versao": "1.0",
+    "data": "2026-07-28",
+    "publico": "Escrito para o dono do salão conferir e aprovar ANTES de construirmos.",
+    "nota": "Cada cálculo traz a regra em português, a fórmula e um exemplo com números de salão. Onde a regra já está implementada, o campo 'onde' aponta a coluna ou a consulta do banco que a executa.",
+    "legenda_status": {
+      "no_banco": "já implementado e coberto por teste automatizado",
+      "decidido": "regra fechada e registrada; entra junto com o módulo, na fase indicada",
+      "a_definir": "depende de um parâmetro que você escolhe — percentual, prazo ou política"
+    }
+  },
+
+  "percurso": [
+    {
+      "etapa": "O cliente marca",
+      "resumo": "Pelo telefone, pela recepção ou sozinho pela vitrine online.",
+      "funcoes": [
+        "Agenda por profissional, sala e equipamento",
+        "Duração vinda do catálogo, ajustável naquele atendimento",
+        "Encaixe com autorização registrada",
+        "Bloqueio de horário que exige resolver os clientes antes",
+        "Lista de espera",
+        "Confirmação automática por WhatsApp",
+        "Sinal e política de falta"
+      ],
+      "calculos": ["ocupacao", "no-show"]
+    },
+    {
+      "etapa": "O cliente chega",
+      "resumo": "A recepção marca a chegada e a comanda nasce do agendamento.",
+      "funcoes": [
+        "Check-in só na data do agendamento",
+        "Painel do dia com fila e situação por cor",
+        "Uma comanda por visita, compartilhada por todos que atenderem",
+        "Ficha do cliente com histórico, prontuário e aviso de débito"
+      ],
+      "calculos": []
+    },
+    {
+      "etapa": "O atendimento acontece",
+      "resumo": "Cada profissional lança o que fez, e o estoque baixa sozinho.",
+      "funcoes": [
+        "Item de serviço ou produto, nunca texto livre",
+        "Vários executores no mesmo item, cada um com seu papel",
+        "Preço acordado no agendamento, não o preço de hoje",
+        "Desconto exige motivo e quem autorizou",
+        "Baixa automática do insumo pela ficha técnica"
+      ],
+      "calculos": ["total-item", "custo-insumo", "cmv"]
+    },
+    {
+      "etapa": "O cliente paga",
+      "resumo": "Uma ou várias formas, com troco, haver, fiado ou gorjeta.",
+      "funcoes": [
+        "Pagamento em várias formas na mesma conta",
+        "Troco no dinheiro",
+        "Deixar valor em haver e abater do haver",
+        "Pagamento parcial que fecha a conta e gera devedor",
+        "Juntar comandas num pagador só",
+        "Gorjeta com destino escolhido",
+        "Estorno auditável, com categoria e motivo"
+      ],
+      "calculos": ["total-comanda", "desconto-rateado", "taxa-adquirente", "troco", "juncao", "gorjeta", "haver"]
+    },
+    {
+      "etapa": "O caixa fecha",
+      "resumo": "Cada operador confere o próprio caixa, às cegas, e o administrador carimba.",
+      "funcoes": [
+        "Sessão de caixa por operador",
+        "Sangria, suprimento e despesa com motivo",
+        "Contagem cega, com recontagem registrada",
+        "Conferência do administrador, imutável",
+        "Relatório imprimível com linha de assinatura",
+        "Fechamento do dia que consolida as sessões"
+      ],
+      "calculos": ["esperado-gaveta", "divergencia-caixa"]
+    },
+    {
+      "etapa": "A comissão é apurada",
+      "resumo": "Congelada no fechamento: mudar o cadastro depois não mexe no passado.",
+      "funcoes": [
+        "Percentual por serviço, por pessoa ou padrão do salão",
+        "Assistente com percentual próprio",
+        "Cota do parceiro separada da receita do salão",
+        "Fechamento mensal com o período travado",
+        "Estorno que reverte o principal e os assistentes"
+      ],
+      "calculos": ["comissao-cascata", "comissao-assistente", "base-comissao", "cota-parceiro", "estorno-comissao"]
+    },
+    {
+      "etapa": "O número aparece",
+      "resumo": "DRE, margem por serviço, metas e as Bússolas do método MQS.",
+      "funcoes": [
+        "DRE gerencial em regime de caixa",
+        "Margem por serviço e por profissional",
+        "Metas, com previsto contra realizado",
+        "Bússola de preços e de comissão",
+        "Consultor que cita a fonte de cada número"
+      ],
+      "calculos": ["margem-contribuicao", "ponto-equilibrio", "dre-caixa", "ticket-medio", "meta-dia", "fator-r", "imposto-dentro-fora", "custo-medio", "valor-estoque", "cashback"]
+    }
+  ],
+
+  "grupos": [
+    { "id": "venda",     "nome": "Venda e comissão",       "icone": "🧾", "cor": "#8b5cf6" },
+    { "id": "caixa",     "nome": "Pagamento e caixa",      "icone": "💵", "cor": "#10b981" },
+    { "id": "estoque",   "nome": "Estoque e custo",        "icone": "📦", "cor": "#f59e0b" },
+    { "id": "resultado", "nome": "Resultado do negócio",   "icone": "📈", "cor": "#3b82f6" },
+    { "id": "agenda",    "nome": "Agenda e produtividade", "icone": "📅", "cor": "#ec4899" },
+    { "id": "cliente",   "nome": "Cliente e fidelidade",   "icone": "💝", "cor": "#14b8a6" },
+    { "id": "fiscal",    "nome": "Fiscal",                 "icone": "🏛️", "cor": "#64748b" }
+  ],
+
+  "calculos": [
+    {
+      "id": "total-item", "grupo": "venda", "nome": "Total de um item da comanda",
+      "regra": "O valor de cada linha é o preço praticado vezes a quantidade, menos o desconto daquela linha. O preço de tabela do momento fica gravado ao lado, para a auditoria de margem explicar cada centavo de desconto sem depender da tabela de hoje.",
+      "formula": "total do item = preço praticado × quantidade − desconto",
+      "exemplo": {
+        "cenario": "Coloração de raiz, preço de tabela R$ 180,00, com R$ 10,00 de desconto autorizado.",
+        "passos": ["180,00 × 1 = 180,00", "180,00 − 10,00 = 170,00"],
+        "resultado": "R$ 170,00"
+      },
+      "status": "no_banco", "onde": "comanda_item.valor_total — coluna calculada pelo banco", "fase": "F5"
+    },
+    {
+      "id": "total-comanda", "grupo": "venda", "nome": "Total da comanda",
+      "regra": "Soma dos itens. O desconto nunca pode ser maior que o subtotal, e o total nunca fica negativo — a trava vive no banco, não na tela.",
+      "formula": "total = Σ itens − desconto da comanda,  sempre ≥ 0",
+      "exemplo": {
+        "cenario": "Coloração R$ 180,00 + depilação R$ 120,00 + shampoo R$ 89,90, com R$ 10,00 de desconto no shampoo.",
+        "passos": ["180,00 + 120,00 + 89,90 = 389,90", "389,90 − 10,00 = 379,90"],
+        "resultado": "R$ 379,90"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "desconto-rateado", "grupo": "venda", "nome": "Desconto rateado antes da comissão",
+      "regra": "Um desconto dado na conta inteira é distribuído entre os itens na proporção do valor de cada um, ANTES de calcular a comissão. Sem isso, o desconto cairia todo em cima de um profissional só.",
+      "formula": "desconto do item = desconto total × (valor do item ÷ subtotal)",
+      "exemplo": {
+        "cenario": "Conta de R$ 300,00 — serviço A de R$ 200,00 e serviço B de R$ 100,00 — com R$ 30,00 de desconto.",
+        "passos": ["A: 30,00 × (200 ÷ 300) = 20,00", "B: 30,00 × (100 ÷ 300) = 10,00", "A comissão passa a ser calculada sobre 180,00 e 90,00"],
+        "resultado": "A absorve R$ 20,00 e B absorve R$ 10,00"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "comissao-cascata", "grupo": "venda", "nome": "Qual percentual de comissão vale",
+      "regra": "O sistema procura o percentual em ordem: primeiro o daquele serviço para aquela pessoa, depois o percentual principal da pessoa, depois o padrão do salão. O nível que resolveu fica GRAVADO junto com o valor — olhando um fechamento antigo, dá para saber de onde veio aquele número. Não existe percentual escondido no código: se nenhum nível estiver configurado, o sistema recusa e avisa.",
+      "formula": "% = % do serviço para a pessoa  →  % principal da pessoa  →  % padrão do salão",
+      "exemplo": {
+        "cenario": "Ana tem 40% de percentual principal. Para coloração, foi configurado 45% específico para ela.",
+        "passos": ["Existe percentual específico para coloração + Ana? Sim: 45%", "O fechamento grava o valor E a procedência: 'específico do serviço'"],
+        "resultado": "45%, com a origem registrada"
+      },
+      "status": "decidido", "onde": "", "fase": "F2 no cadastro, F5 na apuração"
+    },
+    {
+      "id": "comissao-assistente", "grupo": "venda", "nome": "Comissão quando há assistente",
+      "regra": "A parte do assistente sai da fatia do profissional principal, nunca do salão. Colocar assistente jamais aumenta o custo total de comissão. O principal nunca fica negativo: o piso é zero.",
+      "formula": "principal = % dele − Σ(% dos assistentes),  com piso zero\ncusto total do salão = % original do principal",
+      "exemplo": {
+        "cenario": "Serviço de R$ 100,00. Principal a 40%, uma assistente a 10%.",
+        "passos": ["Principal: 40% − 10% = 30%  →  R$ 30,00", "Assistente: 10%  →  R$ 10,00", "Custo do salão: R$ 40,00 — exatamente o mesmo de antes"],
+        "resultado": "R$ 30,00 + R$ 10,00, custo do salão inalterado"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "base-comissao", "grupo": "venda", "nome": "Sobre o que a comissão incide",
+      "regra": "Você escolhe a base: valor bruto, líquido da taxa de cartão, líquido do insumo, ou líquido de imposto. A escolha muda bastante o valor — por isso ela é um parâmetro com vigência, e fica congelada em cada fechamento.",
+      "formula": "comissão = % × base escolhida\nbase = bruto | bruto − taxa | bruto − taxa − insumo | bruto − imposto",
+      "exemplo": {
+        "cenario": "Serviço de R$ 200,00, comissão de 40%, taxa de cartão de R$ 6,40 e insumo de R$ 25,00.",
+        "passos": ["Sobre o bruto: 40% de 200,00 = R$ 80,00", "Líquido da taxa: 40% de 193,60 = R$ 77,44", "Líquido de taxa e insumo: 40% de 168,60 = R$ 67,44"],
+        "resultado": "De R$ 67,44 a R$ 80,00, conforme a base escolhida"
+      },
+      "status": "a_definir", "onde": "comanda_item.base_comissao", "fase": "F5"
+    },
+    {
+      "id": "cota-parceiro", "grupo": "venda", "nome": "Cota do salão e cota do profissional parceiro",
+      "regra": "Pela Lei 13.352/2016, o salão centraliza o recebimento mas a cota do parceiro NÃO é receita do salão — é repasse. Cada item da comanda carrega o titular da receita, e o valor se divide na origem.",
+      "formula": "cota do parceiro = valor do item × % do contrato\nreceita do salão = valor do item − cota do parceiro",
+      "exemplo": {
+        "cenario": "Depilação de R$ 150,00 executada por manicure parceira, com contrato de 60% para ela.",
+        "passos": ["Parceira: 150,00 × 60% = R$ 90,00 — repasse, não é receita do salão", "Salão: 150,00 − 90,00 = R$ 60,00 de receita", "Nota do salão ao cliente: R$ 150,00. Nota da parceira ao salão: R$ 90,00"],
+        "resultado": "R$ 90,00 de repasse e R$ 60,00 de receita"
+      },
+      "status": "no_banco", "onde": "comanda_item.titular_receita", "fase": "F5"
+    },
+    {
+      "id": "estorno-comissao", "grupo": "venda", "nome": "O que acontece com a comissão no estorno",
+      "regra": "Nada é apagado. O estorno cria um lançamento negativo que retira da apuração tanto o principal quanto os assistentes daquele item. Se a comissão já tiver sido paga, o desconto vai para o próximo fechamento — com aviso ao profissional.",
+      "formula": "lançamento de estorno = − valor original, mesma natureza, mesma pessoa",
+      "exemplo": {
+        "cenario": "Estorno do serviço de R$ 100,00 que tinha gerado R$ 30,00 para a principal e R$ 10,00 para a assistente.",
+        "passos": ["Principal: − R$ 30,00", "Assistente: − R$ 10,00", "A venda original continua visível no histórico, marcada como estornada"],
+        "resultado": "− R$ 40,00 na apuração, com rastro de quem estornou e por quê"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+
+    {
+      "id": "taxa-adquirente", "grupo": "caixa", "nome": "Taxa do cartão e valor líquido",
+      "regra": "A taxa varia por bandeira, modalidade e número de parcelas. Ela é despesa do salão, e cada parcela é um recebível com data própria de liquidação.",
+      "formula": "taxa = valor × % da modalidade\nlíquido = valor − taxa",
+      "exemplo": {
+        "cenario": "R$ 300,00 no crédito em 3 vezes, com taxa de 3,89%.",
+        "passos": ["Taxa: 300,00 × 3,89% = R$ 11,67", "Líquido: 300,00 − 11,67 = R$ 288,33", "Entra como 3 recebíveis, cada um com sua data"],
+        "resultado": "R$ 288,33 líquidos"
+      },
+      "status": "a_definir", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "esperado-gaveta", "grupo": "caixa", "nome": "Quanto deveria ter na gaveta",
+      "regra": "Só dinheiro físico entra nessa conta. Cartão, PIX e haver são conferidos pelo registro, não pela gaveta.",
+      "formula": "esperado = fundo de troco + dinheiro recebido + suprimentos\n           − sangrias − despesas pagas pelo caixa",
+      "exemplo": {
+        "cenario": "Fundo de R$ 200,00; recebeu R$ 1.450,00 em dinheiro; suprimento de R$ 100,00; sangria de R$ 800,00; pagou R$ 60,00 de despesa.",
+        "passos": ["200,00 + 1.450,00 = 1.650,00", "+ 100,00 = 1.750,00", "− 800,00 = 950,00", "− 60,00 = 890,00"],
+        "resultado": "R$ 890,00 esperados na gaveta"
+      },
+      "status": "no_banco", "onde": "sessao_caixa e movimento_caixa", "fase": "F5"
+    },
+    {
+      "id": "divergencia-caixa", "grupo": "caixa", "nome": "Sobra ou falta, com contagem cega",
+      "regra": "O operador conta o dinheiro e digita o total SEM ver o esperado — é o banco que esconde. Só depois de a contagem estar registrada o sistema revela a diferença. Se não bater, ele pode recontar (fica registrado quantas vezes) ou justificar, e o administrador confere com um carimbo imutável. É o que impede a contagem ajustada para bater.",
+      "formula": "divergência = valor contado − valor esperado\nnegativo = falta,  positivo = sobra",
+      "exemplo": {
+        "cenario": "Esperado de R$ 890,00. O operador conta e digita R$ 875,00.",
+        "passos": ["875,00 − 890,00 = − 15,00", "Falta de R$ 15,00 → justificativa obrigatória", "O administrador recebe o aviso e carimba a conferência"],
+        "resultado": "Falta de R$ 15,00, justificada e conferida"
+      },
+      "status": "no_banco", "onde": "conferencia_caixa.divergencia — coluna calculada pelo banco", "fase": "F5"
+    },
+    {
+      "id": "troco", "grupo": "caixa", "nome": "Troco",
+      "regra": "O troco não altera a gaveta: ela recebe uma nota e devolve outra. Só o valor líquido entra na conciliação; o troco fica registrado para auditoria.",
+      "formula": "entra na gaveta = valor entregue − troco devolvido",
+      "exemplo": {
+        "cenario": "Parte em dinheiro de R$ 100,00, e o cliente entrega R$ 150,00.",
+        "passos": ["Troco: 150,00 − 100,00 = R$ 50,00", "A gaveta recebe 150,00 e devolve 50,00"],
+        "resultado": "R$ 100,00 líquidos na gaveta"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "juncao", "grupo": "caixa", "nome": "Juntar várias comandas num pagador só",
+      "regra": "Cada comanda continua fechando individualmente, com sua comissão e seus valores congelados — nada é recalculado nem duplicado. O valor de cada forma de pagamento é rateado na proporção do total de cada comanda, e o centavo que sobra cai na última, para a soma bater exata. Sobra ou dívida ficam com o PAGADOR do grupo, não com o cliente da comanda.",
+      "formula": "parte da comanda = valor da forma × (total da comanda ÷ total do grupo)\nresíduo dos centavos → última comanda",
+      "exemplo": {
+        "cenario": "Três comandas de R$ 50,00, total de R$ 150,00, pagas com R$ 100,00 em dinheiro e R$ 50,00 no PIX.",
+        "passos": ["Dinheiro por comanda: 100,00 × (50 ÷ 150) = 33,3333…", "Arredondando: 33,33 + 33,33 + 33,33 = 99,99", "O centavo que falta vai para a última: 33,33 / 33,33 / 33,34"],
+        "resultado": "Soma exata de R$ 100,00, sem centavo perdido"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "gorjeta", "grupo": "caixa", "nome": "Gorjeta: rateio e natureza",
+      "regra": "A gorjeta nunca gera comissão. É dividida igualmente entre quem atendeu — principais e assistentes, sem repetir e sem a casa — com o centavo que sobra no primeiro. A natureza muda conforme a forma: em DINHEIRO entra na gaveta mas não é receita do salão; em CARTÃO ou PIX não entra na gaveta nem na receita, vira obrigação a pagar ao profissional; marcada 'para a casa', é receita do salão.",
+      "formula": "por pessoa = valor ÷ número de participantes,  resíduo no primeiro",
+      "exemplo": {
+        "cenario": "R$ 100,00 de gorjeta dividida entre 3 profissionais.",
+        "passos": ["100,00 ÷ 3 = 33,3333…", "33,33 × 3 = 99,99", "O centavo que sobra vai para o primeiro: 33,34 / 33,33 / 33,33"],
+        "resultado": "R$ 33,34 + R$ 33,33 + R$ 33,33"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "haver", "grupo": "caixa", "nome": "Haver do cliente e fiado",
+      "regra": "Quando o cliente paga a mais, a sobra vira HAVER — um saldo que o salão deve a ele. Não é forma de pagamento, o que confundiria com cartão de crédito: é um saldo abatido no fechamento, só do próprio titular e nunca acima do que ele tem. Pagamento parcial FECHA a comanda e gera um devedor identificado.",
+      "formula": "haver = valor pago − valor da conta   (quando positivo)\ndívida = valor da conta − valor pago   (quando positivo)",
+      "exemplo": {
+        "cenario": "Conta de R$ 100,00 e o cliente paga R$ 150,00, pedindo para guardar a diferença.",
+        "passos": ["150,00 − 100,00 = R$ 50,00", "R$ 50,00 entram como haver dele — passivo do salão", "Numa próxima conta, esse saldo abate o valor, até o limite do saldo"],
+        "resultado": "R$ 50,00 de haver, com origem rastreável"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+
+    {
+      "id": "custo-medio", "grupo": "estoque", "nome": "Custo médio ponderado",
+      "regra": "O custo do produto não é o da última compra: é a média ponderada de tudo que está em estoque, recalculada a cada entrada. É o único jeito de a margem não dançar a cada nota do fornecedor.",
+      "formula": "custo médio = (quantidade em estoque × custo atual + quantidade comprada × preço de compra)\n              ÷ (quantidade em estoque + quantidade comprada)",
+      "exemplo": {
+        "cenario": "Comprou 10 unidades a R$ 100,00. Depois, com as 10 ainda em estoque, comprou mais 10 a R$ 50,00.",
+        "passos": ["Valor: (10 × 100,00) + (10 × 50,00) = 1.500,00", "Quantidade: 10 + 10 = 20", "1.500,00 ÷ 20 = 75,00"],
+        "resultado": "Custo médio de R$ 75,00 por unidade"
+      },
+      "status": "decidido", "onde": "", "fase": "F4"
+    },
+    {
+      "id": "custo-insumo", "grupo": "estoque", "nome": "Custo do insumo dentro do serviço",
+      "regra": "A ficha técnica diz quanto de cada produto o serviço consome. O custo por unidade sai do custo médio dividido pelo tamanho da embalagem, e a PERDA é embutida por cima — se 5% se perde no processo, o custo real por mililitro é maior. Perda só existe para produto de uso interno; produto de revenda não tem perda.",
+      "formula": "custo por unidade = (custo médio ÷ quantidade da embalagem) ÷ (1 − perda)\ncusto no serviço = custo por unidade × quantidade consumida",
+      "exemplo": {
+        "cenario": "Tintura com custo médio de R$ 75,00 o pote de 500 ml e perda de 5%. O serviço usa 60 ml.",
+        "passos": ["Por ml: 75,00 ÷ 500 = R$ 0,15", "Com a perda: 0,15 ÷ (1 − 0,05) = R$ 0,1579", "No serviço: 0,1579 × 60 = R$ 9,47"],
+        "resultado": "R$ 9,47 de insumo naquele atendimento"
+      },
+      "status": "decidido", "onde": "", "fase": "F4"
+    },
+    {
+      "id": "cmv", "grupo": "estoque", "nome": "CMV — custo da mercadoria vendida",
+      "regra": "Toda baixa de estoque é registrada num livro que só acrescenta, sempre com o motivo. O CMV do mês é a soma do que saiu, avaliado pelo custo médio do momento da saída — não pelo custo de hoje.",
+      "formula": "CMV = Σ (quantidade baixada × custo médio no momento da baixa)",
+      "exemplo": {
+        "cenario": "No mês saíram 40 potes de tintura, a custo médio de R$ 75,00, e 12 shampoos de revenda, a custo médio de R$ 38,00.",
+        "passos": ["Tintura: 40 × 75,00 = R$ 3.000,00", "Shampoo: 12 × 38,00 = R$ 456,00"],
+        "resultado": "CMV de R$ 3.456,00"
+      },
+      "status": "decidido", "onde": "", "fase": "F4"
+    },
+    {
+      "id": "valor-estoque", "grupo": "estoque", "nome": "Quanto vale o estoque",
+      "regra": "Avaliado sempre pelo custo médio, nunca pelo preço de venda.",
+      "formula": "valor em estoque = Σ (quantidade × custo médio)",
+      "exemplo": {
+        "cenario": "20 potes de tintura a custo médio de R$ 75,00.",
+        "passos": ["20 × 75,00 = 1.500,00"],
+        "resultado": "R$ 1.500,00"
+      },
+      "status": "decidido", "onde": "", "fase": "F4"
+    },
+
+    {
+      "id": "margem-contribuicao", "grupo": "resultado", "nome": "Margem de contribuição do serviço",
+      "regra": "Quanto sobra de cada serviço depois de tirar tudo que só existe porque ele foi vendido: insumo, comissão, taxa de cartão e imposto. É o número que diz se vale a pena vender aquele serviço — e é o que a Bússola de Preços usa.",
+      "formula": "margem = preço − (insumo + comissão + taxa de cartão + imposto)\nmargem % = margem ÷ preço",
+      "exemplo": {
+        "cenario": "Serviço de R$ 200,00, com insumo de R$ 9,47, comissão de R$ 80,00, taxa de R$ 6,40 e ISS de 5%, que dá R$ 10,00.",
+        "passos": ["Custos variáveis: 9,47 + 80,00 + 6,40 + 10,00 = R$ 105,87", "200,00 − 105,87 = R$ 94,13", "94,13 ÷ 200,00 = 47,1%"],
+        "resultado": "R$ 94,13 por atendimento, ou 47,1%"
+      },
+      "status": "decidido", "onde": "", "fase": "F7"
+    },
+    {
+      "id": "ponto-equilibrio", "grupo": "resultado", "nome": "Ponto de equilíbrio",
+      "regra": "Quanto o salão precisa faturar no mês para não ter prejuízo. Usa a margem de contribuição média, não o faturamento bruto — e é por isso que dois salões com o mesmo faturamento têm pontos de equilíbrio diferentes.",
+      "formula": "ponto de equilíbrio = custo fixo mensal ÷ margem de contribuição %",
+      "exemplo": {
+        "cenario": "Custo fixo de R$ 30.000,00 por mês e margem de contribuição média de 47,1%.",
+        "passos": ["30.000,00 ÷ 0,471 = 63.694,27"],
+        "resultado": "Precisa faturar R$ 63.694,27 no mês para empatar"
+      },
+      "status": "decidido", "onde": "", "fase": "F7"
+    },
+    {
+      "id": "dre-caixa", "grupo": "resultado", "nome": "DRE em regime de caixa",
+      "regra": "Uma conta entra no resultado no mês em que foi PAGA, pela data do pagamento — não pelo vencimento. O vencimento vira só etiqueta de organização. Na prática: conta vencida e não paga não pesa no resultado; ela passa a pesar no mês em que o pagamento acontecer.",
+      "formula": "resultado do mês = receitas recebidas no mês − despesas pagas no mês",
+      "exemplo": {
+        "cenario": "Conta de luz com vencimento em 05 de março, paga em 12 de abril.",
+        "passos": ["Não entra no resultado de março", "Entra no resultado de abril, pela data do pagamento"],
+        "resultado": "Despesa reconhecida em abril"
+      },
+      "status": "decidido", "onde": "", "fase": "F5 e F7"
+    },
+    {
+      "id": "ticket-medio", "grupo": "resultado", "nome": "Ticket médio",
+      "regra": "Toda métrica tem UMA definição, versionada, usada por Resultados, pelas Bússolas e pelo Consultor — para que dois relatórios nunca mostrem tickets diferentes. O que conta como atendimento é parâmetro seu.",
+      "formula": "ticket médio = faturamento do período ÷ número de atendimentos",
+      "exemplo": {
+        "cenario": "R$ 84.000,00 faturados em 620 atendimentos.",
+        "passos": ["84.000,00 ÷ 620 = 135,48"],
+        "resultado": "R$ 135,48 por atendimento"
+      },
+      "status": "decidido", "onde": "", "fase": "F7"
+    },
+
+    {
+      "id": "ocupacao", "grupo": "agenda", "nome": "Taxa de ocupação",
+      "regra": "Quanto do tempo disponível de um profissional, sala ou equipamento está de fato reservado. O sistema já soma o tempo ocupado por recurso e por dia; a disponibilidade vem da escala cadastrada.",
+      "formula": "ocupação = tempo reservado ÷ tempo disponível na escala",
+      "exemplo": {
+        "cenario": "Profissional com 8 horas de escala e 5h30 de agendamentos no dia.",
+        "passos": ["5,5 ÷ 8 = 0,6875"],
+        "resultado": "68,8% de ocupação"
+      },
+      "status": "no_banco", "onde": "vw_ocupacao — soma o tempo ocupado por recurso e por dia", "fase": "F4"
+    },
+    {
+      "id": "meta-dia", "grupo": "agenda", "nome": "Meta do dia a partir da meta do mês",
+      "regra": "A meta mensal do profissional é dividida pelos dias úteis do mês para virar meta diária, com barra de progresso. Quem não tem meta cadastrada vê só o faturamento, sem barra — o sistema não inventa meta.",
+      "formula": "meta do dia = meta mensal ÷ dias úteis do mês",
+      "exemplo": {
+        "cenario": "Meta mensal de R$ 18.000,00, num mês com 26 dias úteis.",
+        "passos": ["18.000,00 ÷ 26 = 692,31"],
+        "resultado": "R$ 692,31 por dia"
+      },
+      "status": "a_definir", "onde": "", "fase": "F4"
+    },
+    {
+      "id": "no-show", "grupo": "agenda", "nome": "Taxa de falta e política de sinal",
+      "regra": "Falta e cancelamento em cima da hora são registrados com tipo próprio, não como um cancelamento qualquer. A partir daí você configura a política: prazo mínimo para cancelar sem multa, multa em percentual ou em valor, e exigência de sinal por serviço ou por valor — inclusive só para quem já faltou antes.",
+      "formula": "taxa de falta = faltas ÷ agendamentos do período\nsinal = valor ou % do serviço, aplicado como crédito na comanda",
+      "exemplo": {
+        "cenario": "620 agendamentos no mês, com 43 faltas.",
+        "passos": ["43 ÷ 620 = 0,0694"],
+        "resultado": "6,9% de faltas"
+      },
+      "status": "a_definir", "onde": "", "fase": "F6"
+    },
+
+    {
+      "id": "cashback", "grupo": "cliente", "nome": "Cashback e pontos como saldo real",
+      "regra": "Cashback é dinheiro: uma obrigação em reais que o salão vai honrar. Por isso não existe um campo de saldo no cadastro do cliente — existe um livro que só acrescenta, com cada crédito, resgate, expiração e estorno registrado com sua origem. O saldo é a soma desse livro. Assim dá para responder de onde vieram os pontos daquele cliente, e estornar a venda que os gerou devolve os pontos.",
+      "formula": "crédito = valor da compra × % de cashback\nsaldo = Σ créditos − Σ resgates − Σ expirações ± estornos",
+      "exemplo": {
+        "cenario": "Compra de R$ 200,00 com 5% de cashback.",
+        "passos": ["200,00 × 5% = R$ 10,00 de crédito", "Na concessão: entra como obrigação do salão, não como despesa", "No resgate: abate o valor da conta e a obrigação baixa"],
+        "resultado": "R$ 10,00 de saldo, rastreável até a venda que o gerou"
+      },
+      "status": "decidido", "onde": "", "fase": "F6"
+    },
+
+    {
+      "id": "fator-r", "grupo": "fiscal", "nome": "Fator R — qual anexo do Simples",
+      "regra": "Define se o salão é tributado pelo Anexo III, de alíquota menor, ou pelo Anexo V. Depende da relação entre a folha e o faturamento dos últimos 12 meses, e é recalculado todo mês. Nenhuma alíquota fica escrita no código: vem de tabela legal com vigência.",
+      "formula": "Fator R = folha dos últimos 12 meses ÷ receita bruta dos últimos 12 meses\nFator R ≥ 28%  →  Anexo III        Fator R < 28%  →  Anexo V",
+      "exemplo": {
+        "cenario": "Folha de R$ 168.000,00 e receita de R$ 520.000,00 nos últimos 12 meses.",
+        "passos": ["168.000,00 ÷ 520.000,00 = 0,323", "32,3% é maior que 28%"],
+        "resultado": "Anexo III"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    },
+    {
+      "id": "imposto-dentro-fora", "grupo": "fiscal", "nome": "Imposto por dentro e por fora",
+      "regra": "ISS, PIS e COFINS são calculados por DENTRO — já embutidos no preço. IBS e CBS, da reforma tributária, são destacados por FORA e não entram na própria base. O sistema guarda o preço com e sem tributo destacado, porque isso muda a base da comissão e a margem.",
+      "formula": "por dentro:  imposto = preço × alíquota   (o preço já o contém)\npor fora:    imposto = preço × alíquota   (somado ao preço)",
+      "exemplo": {
+        "cenario": "Serviço de R$ 200,00 com ISS de 5%, calculado por dentro.",
+        "passos": ["Imposto: 200,00 × 5% = R$ 10,00", "O cliente paga R$ 200,00, dos quais R$ 10,00 são imposto embutido", "Se fosse por fora, o cliente pagaria R$ 210,00"],
+        "resultado": "R$ 10,00 de imposto dentro dos R$ 200,00"
+      },
+      "status": "decidido", "onde": "", "fase": "F5"
+    }
+  ],
+
+  "nao_faz": [
+    { "item": "Não inventa número que você não informou", "porque": "Todo indicador carrega a origem: declarado por você, medido pelo sistema, estimado ou padrão do setor. Recomendação apoiada em dado faltante aparece com o aviso, não com um palpite." },
+    { "item": "Não apaga dinheiro", "porque": "Não existe excluir venda, lançamento ou pagamento. Reverter é sempre um lançamento novo, com autor, motivo e data — o histórico fica inteiro." },
+    { "item": "Não muda o passado quando você muda um cadastro", "porque": "Preço, percentual e taxa ficam congelados em cada fechamento. Reajustar a tabela hoje não mexe em nenhuma comissão já apurada." },
+    { "item": "Não deixa a comanda sem dono", "porque": "Toda comanda tem um responsável em todo instante. Transferir exige aceite, e a recusa ou o fim do expediente devolvem ao anterior." },
+    { "item": "Não reabre comanda fechada", "porque": "A única reversão é o estorno auditável, com categoria e motivo. O administrador estorna na hora; os demais geram pedido de aprovação." },
+    { "item": "Não conta comanda aberta como dinheiro", "porque": "Comanda em aberto aparece como aviso no fechamento do dia, mas não entra no caixa nem na previsão — ainda não é dinheiro que entrou." }
+  ]
+}

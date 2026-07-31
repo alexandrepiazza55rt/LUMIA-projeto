@@ -1,0 +1,446 @@
+{
+  "gerado_em": "2026-07-28",
+  "postgres": "16",
+  "resumo": {
+    "tabelas": 43,
+    "colunas": 540,
+    "com_rls": 40,
+    "checks": 100,
+    "excludes": 9,
+    "fks": 129,
+    "asercoes": 142,
+    "migrations": 9
+  },
+  "tabelas": [
+    {
+      "nome": "agendamento",
+      "cols": 22,
+      "rls": true,
+      "checks": 4,
+      "excl": 0,
+      "fks": 3,
+      "doc": "",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "agendamento_item",
+      "cols": 13,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 4,
+      "doc": "",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "bloqueio_agenda",
+      "cols": 9,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "categoria_catalogo",
+      "cols": 11,
+      "rls": true,
+      "checks": 0,
+      "excl": 0,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "celula",
+      "cols": 7,
+      "rls": false,
+      "checks": 0,
+      "excl": 0,
+      "fks": 0,
+      "doc": "Célula = domínio de falha. Sem célula, o primeiro incidente sistêmico é um evento de 100% da base num sábado de Dia das Mães. Nenhuma FK, sequência ou job pode atravessar célula — verificado por teste no CI.",
+      "grupo": "Plataforma"
+    },
+    {
+      "nome": "cliente",
+      "cols": 12,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 1,
+      "doc": "Versão mínima exigida pela agenda. Meus Clientes estende com consentimento LGPD, segmentação, fidelização e inteligência.",
+      "grupo": "Pessoas"
+    },
+    {
+      "nome": "comanda",
+      "cols": 28,
+      "rls": true,
+      "checks": 5,
+      "excl": 0,
+      "fks": 9,
+      "doc": "",
+      "grupo": "Comanda"
+    },
+    {
+      "nome": "comanda_custodia",
+      "cols": 11,
+      "rls": true,
+      "checks": 3,
+      "excl": 1,
+      "fks": 6,
+      "doc": "Quem respondia pela comanda em cada instante do tempo. Responder \"de quem era a comanda às 15h40 de terça?\" é uma consulta, não uma investigação. O EXCLUDE impede dois responsáveis simultâneos; o trigger impede buraco entre um período e o seguinte.",
+      "grupo": "Comanda"
+    },
+    {
+      "nome": "comanda_item",
+      "cols": 27,
+      "rls": true,
+      "checks": 7,
+      "excl": 0,
+      "fks": 11,
+      "doc": "Um item pode ter executor diferente de quem abriu a comanda e de quem a detém agora — é o caso normal: a recepção abre, a manicure executa um item, a cabeleireira executa outro, o caixa recebe. Cada papel fica nomeado.",
+      "grupo": "Comanda"
+    },
+    {
+      "nome": "comanda_pagamento",
+      "cols": 18,
+      "rls": true,
+      "checks": 5,
+      "excl": 0,
+      "fks": 5,
+      "doc": "",
+      "grupo": "Comanda"
+    },
+    {
+      "nome": "comanda_vinculo",
+      "cols": 8,
+      "rls": true,
+      "checks": 3,
+      "excl": 0,
+      "fks": 4,
+      "doc": "Junção e divisão deixam rastro nos dois lados. Sem isso, um item que muda de comanda vira item que \"sumiu\" de uma e \"apareceu\" em outra.",
+      "grupo": "Comanda"
+    },
+    {
+      "nome": "composicao_servico",
+      "cols": 8,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "conferencia_caixa",
+      "cols": 11,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 3,
+      "doc": "Conferência cega. valor_declarado é do operador; valor_esperado e divergencia são preenchidos na apuração e ficam ILEGÍVEIS para o papel do operador por GRANT de coluna. Esconder na interface não seria controle — seria decoração.",
+      "grupo": "Caixa"
+    },
+    {
+      "nome": "custo_uso_recurso",
+      "cols": 8,
+      "rls": true,
+      "checks": 2,
+      "excl": 1,
+      "fks": 1,
+      "doc": "Depilação a laser custa por disparo; luz pulsada por hora de lâmpada; microagulhamento por ponteira. Sem isto o custo do procedimento de aparelho aparece como zero e a Bússola de Preços recomenda preço abaixo do custo.",
+      "grupo": "Ficha técnica"
+    },
+    {
+      "nome": "divergencia_caixa",
+      "cols": 13,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 4,
+      "doc": "Diferença entre contado e esperado. O sistema NÃO gera desconto em folha, nem débito contra o operador: o art. 462 da CLT protege a integridade salarial e a jurisprudência sobre desconto de quebra de caixa é dividida. Aqui ficam o valor, a justificativa e a decisão nomeada de quem decidiu — a consequência é ato humano documentado, não efeito colateral de software.",
+      "grupo": "Caixa"
+    },
+    {
+      "nome": "estabelecimento",
+      "cols": 14,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Sujeito passivo fiscal. TODA linha transacional do sistema carrega estabelecimento_id NOT NULL: é ele que define alíquota, município de incidência, série de numeração fiscal e fuso do fato.",
+      "grupo": "Hierarquia"
+    },
+    {
+      "nome": "ficha_tecnica",
+      "cols": 9,
+      "rls": true,
+      "checks": 1,
+      "excl": 1,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Ficha técnica"
+    },
+    {
+      "nome": "ficha_tecnica_item",
+      "cols": 7,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 3,
+      "doc": "Doses padrão. O consumo REAL lançado no atendimento vive no módulo Meu Estoque (movimentação) — a comparação padrão × real é o que revela desperdício de cabine.",
+      "grupo": "Ficha técnica"
+    },
+    {
+      "nome": "habilidade",
+      "cols": 5,
+      "rls": true,
+      "checks": 0,
+      "excl": 0,
+      "fks": 1,
+      "doc": "",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "lista_espera",
+      "cols": 13,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 5,
+      "doc": "",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "motivo_desconto",
+      "cols": 6,
+      "rls": true,
+      "checks": 0,
+      "excl": 0,
+      "fks": 1,
+      "doc": "",
+      "grupo": "Preços"
+    },
+    {
+      "nome": "movimento_caixa",
+      "cols": 16,
+      "rls": true,
+      "checks": 5,
+      "excl": 0,
+      "fks": 5,
+      "doc": "Livro append-only do caixa. Nenhuma linha é editada ou apagada: corrigir é lançar um ESTORNO ou AJUSTE apontando para o lançamento original. O saldo é sempre derivado da soma — nunca uma coluna que alguém possa \"acertar\".",
+      "grupo": "Caixa"
+    },
+    {
+      "nome": "no_org",
+      "cols": 15,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Árvore organizacional do tenant. Um nó por grupo, CNPJ, estabelecimento e unidade operacional. Enxertar um nível aqui depois de existir volume transacional significaria reescrever RLS, permissões, particionamento e toda query de apuração — por isso a árvore nasce completa na primeira migration.",
+      "grupo": "Hierarquia"
+    },
+    {
+      "nome": "pessoa_juridica",
+      "cols": 9,
+      "rls": true,
+      "checks": 0,
+      "excl": 0,
+      "fks": 1,
+      "doc": "Atributos do nó de tipo PESSOA_JURIDICA. O regime tributário NÃO vive aqui: é versionado por vigência no módulo Meu Fiscal (migration 0004).",
+      "grupo": "Hierarquia"
+    },
+    {
+      "nome": "produto",
+      "cols": 26,
+      "rls": true,
+      "checks": 4,
+      "excl": 0,
+      "fks": 5,
+      "doc": "",
+      "grupo": "Produtos"
+    },
+    {
+      "nome": "produto_atributo_fiscal",
+      "cols": 16,
+      "rls": true,
+      "checks": 3,
+      "excl": 1,
+      "fks": 4,
+      "doc": "",
+      "grupo": "Produtos"
+    },
+    {
+      "nome": "produto_custo_versao",
+      "cols": 12,
+      "rls": true,
+      "checks": 3,
+      "excl": 1,
+      "fks": 2,
+      "doc": "SCD-2 do custo (decisão irreversível nº 5). O reajuste de julho NÃO pode reescrever o relatório de março: a operação lê a versão vigente na data do fato. Um UPDATE de valor destruiria a informação da vigência sem backfill possível.",
+      "grupo": "Produtos"
+    },
+    {
+      "nome": "profissional",
+      "cols": 14,
+      "rls": true,
+      "checks": 3,
+      "excl": 0,
+      "fks": 1,
+      "doc": "Versão mínima exigida pela agenda. Minha Equipe estende com jornada, comissão, documentos e desenvolvimento. O CPF é único POR TENANT: o mesmo profissional atuando em dois salões são dois registros, sob controladores distintos.",
+      "grupo": "Pessoas"
+    },
+    {
+      "nome": "profissional_habilidade",
+      "cols": 5,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Pessoas"
+    },
+    {
+      "nome": "recurso_agendavel",
+      "cols": 10,
+      "rls": true,
+      "checks": 3,
+      "excl": 0,
+      "fks": 4,
+      "doc": "Identidade única de tudo que pode ser reservado no tempo. Um profissional que atende em dois estabelecimentos tem um recurso em cada — o EXCLUDE por recurso impediria, corretamente, que ele estivesse nos dois ao mesmo tempo apenas se compartilhassem recurso; por isso a checagem de conflito entre estabelecimentos é feita por profissional (ver vw_conflito_profissional).",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "reserva",
+      "cols": 11,
+      "rls": true,
+      "checks": 5,
+      "excl": 1,
+      "fks": 4,
+      "doc": "Uma linha por (recurso, intervalo). É aqui que o double-booking se torna impossível — não por disciplina da aplicação, mas por constraint. Um item de agendamento com pausa química gera DUAS reservas para o profissional (antes e depois da pausa) e UMA contígua para a cadeira: a regra de domínio mais específica do setor cai fora do mesmo mecanismo, sem código especial.",
+      "grupo": "Agenda"
+    },
+    {
+      "nome": "servico",
+      "cols": 28,
+      "rls": true,
+      "checks": 4,
+      "excl": 0,
+      "fks": 3,
+      "doc": "O nó raiz do sistema. Agenda agenda um serviço; comanda lança um serviço; comissão incide sobre um serviço; DRE apura margem por serviço; a Bússola de Preços precifica um serviço. Sem FK para cá, o histórico não se reamarra.",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "servico_atributo_fiscal",
+      "cols": 12,
+      "rls": true,
+      "checks": 1,
+      "excl": 1,
+      "fks": 2,
+      "doc": "Parâmetro legal também tem vigência (decisão nº 5): alíquota e classificação mudam por lei. A memória de cálculo IMUTÁVEL de cada documento emitido vive no Meu Fiscal — aqui está apenas o parâmetro corrente por vigência.",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "servico_habilidade_exigida",
+      "cols": 5,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "servico_recurso_exigido",
+      "cols": 7,
+      "rls": true,
+      "checks": 2,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Alimenta a resolução de conflito multi-recurso da agenda: profissional × sala × cadeira × equipamento ao mesmo tempo. A garantia de não-sobreposição fica no banco (migration da agenda), não em lock de Redis.",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "servico_variante",
+      "cols": 11,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 1,
+      "doc": "",
+      "grupo": "Serviços"
+    },
+    {
+      "nome": "sessao_caixa",
+      "cols": 21,
+      "rls": true,
+      "checks": 5,
+      "excl": 0,
+      "fks": 6,
+      "doc": "",
+      "grupo": "Caixa"
+    },
+    {
+      "nome": "tabela_preco",
+      "cols": 11,
+      "rls": true,
+      "checks": 1,
+      "excl": 1,
+      "fks": 2,
+      "doc": "",
+      "grupo": "Preços"
+    },
+    {
+      "nome": "tabela_preco_item",
+      "cols": 16,
+      "rls": true,
+      "checks": 7,
+      "excl": 1,
+      "fks": 4,
+      "doc": "Preço NÃO é atributo do serviço: é uma linha com vigência. O preço praticado na comanda é congelado no item da comanda (migration do Balcão); aqui vive o preço de tabela, que a auditoria consulta para explicar o desconto.",
+      "grupo": "Preços"
+    },
+    {
+      "nome": "tenant",
+      "cols": 14,
+      "rls": false,
+      "checks": 2,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Fronteira de isolamento e de controladoria LGPD. Um franqueado é um tenant próprio: CNPJ, numeração fiscal e base de clientes próprios. O vínculo com o franqueador é referência entre tenants, com escopo de visibilidade acordado por classe de dado — jamais acesso direto à linha.",
+      "grupo": "Plataforma"
+    },
+    {
+      "nome": "terminal_caixa",
+      "cols": 8,
+      "rls": true,
+      "checks": 0,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Ponto de venda físico. A sessão de caixa é sempre de um terminal — é o que permite dizer \"a diferença apareceu no caixa 2\" em vez de \"apareceu no salão\".",
+      "grupo": "Caixa"
+    },
+    {
+      "nome": "unidade_medida",
+      "cols": 5,
+      "rls": false,
+      "checks": 2,
+      "excl": 0,
+      "fks": 0,
+      "doc": "Normalização de unidades (convenção da taxonomia canônica). Sem tabela de conversão, \"frasco de 1 L\" e \"dose de 30 ml\" não fecham e o CMV mente.",
+      "grupo": "Referência"
+    },
+    {
+      "nome": "unidade_operacional",
+      "cols": 8,
+      "rls": true,
+      "checks": 1,
+      "excl": 0,
+      "fks": 2,
+      "doc": "Recurso físico agendável: sala, cabine, cadeira, maca, equipamento. É o que o catálogo referencia em \"recursos exigidos\" e o que a agenda reserva.",
+      "grupo": "Hierarquia"
+    }
+  ]
+}

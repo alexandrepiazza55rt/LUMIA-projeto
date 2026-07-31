@@ -1,0 +1,390 @@
+{
+  "gerado_em": "2026-07-26",
+  "legenda": {
+    "de": "modulo que ALIMENTA",
+    "para": "modulo que DEPENDE",
+    "fks_verificadas": "numero de chaves estrangeiras reais no schema implementado; null = dependencia planejada, ainda nao implementada"
+  },
+  "total": 54,
+  "verificadas": 14,
+  "arestas": [
+    {
+      "de": "meu-negocio",
+      "para": "meu-catalogo",
+      "motivo": "Unidades e estrutura definem onde e como o serviço é executado",
+      "tipo": "dependencia",
+      "fks_verificadas": 6
+    },
+    {
+      "de": "meu-negocio",
+      "para": "meus-clientes",
+      "motivo": "A empresa e suas unidades são o contexto do cadastro",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-negocio",
+      "para": "minha-equipe",
+      "motivo": "Cargos, organograma e estabelecimento de vínculo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "minha-equipe",
+      "motivo": "Habilidades do catálogo qualificam quem pode executar",
+      "tipo": "dependencia",
+      "fks_verificadas": 1
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "meu-estoque",
+      "motivo": "Produto e ficha técnica definem o que entra e sai",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "meu-prontuario",
+      "motivo": "O procedimento define se exige anamnese e termo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "minha-vitrine",
+      "motivo": "Só se publica e vende o que está no catálogo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "meu-marketing",
+      "motivo": "A campanha promove serviço e produto do catálogo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-clientes",
+      "para": "meu-prontuario",
+      "motivo": "O prontuário é do cliente — histórico clínico e evolução",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-clientes",
+      "para": "minha-vitrine",
+      "motivo": "Identidade e login do cliente no autoatendimento",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-clientes",
+      "para": "meu-marketing",
+      "motivo": "Segmentos e consentimento definem quem pode ser abordado",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-negocio",
+      "para": "minha-agenda",
+      "motivo": "Estabelecimento, fuso e unidades operacionais reserváveis",
+      "tipo": "dependencia",
+      "fks_verificadas": 5
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "minha-agenda",
+      "motivo": "O agendamento agenda um serviço: duração por etapa e recurso exigido",
+      "tipo": "dependencia",
+      "fks_verificadas": 3
+    },
+    {
+      "de": "meus-clientes",
+      "para": "minha-agenda",
+      "motivo": "O cliente é quem ocupa o horário",
+      "tipo": "dependencia",
+      "fks_verificadas": 2
+    },
+    {
+      "de": "minha-equipe",
+      "para": "minha-agenda",
+      "motivo": "O profissional é recurso reservável no estabelecimento",
+      "tipo": "dependencia",
+      "fks_verificadas": 2
+    },
+    {
+      "de": "minha-vitrine",
+      "para": "minha-agenda",
+      "motivo": "Agendamento online cria o compromisso e cobra o sinal",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-marketing",
+      "para": "minha-agenda",
+      "motivo": "Campanha e lead viram agendamento com origem atribuída",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-prontuario",
+      "para": "minha-agenda",
+      "motivo": "Anamnese pendente bloqueia a execução do procedimento",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-negocio",
+      "para": "meu-caixa",
+      "motivo": "O terminal pertence a um estabelecimento; a sessão herda o fuso",
+      "tipo": "dependencia",
+      "fks_verificadas": 2
+    },
+    {
+      "de": "minha-equipe",
+      "para": "meu-caixa",
+      "motivo": "Quem abre, quem confere, quem apura e quem autoriza sangria",
+      "tipo": "dependencia",
+      "fks_verificadas": 8
+    },
+    {
+      "de": "meu-negocio",
+      "para": "minhas-comandas",
+      "motivo": "A comanda é de um estabelecimento e usa a data comercial dele",
+      "tipo": "dependencia",
+      "fks_verificadas": 1
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "minhas-comandas",
+      "motivo": "Item referencia serviço ou produto e congela o preço de tabela",
+      "tipo": "dependencia",
+      "fks_verificadas": 4
+    },
+    {
+      "de": "meus-clientes",
+      "para": "minhas-comandas",
+      "motivo": "A comanda é de um cliente",
+      "tipo": "dependencia",
+      "fks_verificadas": 1
+    },
+    {
+      "de": "minha-equipe",
+      "para": "minhas-comandas",
+      "motivo": "Quem abriu, quem executou cada item e toda a cadeia de custódia",
+      "tipo": "dependencia",
+      "fks_verificadas": 15
+    },
+    {
+      "de": "minha-agenda",
+      "para": "minhas-comandas",
+      "motivo": "O check-out abre a comanda a partir do agendamento",
+      "tipo": "dependencia",
+      "fks_verificadas": 2
+    },
+    {
+      "de": "meu-caixa",
+      "para": "minhas-comandas",
+      "motivo": "Pagamento pertence a uma sessão de caixa aberta",
+      "tipo": "dependencia",
+      "fks_verificadas": 2
+    },
+    {
+      "de": "meu-estoque",
+      "para": "minhas-comandas",
+      "motivo": "Saldo disponível autoriza a venda e o consumo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minhas-comandas",
+      "para": "meu-estoque",
+      "motivo": "O consumo real do atendimento baixa o estoque",
+      "tipo": "retroalimentacao",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minhas-comandas",
+      "para": "meu-financeiro",
+      "motivo": "Comanda paga gera recebível e alimenta o fluxo de caixa",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-caixa",
+      "para": "meu-financeiro",
+      "motivo": "Sangria, suprimento e fechamento do turno",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minhas-comandas",
+      "para": "meu-fiscal",
+      "motivo": "Cada item gera obrigação fiscal por titularidade da receita",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minha-equipe",
+      "para": "meu-financeiro",
+      "motivo": "Comissão, repasse de parceiro e locação",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-clientes",
+      "para": "meu-financeiro",
+      "motivo": "Pacotes, assinaturas, sinal e inadimplência",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-financeiro",
+      "para": "meu-fiscal",
+      "motivo": "Liquidação e regime definem apuração e retenção",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-financeiro",
+      "para": "meus-clientes",
+      "motivo": "Histórico transacional gera LTV, ticket e risco de perda",
+      "tipo": "retroalimentacao",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-negocio",
+      "para": "meus-resultados",
+      "motivo": "Capacidade instalada é o denominador dos indicadores",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-clientes",
+      "para": "meus-resultados",
+      "motivo": "Base, frequência e recompra",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minha-equipe",
+      "para": "meus-resultados",
+      "motivo": "Produtividade, ocupação e performance",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minha-agenda",
+      "para": "meus-resultados",
+      "motivo": "Ocupação da agenda e volume executado",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-estoque",
+      "para": "meus-resultados",
+      "motivo": "CMV e giro de produto",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minhas-comandas",
+      "para": "meus-resultados",
+      "motivo": "Ticket, mix de itens e produção por executor",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-caixa",
+      "para": "meus-resultados",
+      "motivo": "Divergência de caixa e comportamento por turno",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-financeiro",
+      "para": "meus-resultados",
+      "motivo": "DRE, margem e fluxo de caixa",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-fiscal",
+      "para": "meus-resultados",
+      "motivo": "Carga tributária efetiva por serviço e regime",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-marketing",
+      "para": "meus-resultados",
+      "motivo": "Custo de aquisição, origem e retorno de campanha",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-catalogo",
+      "para": "ferramentas-mqs",
+      "motivo": "A Bússola de Preços precifica um serviço com custo e tempo reais",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-financeiro",
+      "para": "ferramentas-mqs",
+      "motivo": "Custos reais alimentam bússolas e simuladores",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minha-equipe",
+      "para": "ferramentas-mqs",
+      "motivo": "Comissão e locação para as bússolas correspondentes",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-resultados",
+      "para": "ferramentas-mqs",
+      "motivo": "Indicadores para diagnóstico e plano de ação",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meus-resultados",
+      "para": "consultor-mqs",
+      "motivo": "Painel e KPIs guiam as recomendações",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "ferramentas-mqs",
+      "para": "consultor-mqs",
+      "motivo": "Método, playbooks e simuladores",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "universidade-mqs",
+      "para": "consultor-mqs",
+      "motivo": "Conteúdo recomendado no momento certo",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "minha-agenda",
+      "para": "consultor-mqs",
+      "motivo": "Agenda ociosa e no-show viram alerta",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    },
+    {
+      "de": "meu-financeiro",
+      "para": "consultor-mqs",
+      "motivo": "Saúde financeira dispara alerta e oportunidade",
+      "tipo": "dependencia",
+      "fks_verificadas": null
+    }
+  ]
+}
